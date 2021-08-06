@@ -20,7 +20,7 @@ public class 아파트분양정보_특별공급대상1 {
     private 아파트분양정보 아파트분양정보;
 
     @Column
-    private Integer 주택형;
+    private String 주택형;
 
     @Column
     private int 공급세대수_다자녀가구;
@@ -44,7 +44,7 @@ public class 아파트분양정보_특별공급대상1 {
     private int 공급세대수_기관추천기타;
 
     @Builder
-    public 아파트분양정보_특별공급대상1(아파트분양정보 아파트분양정보, Integer 주택형, int 공급세대수_다자녀가구, int 공급세대수_신혼부부, int 공급세대수_생애최초, int 공급세대수_노부모부양, int 공급세대수_기관추천, int 공급세대수_이전기관, int 공급세대수_기관추천기타) {
+    public 아파트분양정보_특별공급대상1(아파트분양정보 아파트분양정보, String 주택형, int 공급세대수_다자녀가구, int 공급세대수_신혼부부, int 공급세대수_생애최초, int 공급세대수_노부모부양, int 공급세대수_기관추천, int 공급세대수_이전기관, int 공급세대수_기관추천기타) {
         this.아파트분양정보 = 아파트분양정보;
         this.주택형 = 주택형;
         this.공급세대수_다자녀가구 = 공급세대수_다자녀가구;

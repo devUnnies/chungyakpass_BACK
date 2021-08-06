@@ -24,10 +24,10 @@ public class 아파트분양정보_공급금액1 {
     private String 주택형;
 
     @Column
-    private int 공급금액;
+    private String 공급금액;
 
     @Builder
-    public 아파트분양정보_공급금액1(아파트분양정보 아파트분양정보, String 주택형, int 공급금액) {
+    public 아파트분양정보_공급금액1(아파트분양정보 아파트분양정보, String 주택형, String 공급금액) {
         this.아파트분양정보 = 아파트분양정보;
         this.주택형 = 주택형;
         this.공급금액 = 공급금액;

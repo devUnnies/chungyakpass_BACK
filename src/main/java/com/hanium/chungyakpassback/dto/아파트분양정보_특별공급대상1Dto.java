@@ -1,6 +1,8 @@
 package com.hanium.chungyakpassback.dto;
 
 
+import com.hanium.chungyakpassback.domain.standard.아파트분양정보_청약접수일정1;
+import com.hanium.chungyakpassback.domain.standard.아파트분양정보_특별공급대상1;
 import lombok.Getter;
 import org.json.JSONObject;
 
@@ -9,7 +11,6 @@ import javax.persistence.Column;
 
 @Getter
 public class 아파트분양정보_특별공급대상1Dto {
-
     private String 주택형;
     private int 공급세대수_다자녀가구;
     private int 공급세대수_신혼부부;
@@ -19,9 +20,22 @@ public class 아파트분양정보_특별공급대상1Dto {
     private int 공급세대수_이전기관;
     private int 공급세대수_기관추천기타;
 
+    public 아파트분양정보_특별공급대상1 toEntity() {
+        아파트분양정보_특별공급대상1 build = 아파트분양정보_특별공급대상1.builder()
+                .주택형(주택형)
+                .공급세대수_다자녀가구(공급세대수_다자녀가구)
+                .공급세대수_신혼부부(공급세대수_신혼부부)
+                .공급세대수_생애최초(공급세대수_생애최초)
+                .공급세대수_노부모부양(공급세대수_노부모부양)
+                .공급세대수_기관추천(공급세대수_기관추천)
+                .공급세대수_이전기관(공급세대수_이전기관)
+                .공급세대수_기관추천기타(공급세대수_기관추천기타)
+                .build();
+        return build;
+    }
+
 
     public 아파트분양정보_특별공급대상1Dto(JSONObject itemJson){
-
         if(itemJson.get("housety") instanceof Double) {
             this.주택형 = String.valueOf(itemJson.get("housety")); //Double -> String 1번방식
         }

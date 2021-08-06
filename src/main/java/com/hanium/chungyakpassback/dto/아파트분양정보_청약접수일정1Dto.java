@@ -1,4 +1,6 @@
 package com.hanium.chungyakpassback.dto;
+import com.hanium.chungyakpassback.domain.standard.아파트분양정보_공급대상1;
+import com.hanium.chungyakpassback.domain.standard.아파트분양정보_청약접수일정1;
 import lombok.Getter;
 import java.time.LocalDate;
 import org.json.JSONObject;
@@ -13,6 +15,18 @@ public class 아파트분양정보_청약접수일정1Dto {
     private LocalDate 이순위접수일해당지역;
     private LocalDate 이순위접수일기타지역;
     private Integer 공급세대수_계;
+
+    public 아파트분양정보_청약접수일정1 toEntity() {
+        아파트분양정보_청약접수일정1 build = 아파트분양정보_청약접수일정1.builder()
+                .특별공급접수시작일(특별공급접수시작일)
+                .특별공급접수종료일(특별공급접수종료일)
+                .일순위접수일해당지역(일순위접수일해당지역)
+                .일순위접수일기타지역(일순위접수일기타지역)
+                .이순위접수일해당지역(이순위접수일해당지역)
+                .이순위접수일기타지역(이순위접수일기타지역)
+                .build();
+        return build;
+    }
 
     public 아파트분양정보_청약접수일정1Dto(JSONObject itemJson) {
         this.일순위접수일해당지역 = LocalDate.parse(itemJson.getString("gnrlrnk1crsparearceptpd"));

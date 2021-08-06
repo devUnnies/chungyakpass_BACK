@@ -1,8 +1,6 @@
-package com.hanium.chungyakpassback.service;//package com.hanium.chungyakpassback.service;
-//
+//package com.hanium.chungyakpassback.service;
 //
 //import com.hanium.chungyakpassback.domain.standard.아파트분양정보1;
-//import com.hanium.chungyakpassback.repository.아파트분양정보1repository;
 //import lombok.RequiredArgsConstructor;
 //import org.jsoup.Jsoup;
 //import org.jsoup.nodes.Document;
@@ -11,6 +9,7 @@ package com.hanium.chungyakpassback.service;//package com.hanium.chungyakpassbac
 //import org.springframework.stereotype.Service;
 //import org.springframework.transaction.annotation.Transactional;
 //
+//import javax.annotation.PostConstruct;
 //import java.io.IOException;
 //import java.time.LocalDate;
 //import java.util.ArrayList;
@@ -22,7 +21,7 @@ package com.hanium.chungyakpassback.service;//package com.hanium.chungyakpassbac
 //    int count = 0;
 //    private static String APT_DATA_URL = "https://www.applyhome.co.kr/ai/aia/selectAPTLttotPblancListView.do";
 //
-//    @Transactional
+//    @PostConstruct
 //    public List<아파트분양정보1.아파트분양정보1Builder> getAptDatas() throws IOException {
 //        List<아파트분양정보1.아파트분양정보1Builder> 아파트분양정보List = new ArrayList<>();
 //        Document doc1 = Jsoup.connect(APT_DATA_URL).get();
@@ -56,7 +55,7 @@ package com.hanium.chungyakpassback.service;//package com.hanium.chungyakpassbac
 //                            aptDatas.build();
 //                            아파트분양정보List.add(aptDatas);
 //
-//                    System.out.println(aptDatas.toString());
+//                    System.out.println(aptDatas);
 //            }
 //
 //
@@ -87,8 +86,12 @@ package com.hanium.chungyakpassback.service;//package com.hanium.chungyakpassbac
 //
 //
 //        };
+//        for(int i=0;i<아파트분양정보List.size();i++){
+//            System.out.println(아파트분양정보List.get(i));
+//        }
 //
 //        return 아파트분양정보List;
+//
 //        }
 //    }
 //

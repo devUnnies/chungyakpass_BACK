@@ -10,8 +10,10 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
-public interface 아파트분양정보1repository extends JpaRepository<아파트분양정보1Dto, Integer> {
-
+@Repository
+public interface 아파트분양정보1repository extends JpaRepository<아파트분양정보1, Integer> {
+           // Optional<아파트분양정보1>findAllByUserId(Integer 공고번호);
 }
 
