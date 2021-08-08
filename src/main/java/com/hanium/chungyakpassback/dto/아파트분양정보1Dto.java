@@ -29,10 +29,11 @@ public class 아파트분양정보1Dto {
 
 
     public 아파트분양정보1 toEntity() {
-        아파트분양정보1 build = 아파트분양정보1.builder()
+        return 아파트분양정보1.builder()
                 .상세주소(상세주소)
                 .지역_레벨1(지역_레벨1)
                 .지역_레벨2(지역_레벨2)
+                .주택명(주택명)
                 .주택유형(주택유형)
                 .건설업체(건설업체)
                 .공고번호(공고번호)
@@ -41,7 +42,6 @@ public class 아파트분양정보1Dto {
                 .계약시작일(계약시작일)
                 .계약종료일(계약종료일)
                 .build();
-        return build;
     }
 
     @Builder
@@ -53,7 +53,7 @@ public class 아파트분양정보1Dto {
         if (itemJson.has("totsuplyhshldco")) {
             this.공급세대수_계 = itemJson.getInt("totsuplyhshldco");
         }
-        this.공고번호 = itemJson.getInt("pblancNo");
+        this.공고번호 = itemJson.getInt("pblancno");
         this.주택명 = itemJson.getString("housenm");
         this.모집공고일 = LocalDate.parse(itemJson.getString("rcritpblancde"));
         this.계약시작일 = LocalDate.parse(itemJson.getString("przwnerpresnatnde"));

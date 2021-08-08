@@ -16,11 +16,11 @@ public class 아파트분양정보_공급금액1Dto {
     public Integer 공고번호;
 
     public 아파트분양정보_공급금액1 toEntity() {
-        아파트분양정보_공급금액1 build = 아파트분양정보_공급금액1.builder()
+        return 아파트분양정보_공급금액1.builder()
                 .주택형(주택형)
                 .공급금액(공급금액)
+                .공고번호(공고번호)
                 .build();
-        return build;
     }
 
     public 아파트분양정보_공급금액1Dto(JSONObject itemJson){

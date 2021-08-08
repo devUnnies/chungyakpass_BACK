@@ -150,31 +150,31 @@
 //        }
 //
 //        // 공고번호를 가지고 API에서 데이터를 가져온다.
-////        for (Integer number : numbers) {//주택관리번호 리스트를 하나씩 반복
-////            //String value = apiExplorer.GetAptDetail(numbers.get(i), 분양정보상세조회);//주택관리번호와 분양정보 상세 조회url을 GetAptDetail메소드에 보내서 실행
-////            String value = apiExplorer.GetAptApi(분양정보상세조회, number, false);
-////            rjson = new JSONObject(value);//반환값을 필터링
-////            response = (JSONObject) rjson.get("response");
-////            body = (JSONObject) response.get("body");
-////
-////            if (body.get("items") instanceof JSONObject) {//주택번호와 url은 있는데 값이 안들어온 경우 값이 object형식으로 들어왔나 확인
-////                JSONObject items = (JSONObject) body.get("items");
-////                JSONObject itemJson = items.getJSONObject("item");//item크기만큼 dto에 저장
-////
-////                아파트분양정보_청약접수일정1Dto 아파트분양정보_청약정보일정1dto = new 아파트분양정보_청약접수일정1Dto(itemJson);//item크기만큼 청약접수일정1Dto에 저장
-////                아파트분양정보_청약정보일정1DtoList.add(아파트분양정보_청약정보일정1dto);
-////
-////                아파트분양정보1Dto 아파트분양정보1dto = new 아파트분양정보1Dto(itemJson);
-////
-////                for (com.hanium.chungyakpassback.dto.아파트분양정보2Dto 아파트분양정보2Dto : 아파트분양정보2DtoList) {
-////                    if (아파트분양정보2Dto.공고번호 == 아파트분양정보1dto.공고번호) {
-////                        아파트분양정보1dto.주택유형 = 아파트분양정보2Dto.주택유형;
-////                        아파트분양정보1dto.건설업체 = 아파트분양정보2Dto.건설업체;
-////                    }
-////                }
-////                아파트분양정보1DtoList.add(아파트분양정보1dto);
-////            }
-////        }
+//        for (Integer number : numbers) {//주택관리번호 리스트를 하나씩 반복
+//            //String value = apiExplorer.GetAptDetail(numbers.get(i), 분양정보상세조회);//주택관리번호와 분양정보 상세 조회url을 GetAptDetail메소드에 보내서 실행
+//            String value = apiExplorer.GetAptApi(분양정보상세조회, number, false);
+//            rjson = new JSONObject(value);//반환값을 필터링
+//            response = (JSONObject) rjson.get("response");
+//            body = (JSONObject) response.get("body");
+//
+//            if (body.get("items") instanceof JSONObject) {//주택번호와 url은 있는데 값이 안들어온 경우 값이 object형식으로 들어왔나 확인
+//                JSONObject items = (JSONObject) body.get("items");
+//                JSONObject itemJson = items.getJSONObject("item");//item크기만큼 dto에 저장
+//
+//                아파트분양정보_청약접수일정1Dto 아파트분양정보_청약정보일정1dto = new 아파트분양정보_청약접수일정1Dto(itemJson);//item크기만큼 청약접수일정1Dto에 저장
+//                아파트분양정보_청약정보일정1DtoList.add(아파트분양정보_청약정보일정1dto);
+//
+//                아파트분양정보1Dto 아파트분양정보1dto = new 아파트분양정보1Dto(itemJson);
+//
+//                for (com.hanium.chungyakpassback.dto.아파트분양정보2Dto 아파트분양정보2Dto : 아파트분양정보2DtoList) {
+//                    if (아파트분양정보2Dto.공고번호.equals(아파트분양정보1dto.공고번호)) {
+//                        아파트분양정보1dto.주택유형 = 아파트분양정보2Dto.주택유형;
+//                        아파트분양정보1dto.건설업체 = 아파트분양정보2Dto.건설업체;
+//                    }
+//                }
+//                아파트분양정보1DtoList.add(아파트분양정보1dto);
+//            }
+//        }
 //
 //
 //        for (Integer number : numbers) {//주택관리번호 리스트 크기만큼 반복
@@ -183,6 +183,7 @@
 //            rjson = new JSONObject(value);
 //            response = (JSONObject) rjson.get("response");
 //            body = (JSONObject) response.get("body");
+//            //System.out.println(body);
 //            cout++;
 //
 //            if (body.get("items") instanceof JSONObject) {//주택번호와 url은 있는데 값이 안들어온 경우 값이 object형식으로 들어왔나 확인
@@ -200,8 +201,8 @@
 //
 //                        아파트분양정보_공급금액1Dto 아파트분양정보_공급금액1dto = new 아파트분양정보_공급금액1Dto(itemJson);
 //                        아파트분양정보_공급금액1DtoList.add(아파트분양정보_공급금액1dto);
-//                        cout++;
-//                        System.out.println(아파트분양정보_공급대상1dto.get주택형());
+//                        //System.out.println(itemJson.length());
+//                        //System.out.println(아파트분양정보_공급대상1dto.get주택형());
 //
 //                    }
 //                } else {
@@ -216,13 +217,17 @@
 //                        아파트분양정보_공급금액1Dto 아파트분양정보_공급금액1dto = new 아파트분양정보_공급금액1Dto(itemJson);
 //                        아파트분양정보_공급금액1DtoList.add(아파트분양정보_공급금액1dto);
 //                        cout++;
-//                        System.out.println(아파트분양정보_공급대상1dto.get주택형());
+//                        //System.out.println(itemJson.length());
+//                        //System.out.println(아파트분양정보_공급대상1dto.get주택형());
 //                    }
 //                }
 //            }
 //
 //        }
-//        System.out.println(cout);
+//
+//        for (아파트분양정보_특별공급대상1Dto 아파트분양정보_특별공급대상1Dto : 아파트분양정보_특별공급대상1DtoList) {
+//            아파트분양정보_특별공급대상1Dto.PrintDate();
+//            }
 //
 //        }
 //    }
