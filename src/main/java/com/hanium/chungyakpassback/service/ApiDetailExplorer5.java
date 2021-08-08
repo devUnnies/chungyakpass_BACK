@@ -2,8 +2,7 @@ package com.hanium.chungyakpassback.service;//package com.hanium.chungyakpassbac
 
 
 
-import com.hanium.chungyakpassback.domain.standard.아파트분양정보;
-import com.hanium.chungyakpassback.domain.standard.아파트분양정보1;
+import com.hanium.chungyakpassback.domain.standard.*;
 import com.hanium.chungyakpassback.dto.*;
 import com.hanium.chungyakpassback.repository.standard.*;
 import lombok.RequiredArgsConstructor;
@@ -11,10 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -23,11 +19,11 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
-public class ApiDetailExplorer4 {
+public class ApiDetailExplorer5 {
     private final 아파트분양정보1repository 아파트분양정보1repository;
     private final 아파트분양정보_공급금액1repository 아파트분양정보_공급금액1repository;
     private final 아파트분양정보_공급대상1repository 아파트분양정보_공급대상1repository;
@@ -83,7 +79,7 @@ public class ApiDetailExplorer4 {
         return jsonPrettyPrintString;
     }
 
-    public void apiDetailExplorer4() {
+    public void apiDetailExplorer5() {
         // 아래의 전체 코드가 일정한 시간간격을 두고 실행되어야한다.
         List<Integer> numbers = new ArrayList<>();//주택관리번호만 따로 리스트에 저장
         List<아파트분양정보_청약접수일정1Dto> 아파트분양정보_청약정보일정1DtoList = new ArrayList<>();
@@ -94,6 +90,7 @@ public class ApiDetailExplorer4 {
 
         // 아파트분양정보 2Dto 정보를 리스트로 담는다.
         List<아파트분양정보2Dto> 아파트분양정보2DtoList = new ArrayList<>();
+
 
         int pageNo = 1;
         // 페이지 수를 구해야한다.
@@ -114,14 +111,13 @@ public class ApiDetailExplorer4 {
         // 문의처, 주택유형, 건설업체도 뽑아야함
         // 아파트분양정보1DTO에다가 넣어주면된다.
         for (int i = 1; i <= pageNo; i++) {
-            //TimeUnit.SECONDS.sleep(1);
             // apiExplorer.AptApiData(i);/페이지수만큼 AptApiData를 호출
             GetAptApi(분양정보조회, i, true);
             rjson = new JSONObject(jsonPrettyPrintString);
             response = (JSONObject) rjson.get("response");//받아온 json에서 원하는 정보를 필터링한다.
             body = (JSONObject) response.get("body");
             JSONObject items = body.getJSONObject("items");
-            // System.out.println(items);
+            System.out.println(items);
 
             if (items.get("item") instanceof JSONArray) {//item이 array형식으로 들어올때
                 JSONArray item = (JSONArray) items.get("item");
@@ -129,57 +125,55 @@ public class ApiDetailExplorer4 {
 
                 for (int j = 0; j < item.length(); j++) {//item의 크기만큼 반복
                     JSONObject itemJson = item.getJSONObject(j);
-
                     // houseManageNo 공고번호이다.
                     // 공고번호, 주택유형, 건설업체 정보를 가져온다.
                     아파트분양정보2Dto 아파트분양정보2dto = new 아파트분양정보2Dto(itemJson);
                     아파트분양정보2DtoList.add(아파트분양정보2dto);
-                    // = itemJson.getInt("houseManageNo");//주택관리번호 뽑아냄
 
                     numbers.add(아파트분양정보2dto.공고번호);
 
-                    //System.out.println(itemJson);
+                    //System.out.println(numbers);
                 }
             } else {//item이 object형식으로 들어올때
                 JSONObject itemJson = items.getJSONObject("item");
                 //int houseManageNo = itemJson.getInt("houseManageNo");//주택관리번호 뽑아냄
                 아파트분양정보2Dto 아파트분양정보2dto = new 아파트분양정보2Dto(itemJson);
+                아파트분양정보2DtoList.add(아파트분양정보2dto);
 
                 numbers.add(아파트분양정보2dto.공고번호);
 
-                //System.out.println(itemJson);
+                //System.out.println(numbers);
             }
 
 
         }
 
-        //공고번호를 가지고 API에서 데이터를 가져온다.
-//        for (Integer number : numbers) {//주택관리번호 리스트를 하나씩 반복
-//            //String value = apiExplorer.GetAptDetail(numbers.get(i), 분양정보상세조회);//주택관리번호와 분양정보 상세 조회url을 GetAptDetail메소드에 보내서 실행
-//            String value = GetAptApi(분양정보상세조회, number, false);
-//            rjson = new JSONObject(value);//반환값을 필터링
-//            response = (JSONObject) rjson.get("response");
-//            body = (JSONObject) response.get("body");
-//
-//            if (body.get("items") instanceof JSONObject) {//주택번호와 url은 있는데 값이 안들어온 경우 값이 object형식으로 들어왔나 확인
-//                JSONObject items = (JSONObject) body.get("items");
-//                JSONObject itemJson = items.getJSONObject("item");//item크기만큼 dto에 저장
-//
-//                아파트분양정보_청약접수일정1Dto 아파트분양정보_청약정보일정1dto = new 아파트분양정보_청약접수일정1Dto(itemJson);//item크기만큼 청약접수일정1Dto에 저장
-//                아파트분양정보_청약정보일정1DtoList.add(아파트분양정보_청약정보일정1dto);
-//
-//                아파트분양정보1Dto 아파트분양정보1dto = new 아파트분양정보1Dto(itemJson);
-//
-//                for (아파트분양정보2Dto 아파트분양정보2Dto : 아파트분양정보2DtoList) {
-//                    if (아파트분양정보2Dto.공고번호 == 아파트분양정보1dto.공고번호) {
-//                        아파트분양정보1dto.주택유형 = 아파트분양정보2Dto.주택유형;
-//                        아파트분양정보1dto.건설업체 = 아파트분양정보2Dto.건설업체;
-//                    }
-//                }
-//                아파트분양정보1repository.findById(아파트분양정보1dto.공고번호).orElseGet(() -> 아파트분양정보1repository.save(아파트분양정보1dto.toEntity()));
-//                아파트분양정보1DtoList.add(아파트분양정보1dto);
-//            }
-//        }
+        // 공고번호를 가지고 API에서 데이터를 가져온다.
+        for (Integer number : numbers) {//주택관리번호 리스트를 하나씩 반복
+            //String value = apiExplorer.GetAptDetail(numbers.get(i), 분양정보상세조회);//주택관리번호와 분양정보 상세 조회url을 GetAptDetail메소드에 보내서 실행
+            String value = GetAptApi(분양정보상세조회, number, false);
+            rjson = new JSONObject(value);//반환값을 필터링
+            response = (JSONObject) rjson.get("response");
+            body = (JSONObject) response.get("body");
+
+            if (body.get("items") instanceof JSONObject) {//주택번호와 url은 있는데 값이 안들어온 경우 값이 object형식으로 들어왔나 확인
+                JSONObject items = (JSONObject) body.get("items");
+                JSONObject itemJson = items.getJSONObject("item");//item크기만큼 dto에 저장
+
+                아파트분양정보_청약접수일정1Dto 아파트분양정보_청약정보일정1dto = new 아파트분양정보_청약접수일정1Dto(itemJson);//item크기만큼 청약접수일정1Dto에 저장
+                아파트분양정보_청약정보일정1DtoList.add(아파트분양정보_청약정보일정1dto);
+
+                아파트분양정보1Dto 아파트분양정보1dto = new 아파트분양정보1Dto(itemJson);
+
+                for (com.hanium.chungyakpassback.dto.아파트분양정보2Dto 아파트분양정보2Dto : 아파트분양정보2DtoList) {
+                    if (아파트분양정보2Dto.공고번호.equals(아파트분양정보1dto.공고번호)) {
+                        아파트분양정보1dto.주택유형 = 아파트분양정보2Dto.주택유형;
+                        아파트분양정보1dto.건설업체 = 아파트분양정보2Dto.건설업체;
+                    }
+                }
+                아파트분양정보1DtoList.add(아파트분양정보1dto);
+            }
+        }
 
 
         for (Integer number : numbers) {//주택관리번호 리스트 크기만큼 반복
@@ -199,13 +193,15 @@ public class ApiDetailExplorer4 {
                         JSONObject itemJson = item.getJSONObject(j);
                         아파트분양정보_공급대상1Dto 아파트분양정보_공급대상1dto = new 아파트분양정보_공급대상1Dto(itemJson);
                         아파트분양정보_공급대상1DtoList.add(아파트분양정보_공급대상1dto);
+                        Integer 공고번호 = 아파트분양정보_공급대상1dto.get공고번호();
 
                         아파트분양정보_특별공급대상1Dto 아파트분양정보_특별공급대상1dto = new 아파트분양정보_특별공급대상1Dto(itemJson);
                         아파트분양정보_특별공급대상1DtoList.add(아파트분양정보_특별공급대상1dto);
 
                         아파트분양정보_공급금액1Dto 아파트분양정보_공급금액1dto = new 아파트분양정보_공급금액1Dto(itemJson);
                         아파트분양정보_공급금액1DtoList.add(아파트분양정보_공급금액1dto);
-
+                        cout++;
+                        System.out.println(아파트분양정보_공급대상1dto.get주택형());
 
                     }
                 } else {
@@ -219,34 +215,50 @@ public class ApiDetailExplorer4 {
 
                         아파트분양정보_공급금액1Dto 아파트분양정보_공급금액1dto = new 아파트분양정보_공급금액1Dto(itemJson);
                         아파트분양정보_공급금액1DtoList.add(아파트분양정보_공급금액1dto);
+                        cout++;
+                        System.out.println(아파트분양정보_공급대상1dto.get주택형());
+
                     }
                 }
             }
-            for (int z = 0; z <아파트분양정보_공급대상1DtoList.size(); z++) {
-                System.out.println("!!!!!!!!!!!!!"+아파트분양정보2DtoList.size());
-                Integer 공고번호 = 아파트분양정보2DtoList.get(z).get공고번호();
-                아파트분양정보2Dto 아파트분양정보2dto = 아파트분양정보2DtoList.get(z);
-                아파트분양정보_특별공급대상1Dto 아파트분양정보_특별공급대상1dto = 아파트분양정보_특별공급대상1DtoList.get(z);
-                아파트분양정보_공급금액1Dto 아파트분양정보_공급금액1dto = 아파트분양정보_공급금액1DtoList.get(z);
-                아파트분양정보_공급대상1Dto 아파트분양정보_공급대상1dto = 아파트분양정보_공급대상1DtoList.get(z);
+
+        }
+           for (int z = 0; z<1000; z++) {
+               List<아파트분양정보_공급대상1> 아파트분양정보_공급대상1List = 아파트분양정보_공급대상1DtoList.stream()
+                       .map(아파트분양정보_공급대상1Dto::toEntity)
+                       .collect(Collectors.toList());
+               List<아파트분양정보_공급금액1> 아파트분양정보_공급금액1List = 아파트분양정보_공급금액1DtoList.stream()
+                       .map(아파트분양정보_공급금액1Dto::toEntity)
+                       .collect(Collectors.toList());
+               List<아파트분양정보_특별공급대상1> 아파트분양정보_특별공급대상1List = 아파트분양정보_특별공급대상1DtoList.stream()
+                       .map(아파트분양정보_특별공급대상1Dto::toEntity)
+                       .collect(Collectors.toList());
+               List<아파트분양정보_청약접수일정1> 아파트분양정보_청약접수일정1List = 아파트분양정보_청약정보일정1DtoList.stream()
+                       .map(아파트분양정보_청약접수일정1Dto::toEntity)
+                       .collect(Collectors.toList());
+               List<아파트분양정보1> 아파트분양정보1List = 아파트분양정보1DtoList.stream()
+                       .map(아파트분양정보1Dto::toEntity)
+                       .collect(Collectors.toList());
+
+                Integer 공고번호 = 아파트분양정보1List.get(z).get공고번호();
+                System.out.println("!!!!!!!!!!!!!"+공고번호);
 
                 //아파트분양정보1repository.findById(공고번호).orElseGet(() -> 아파트분양정보1repository.save(아파트분양정보2dto.toEntity()));
                 아파트분양정보1repository.findById(공고번호).orElseGet(() ->{
-                    아파트분양정보1repository.save(아파트분양정보2dto.toEntity());
-                    아파트분양정보_특별공급대상1repository.save(아파트분양정보_특별공급대상1dto.toEntity());
-                    아파트분양정보_공급금액1repository.save(아파트분양정보_공급금액1dto.toEntity());
-                    아파트분양정보_공급대상1repository.save(아파트분양정보_공급대상1dto.toEntity());
+                    아파트분양정보1repository.saveAll(아파트분양정보1List);
+                    아파트분양정보_특별공급대상1repository.saveAll(아파트분양정보_특별공급대상1List);
+                    아파트분양정보_공급금액1repository.saveAll(아파트분양정보_공급금액1List);
+                    아파트분양정보_공급대상1repository.saveAll(아파트분양정보_공급대상1List);
+                    아파트분양정보_청약접수일정1repository.saveAll(아파트분양정보_청약접수일정1List);
                     return null;
                 });
             }
-
-
 
         }
 
 
     }
-}
+
 
 
 
