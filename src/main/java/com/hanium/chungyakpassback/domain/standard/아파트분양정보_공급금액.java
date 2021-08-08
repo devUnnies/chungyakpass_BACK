@@ -10,6 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table
 public class 아파트분양정보_공급금액 {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "아파트분양정보_공급금액id")

@@ -243,7 +243,7 @@ public class ApiDetailExplorer5 {
                 Integer 공고번호 = 아파트분양정보_공급대상1DtoList.get(z).get공고번호();
                 System.out.println("!!!!!!!!!!!!!"+공고번호);
 
-                아파트분양정보1repository.findById(공고번호).orElseGet(() ->{
+                아파트분양정보1repository.findAllBy공고번호(공고번호).orElseGet(() ->{
                     아파트분양정보1repository.saveAll(아파트분양정보1List);
                     아파트분양정보_특별공급대상1repository.saveAll(아파트분양정보_특별공급대상1List);
                     아파트분양정보_공급금액1repository.saveAll(아파트분양정보_공급금액1List);

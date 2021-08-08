@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface 아파트분양정보1repository extends JpaRepository<아파트분양정보1, Integer> {
-           // Optional<아파트분양정보1>findAllByUserId(Integer 공고번호);
+public interface 아파트분양정보1repository extends JpaRepository<아파트분양정보1, Long> {
+            Optional<아파트분양정보1>findAllBy공고번호(Integer 공고번호);
 }
 

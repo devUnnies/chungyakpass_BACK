@@ -16,11 +16,11 @@ import java.util.List;
 @Table
 public class 아파트분양정보1 {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "아파트분양정보id")
     private Long id;
 
-    @Id
     @Column(name = "공고번호")
     private Integer 공고번호;
 
@@ -57,14 +57,6 @@ public class 아파트분양정보1 {
     @Column
     private LocalDate 계약종료일;
 
-
-    public 아파트분양정보1 toEntity() {
-        return 아파트분양정보1.builder()
-                .주택유형(주택유형)
-                .건설업체(건설업체)
-                .공고번호(공고번호)
-                .build();
-    }
 
     @Builder
     public 아파트분양정보1(String 상세주소, String 지역_레벨1,String 지역_레벨2, String 주택유형, String 주택명, String 건설업체, Integer 공급세대수_계, LocalDate 모집공고일, LocalDate 당첨자발표일, int 공고번호, LocalDate 계약시작일, LocalDate 계약종료일) {
