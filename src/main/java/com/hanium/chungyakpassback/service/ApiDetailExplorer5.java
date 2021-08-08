@@ -223,7 +223,7 @@ public class ApiDetailExplorer5 {
             }
 
         }
-           for (int z = 0; z<1000; z++) {
+           for (int z = 0; z<아파트분양정보_공급대상1DtoList.size(); z++) {
                List<아파트분양정보_공급대상1> 아파트분양정보_공급대상1List = 아파트분양정보_공급대상1DtoList.stream()
                        .map(아파트분양정보_공급대상1Dto::toEntity)
                        .collect(Collectors.toList());
@@ -240,10 +240,9 @@ public class ApiDetailExplorer5 {
                        .map(아파트분양정보1Dto::toEntity)
                        .collect(Collectors.toList());
 
-                Integer 공고번호 = 아파트분양정보1List.get(z).get공고번호();
+                Integer 공고번호 = 아파트분양정보_공급대상1DtoList.get(z).get공고번호();
                 System.out.println("!!!!!!!!!!!!!"+공고번호);
 
-                //아파트분양정보1repository.findById(공고번호).orElseGet(() -> 아파트분양정보1repository.save(아파트분양정보2dto.toEntity()));
                 아파트분양정보1repository.findById(공고번호).orElseGet(() ->{
                     아파트분양정보1repository.saveAll(아파트분양정보1List);
                     아파트분양정보_특별공급대상1repository.saveAll(아파트분양정보_특별공급대상1List);
