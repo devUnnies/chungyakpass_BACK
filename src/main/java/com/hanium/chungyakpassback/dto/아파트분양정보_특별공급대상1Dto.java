@@ -1,17 +1,17 @@
 package com.hanium.chungyakpassback.dto;
 
 
-import com.hanium.chungyakpassback.domain.standard.아파트분양정보_청약접수일정1;
+import com.hanium.chungyakpassback.domain.standard.아파트분양정보1;
 import com.hanium.chungyakpassback.domain.standard.아파트분양정보_특별공급대상1;
+import lombok.Builder;
 import lombok.Getter;
 import org.json.JSONObject;
-
-import javax.persistence.Column;
 
 
 @Getter
 public class 아파트분양정보_특별공급대상1Dto {
-    private  Integer 공고번호;
+    private 아파트분양정보1 아파트분양정보1;
+    public Integer 공고번호;
     private String 주택형;
     private int 공급세대수_다자녀가구;
     private int 공급세대수_신혼부부;
@@ -36,7 +36,8 @@ public class 아파트분양정보_특별공급대상1Dto {
     }
 
 
-    public 아파트분양정보_특별공급대상1Dto(JSONObject itemJson){
+    @Builder
+    public 아파트분양정보_특별공급대상1Dto( JSONObject itemJson){
         this.공고번호 = itemJson.getInt("pblancno");
         if(itemJson.get("housety") instanceof Double) {
             this.주택형 = String.valueOf(itemJson.get("housety")); //Double -> String 1번방식

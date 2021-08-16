@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import java.time.LocalDate;
 
 
-@Setter
 @Getter
 public class 아파트분양정보1Dto {
     public Integer 공고번호;

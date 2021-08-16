@@ -16,12 +16,13 @@ import java.util.List;
 @Table
 public class 아파트분양정보1 {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "아파트분양정보id")
+    //@Column(name = "아파트분양정보id")
     private Long id;
 
-    @Column(name = "공고번호")
+    @Id
+    //@Column(name = "공고번호")
+    @Column(name = "아파트분양정보id")
     private Integer 공고번호;
 
     @Column
