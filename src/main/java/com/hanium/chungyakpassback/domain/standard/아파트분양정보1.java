@@ -1,5 +1,6 @@
 package com.hanium.chungyakpassback.domain.standard;
 
+import com.hanium.chungyakpassback.domain.enumtype.주택유형;
 import com.hanium.chungyakpassback.dto.아파트분양정보1Dto;
 import lombok.*;
 
@@ -35,7 +36,8 @@ public class 아파트분양정보1 {
     private String 상세주소;
 
     @Column
-    private String 주택유형;
+    @Enumerated(EnumType.STRING)
+    private 주택유형 주택유형;
 
     @Column
     private String 주택명;
@@ -60,7 +62,7 @@ public class 아파트분양정보1 {
 
 
     @Builder
-    public 아파트분양정보1(String 상세주소, String 지역_레벨1,String 지역_레벨2, String 주택유형, String 주택명, String 건설업체, Integer 공급세대수_계, LocalDate 모집공고일, LocalDate 당첨자발표일, int 공고번호, LocalDate 계약시작일, LocalDate 계약종료일) {
+    public 아파트분양정보1(String 상세주소, String 지역_레벨1,String 지역_레벨2, 주택유형 주택유형, String 주택명, String 건설업체, Integer 공급세대수_계, LocalDate 모집공고일, LocalDate 당첨자발표일, int 공고번호, LocalDate 계약시작일, LocalDate 계약종료일) {
         this.상세주소 = 상세주소;
         this.지역_레벨1 = 지역_레벨1;
         this.지역_레벨2 = 지역_레벨2;

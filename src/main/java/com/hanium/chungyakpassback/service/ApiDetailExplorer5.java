@@ -260,7 +260,6 @@ public class ApiDetailExplorer5 {
                     }
                 }
             }
-
         }
 
         for(아파트분양정보_청약접수일정1Dto 청약접수일정1 : 아파트분양정보_청약정보일정1DtoList){

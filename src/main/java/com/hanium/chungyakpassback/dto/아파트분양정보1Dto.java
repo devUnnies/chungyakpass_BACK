@@ -1,6 +1,7 @@
 package com.hanium.chungyakpassback.dto;
 
 
+import com.hanium.chungyakpassback.domain.enumtype.주택유형;
 import com.hanium.chungyakpassback.domain.standard.아파트분양정보;
 import com.hanium.chungyakpassback.domain.standard.아파트분양정보1;
 import lombok.Builder;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @Getter
 public class 아파트분양정보1Dto {
     public Integer 공고번호;
-    public String 주택유형;
+    public com.hanium.chungyakpassback.domain.enumtype.주택유형 주택유형;
     public String 건설업체;
     private String 지역_레벨1;
     private String 지역_레벨2;
