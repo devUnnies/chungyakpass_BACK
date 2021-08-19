@@ -19,7 +19,7 @@ public class 아파트분양정보_특별공급대상1Dto {
     private int 공급세대수_노부모부양;
     private int 공급세대수_기관추천;
     private int 공급세대수_이전기관;
-    private int 공급세대수_기관추천기타;
+    private int 공급세대수_기타;
 
     public 아파트분양정보_특별공급대상1 toEntity() {
         return 아파트분양정보_특별공급대상1.builder()
@@ -31,7 +31,7 @@ public class 아파트분양정보_특별공급대상1Dto {
                 .공급세대수_노부모부양(공급세대수_노부모부양)
                 .공급세대수_기관추천(공급세대수_기관추천)
                 .공급세대수_이전기관(공급세대수_이전기관)
-                .공급세대수_기관추천기타(공급세대수_기관추천기타)
+                .공급세대수_기타(공급세대수_기타)
                 .build();
     }
 
@@ -50,7 +50,7 @@ public class 아파트분양정보_특별공급대상1Dto {
         this.공급세대수_생애최초 = itemJson.getInt("lfefrsthshldco");
         this.공급세대수_노부모부양 = itemJson.getInt("oldparentssuporthshldco");
         this.공급세대수_기관추천 = itemJson.getInt("insttrecomendhshldco");
-        this.공급세대수_기관추천기타 = itemJson.getInt("etchshldco");
+        this.공급세대수_기타 = itemJson.getInt("etchshldco");
         this.공급세대수_이전기관 = itemJson.getInt("transrinsttenfsnhshldco");
     }
 
@@ -61,7 +61,7 @@ public class 아파트분양정보_특별공급대상1Dto {
         System.out.print("공급세대수_생애최초"+공급세대수_생애최초);
         System.out.print("공급세대수_노부모부양"+공급세대수_노부모부양);
         System.out.print("공급세대수_기관추천"+공급세대수_기관추천);
-        System.out.print("공급세대수_기관추천기타"+공급세대수_기관추천기타);
+        System.out.print("공급세대수_기관추천기타"+공급세대수_기타);
         System.out.print("공급세대수_이전기관"+공급세대수_이전기관);
         System.out.println();
     }

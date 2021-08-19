@@ -1,15 +1,16 @@
 package com.hanium.chungyakpassback.dto;
 
 
-import com.hanium.chungyakpassback.domain.enumtype.주택유형;
-import com.hanium.chungyakpassback.domain.standard.아파트분양정보;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hanium.chungyakpassback.domain.enumtype.여부;
+import com.hanium.chungyakpassback.domain.enumtype.지역_레벨2;
 import com.hanium.chungyakpassback.domain.standard.아파트분양정보1;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import org.json.JSONObject;
-
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.Arrays;
 
 
 @Getter
@@ -17,15 +18,26 @@ public class 아파트분양정보1Dto {
     public Integer 공고번호;
     public com.hanium.chungyakpassback.domain.enumtype.주택유형 주택유형;
     public String 건설업체;
-    private String 지역_레벨1;
-    private String 지역_레벨2;
+    public com.hanium.chungyakpassback.domain.enumtype.지역_레벨1 지역_레벨1;
+    private 지역_레벨2 지역_레벨2;
     private String 상세주소;
     private String 주택명;
     private LocalDate 모집공고일;
     private LocalDate 당첨자발표일;
     private LocalDate 계약시작일;
     private LocalDate 계약종료일;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM", timezone = "Asia/Seoul")
+    public YearMonth 입주예정월;
     public Integer 공급세대수_계;
+    public 여부 투기과열지구;
+    public 여부 청약과열지역;
+    public 여부 위축지역;
+    public 여부 분양가상한제;
+    public 여부 정비사업;
+    public 여부 공공주택지구;
+    public 여부 공공건설임대주택;
+    public 여부 대규모택지개발지구;
+    public 여부 공공주택특별법적용;
 
 
     public 아파트분양정보1 toEntity() {
@@ -42,6 +54,16 @@ public class 아파트분양정보1Dto {
                 .계약시작일(계약시작일)
                 .계약종료일(계약종료일)
                 .공급세대수_계(공급세대수_계)
+                .투기과열지구(투기과열지구)
+                .청약과열지역(청약과열지역)
+                .위축지역(위축지역)
+                .분양가상한제(분양가상한제)
+                .정비사업(정비사업)
+                .공공주택지구(공공주택지구)
+                .공공건설임대주택(공공건설임대주택)
+                .대규모택지개발지구(대규모택지개발지구)
+                .입주예정월(입주예정월)
+                .공공주택특별법적용(공공주택특별법적용)
                 .build();
     }
 
@@ -49,8 +71,15 @@ public class 아파트분양정보1Dto {
     public 아파트분양정보1Dto(JSONObject itemJson) {
         this.상세주소 = itemJson.getString("hssplyadres");
         String[] 지역_레벨 = 상세주소.split(" ");
-        this.지역_레벨1 = 지역_레벨[0];
-        this.지역_레벨2 = 지역_레벨[1];
+        String 지역_레벨_2 = 지역_레벨[1];
+        if (Arrays.stream(com.hanium.chungyakpassback.domain.enumtype.지역_레벨2.values()).anyMatch(v -> v.name().equals(지역_레벨_2))) {
+            this.지역_레벨2 = com.hanium.chungyakpassback.domain.enumtype.지역_레벨2.valueOf(지역_레벨_2);
+        }
+        else{
+            this.지역_레벨2 = null;
+        }
+
+
         if (itemJson.has("totsuplyhshldco")) {
             this.공급세대수_계 = itemJson.getInt("totsuplyhshldco");
         }
@@ -79,6 +108,4 @@ public class 아파트분양정보1Dto {
         System.out.println();
     }
 }
-
-
 

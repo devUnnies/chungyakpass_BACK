@@ -9,14 +9,22 @@ import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,6 +44,7 @@ public class ApiDetailExplorer5 {
     public static String 주택형별상세조회 = "http://openapi.reb.or.kr/OpenAPI_ToolInstallPackage/service/rest/ApplyhomeInfoSvc/getAPTLttotPblancMdl";
     public static String 분양정보상세조회 = "http://openapi.reb.or.kr/OpenAPI_ToolInstallPackage/service/rest/ApplyhomeInfoSvc/getAPTLttotPblancDetail";
     public static int cout;
+    String date = YearMonth.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
 
     // manageNo가 없을 때는 '0' 값을 넣어주어야 한다.
     public String GetAptApi(String aptUrl, int pageNo, int manageNo) {
@@ -47,7 +56,7 @@ public class ApiDetailExplorer5 {
 
             if (manageNo == 0) {
                 urlBuilder.append("&").append(URLEncoder.encode("startmonth", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("202108", StandardCharsets.UTF_8)); /*월 단위 모집공고일 (검색시작월)*/
-                urlBuilder.append("&").append(URLEncoder.encode("endmonth", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("202109", StandardCharsets.UTF_8)); /*월 단위 모집공고일 (검색종료월, 최대 12개월)*/
+                urlBuilder.append("&").append(URLEncoder.encode("endmonth", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(date, StandardCharsets.UTF_8)); /*월 단위 모집공고일 (검색종료월, 최대 12개월)*/
             } else {
                 urlBuilder.append("&").append(URLEncoder.encode("houseManageNo", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(String.valueOf(manageNo), StandardCharsets.UTF_8)); /*주택관리번호*/
                 urlBuilder.append("&").append(URLEncoder.encode("pblancNo", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(String.valueOf(manageNo), StandardCharsets.UTF_8)); /*공고번호*/
@@ -82,7 +91,7 @@ public class ApiDetailExplorer5 {
         return jsonPrettyPrintString;
     }
 
-    public void apiDetailExplorer5() {
+    public void apiDetailExplorer5() throws IOException{
         // 아래의 전체 코드가 일정한 시간간격을 두고 실행되어야한다.
         List<Integer> numbers = new ArrayList<>();//주택관리번호만 따로 리스트에 저장
         List<아파트분양정보_청약접수일정1Dto> 아파트분양정보_청약정보일정1DtoList = new ArrayList<>();
@@ -91,6 +100,8 @@ public class ApiDetailExplorer5 {
         List<아파트분양정보_특별공급대상1Dto> 아파트분양정보_특별공급대상1DtoList = new ArrayList<>();
         List<아파트분양정보1Dto> 아파트분양정보1DtoList = new ArrayList<>();
         List<아파트분양정보_공급금액1Dto> 아파트분양정보_공급금액1DtoList = new ArrayList<>();
+        List<String> urlList = new ArrayList<>();
+        List<아파트분양정보1crawlingDto> 아파트분양정보1crawlingDtoList = new ArrayList<>();
 
         // 아파트분양정보 2Dto 정보를 리스트로 담는다.
         List<아파트분양정보2Dto> 아파트분양정보2DtoList = new ArrayList<>();
@@ -121,7 +132,7 @@ public class ApiDetailExplorer5 {
             response = (JSONObject) rjson.get("response");//받아온 json에서 원하는 정보를 필터링한다.
             body = (JSONObject) response.get("body");
             JSONObject items = body.getJSONObject("items");
-            System.out.println(items);
+            //System.out.println(items);
 
             if (items.get("item") instanceof JSONArray) {//item이 array형식으로 들어올때
                 JSONArray item = (JSONArray) items.get("item");
@@ -151,6 +162,32 @@ public class ApiDetailExplorer5 {
 
 
         }
+        for(Integer number : numbers) {
+            String spec = "https://www.applyhome.co.kr/ai/aia/selectAPTLttotPblancDetail.do?gvPgmId=AIA01M01"
+                    + "&houseManageNo="
+                    + number
+                    + "&pblancNo="
+                    + number;
+            urlList.add(spec);
+        }
+
+        for(int a=0;a< numbers.size();a++) {
+            Document getDetail = Jsoup.connect(urlList.get(a)).get();
+            Elements getContents = getDetail.select("table tbody tr td");
+            String content = getDetail.select("ul[class=inde_txt] li").get(0).text();
+            String content1 = getDetail.select("ul[class=inde_txt]").get(2).text();
+            String[] content2 = content1.split(" ");
+            String string = content2[3];
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM");
+//            LocalDate date = LocalDate.parse(string, formatter);
+
+            Integer number = numbers.get(a);
+
+            아파트분양정보1crawlingDto 아파트분양정보1crawlingdto = new 아파트분양정보1crawlingDto(content,number,string);
+            아파트분양정보1crawlingDtoList.add(아파트분양정보1crawlingdto);
+
+        }
+
 
         // 공고번호를 가지고 API에서 데이터를 가져온다.
         for (Integer number : numbers) {//주택관리번호 리스트를 하나씩 반복
@@ -163,16 +200,32 @@ public class ApiDetailExplorer5 {
             if (body.get("items") instanceof JSONObject) {//주택번호와 url은 있는데 값이 안들어온 경우 값이 object형식으로 들어왔나 확인
                 JSONObject items = (JSONObject) body.get("items");
                 JSONObject itemJson = items.getJSONObject("item");//item크기만큼 dto에 저장
+                //System.out.println(items);
 
                 아파트분양정보_청약접수일정1Dto 아파트분양정보_청약정보일정1dto = new 아파트분양정보_청약접수일정1Dto(itemJson);//item크기만큼 청약접수일정1Dto에 저장
                 아파트분양정보_청약정보일정1DtoList.add(아파트분양정보_청약정보일정1dto);
 
                 아파트분양정보1Dto 아파트분양정보1dto = new 아파트분양정보1Dto(itemJson);
 
+                for (아파트분양정보1crawlingDto 아파트분양정보1crawlingDto : 아파트분양정보1crawlingDtoList) {
+                    if (아파트분양정보1crawlingDto.공고번호.equals(아파트분양정보1dto.공고번호)) {
+                        아파트분양정보1dto.투기과열지구 = 아파트분양정보1crawlingDto.투기과열지구;
+                        아파트분양정보1dto.청약과열지역 = 아파트분양정보1crawlingDto.청약과열지역;
+                        아파트분양정보1dto.위축지역 = 아파트분양정보1crawlingDto.위축지역;
+                        아파트분양정보1dto.분양가상한제 = 아파트분양정보1crawlingDto.분양가상한제;
+                        아파트분양정보1dto.공공주택지구 = 아파트분양정보1crawlingDto.공공주택지구;
+                        아파트분양정보1dto.공공건설임대주택 = 아파트분양정보1crawlingDto.공공건설임대주택;
+                        아파트분양정보1dto.대규모택지개발지구 = 아파트분양정보1crawlingDto.대규모택지개발지구;
+                        아파트분양정보1dto.정비사업 = 아파트분양정보1crawlingDto.정비사업;
+                        아파트분양정보1dto.입주예정월 = 아파트분양정보1crawlingDto.입주예정월;
+                        아파트분양정보1dto.공공주택특별법적용 = 아파트분양정보1crawlingDto.공공주택특별법적용;
+                    }
+                }
                 for (com.hanium.chungyakpassback.dto.아파트분양정보2Dto 아파트분양정보2Dto : 아파트분양정보2DtoList) {
                     if (아파트분양정보2Dto.공고번호.equals(아파트분양정보1dto.공고번호)) {
                         아파트분양정보1dto.주택유형 = 아파트분양정보2Dto.주택유형;
                         아파트분양정보1dto.건설업체 = 아파트분양정보2Dto.건설업체;
+                        아파트분양정보1dto.지역_레벨1 = 아파트분양정보2Dto.지역_레벨1;
                     }
                 }
                 아파트분양정보1DtoList.add(아파트분양정보1dto);
