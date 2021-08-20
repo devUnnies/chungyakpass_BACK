@@ -18,8 +18,8 @@ public class 아파트분양정보1Sceduler {
     private final ApiDetailExplorer5 apiDetailExplorer5;
     @Scheduled(cron = "*/10 * * * * *")
     public void saveData() throws IOException {
-       //apiDetailExplorer6.apiDetailExplorer6();
+        //apiDetailExplorer6.apiDetailExplorer6();
         //apiDetailExplorer4.apiDetailExplorer4();
-      apiDetailExplorer5.apiDetailExplorer5();
+        apiDetailExplorer5.apiDetailExplorer5();
     }
 }

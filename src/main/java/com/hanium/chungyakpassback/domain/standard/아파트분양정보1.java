@@ -42,7 +42,7 @@ public class 아파트분양정보1 {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private com.hanium.chungyakpassback.domain.enumtype.지역_레벨2 지역_레벨2;
+    private 지역_레벨2 지역_레벨2;
 
     @Column
     private String 상세주소;

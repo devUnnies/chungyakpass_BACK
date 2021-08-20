@@ -91,7 +91,7 @@ public class ApiDetailExplorer5 {
         return jsonPrettyPrintString;
     }
 
-    public void apiDetailExplorer5() throws IOException{
+    public void apiDetailExplorer5() throws IOException {
         // 아래의 전체 코드가 일정한 시간간격을 두고 실행되어야한다.
         List<Integer> numbers = new ArrayList<>();//주택관리번호만 따로 리스트에 저장
         List<아파트분양정보_청약접수일정1Dto> 아파트분양정보_청약정보일정1DtoList = new ArrayList<>();

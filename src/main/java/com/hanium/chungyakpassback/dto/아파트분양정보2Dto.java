@@ -1,7 +1,5 @@
 package com.hanium.chungyakpassback.dto;
 
-
-
 import com.hanium.chungyakpassback.domain.enumtype.주택유형;
 import com.hanium.chungyakpassback.domain.enumtype.지역_레벨1;
 import com.hanium.chungyakpassback.domain.standard.아파트분양정보1;
@@ -35,6 +33,5 @@ public class 아파트분양정보2Dto {
         this.건설업체 = itemJson.getString("bsnsMbyNm");
     }
 }
-
 
 

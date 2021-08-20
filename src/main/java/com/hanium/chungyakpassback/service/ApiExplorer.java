@@ -1,4 +1,4 @@
-package com.hanium.chungyakpassback.service;//package com.hanium.chungyakpassback.service;
+//package com.hanium.chungyakpassback.service;
 //
 //import com.hanium.chungyakpassback.domain.standard.아파트분양정보;
 //import com.hanium.chungyakpassback.dto.아파트분양정보1Dto;

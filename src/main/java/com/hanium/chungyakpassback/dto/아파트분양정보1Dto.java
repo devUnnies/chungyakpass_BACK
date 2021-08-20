@@ -3,14 +3,27 @@ package com.hanium.chungyakpassback.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hanium.chungyakpassback.domain.enumtype.여부;
+import com.hanium.chungyakpassback.domain.enumtype.주택유형;
+import com.hanium.chungyakpassback.domain.enumtype.지역_레벨1;
 import com.hanium.chungyakpassback.domain.enumtype.지역_레벨2;
+import com.hanium.chungyakpassback.domain.standard.아파트분양정보;
 import com.hanium.chungyakpassback.domain.standard.아파트분양정보1;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.json.JSONObject;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.yaml.snakeyaml.util.EnumUtils;
+
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 
 @Getter
@@ -108,4 +121,3 @@ public class 아파트분양정보1Dto {
         System.out.println();
     }
 }
-
