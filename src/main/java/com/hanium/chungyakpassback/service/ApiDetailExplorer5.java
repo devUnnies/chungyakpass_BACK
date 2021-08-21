@@ -162,7 +162,7 @@ public class ApiDetailExplorer5 {
 
 
         }
-        for(Integer number : numbers) {
+        for (Integer number : numbers) {
             String spec = "https://www.applyhome.co.kr/ai/aia/selectAPTLttotPblancDetail.do?gvPgmId=AIA01M01"
                     + "&houseManageNo="
                     + number
@@ -171,7 +171,7 @@ public class ApiDetailExplorer5 {
             urlList.add(spec);
         }
 
-        for(int a=0;a< numbers.size();a++) {
+        for (int a = 0; a < numbers.size(); a++) {
             Document getDetail = Jsoup.connect(urlList.get(a)).get();
             Elements getContents = getDetail.select("table tbody tr td");
             String content = getDetail.select("ul[class=inde_txt] li").get(0).text();
@@ -183,7 +183,7 @@ public class ApiDetailExplorer5 {
 
             Integer number = numbers.get(a);
 
-            아파트분양정보1crawlingDto 아파트분양정보1crawlingdto = new 아파트분양정보1crawlingDto(content,number,string);
+            아파트분양정보1crawlingDto 아파트분양정보1crawlingdto = new 아파트분양정보1crawlingDto(content, number, string);
             아파트분양정보1crawlingDtoList.add(아파트분양정보1crawlingdto);
 
         }
@@ -233,7 +233,6 @@ public class ApiDetailExplorer5 {
         }
 
         System.out.println("아파트분양정보List: " + 아파트분양정보1DtoList.size());
-
 
 
         // 주택관리번호 리스트만큼 반복 - 13개
@@ -297,10 +296,11 @@ public class ApiDetailExplorer5 {
             }
             // 아파트분양정보1DtoList의 첫번째 값을 objects 개수 만큼 돌린다.
             for (아파트분양정보1Dto 분양정보1 : 아파트분양정보1DtoList) {
-                if(분양정보1.공고번호.equals(number)){
+                if (분양정보1.공고번호.equals(number)) {
                     for (JSONObject item : objects) {
                         // ID만 받는다.
                         //아파트분양정보_공급대상1Dto 아파트분양정보_공급대상1dto = new 아파트분양정보_공급대상1Dto(분양정보1.공고번호, item);
+
                         아파트분양정보_공급대상1Dto 아파트분양정보_공급대상1dto = new 아파트분양정보_공급대상1Dto(item);
                         아파트분양정보_공급대상1DtoList.add(아파트분양정보_공급대상1dto);
 
@@ -309,49 +309,82 @@ public class ApiDetailExplorer5 {
 
                         아파트분양정보_특별공급대상1Dto 아파트분양정보_특별공급대상1dto = new 아파트분양정보_특별공급대상1Dto(item);
                         아파트분양정보_특별공급대상1DtoList.add(아파트분양정보_특별공급대상1dto);
-//
                     }
                 }
             }
         }
 
-        for(아파트분양정보_청약접수일정1Dto 청약접수일정1 : 아파트분양정보_청약정보일정1DtoList){
-            아파트분양정보1repository.findById(청약접수일정1.공고번호).orElseGet(() ->{
-                아파트분양정보_청약접수일정1repository.save(청약접수일정1.toEntity());
-                return null;
-            });
-        }
+        // 아파트분양정보 테이블에 공고번호가 중복되는 값이 들어가면 안된다.
+        for (아파트분양정보1Dto 분양정보1 : 아파트분양정보1DtoList) {
+            List<아파트분양정보1> 아파트분양정보1List = 아파트분양정보1DtoList.stream()
+                    .map(아파트분양정보1Dto::toEntity)
+                    .collect(Collectors.toList());
 
-        for(아파트분양정보_특별공급대상1Dto 특별공급대상1 : 아파트분양정보_특별공급대상1DtoList){
-            아파트분양정보1repository.findById(특별공급대상1.공고번호).orElseGet(() ->{
-                아파트분양정보_특별공급대상1repository.save(특별공급대상1.toEntity());
-                return null;
-            });
-        }
-
-        for(아파트분양정보_공급금액1Dto 공급금액1 : 아파트분양정보_공급금액1DtoList){
-            아파트분양정보1repository.findById(공급금액1.공고번호).orElseGet(() ->{
-                아파트분양정보_공급금액1repository.save(공급금액1.toEntity());
-                return null;
-            });
+            아파트분양정보1repository.findById(분양정보1.공고번호).orElseGet(() -> {
+                아파트분양정보1repository.saveAll(아파트분양정보1List);
+                for (아파트분양정보_공급금액1Dto 공급금액1 : 아파트분양정보_공급금액1DtoList) {
+                    아파트분양정보1 아파트분양정보1 = 아파트분양정보1repository.findById(공급금액1.get공고번호()).get();
+                    아파트분양정보_공급금액1 아파트분양정보_공급금액11 = 아파트분양정보_공급금액1.builder()
+                            .아파트분양정보1(아파트분양정보1)
+                            .공급금액(공급금액1.get공급금액())
+                            .주택형(공급금액1.get주택형())
+                            .build();
+                    아파트분양정보_공급금액1repository.save(아파트분양정보_공급금액11);
+                }
+                for (아파트분양정보_청약접수일정1Dto 청약접수일정1 : 아파트분양정보_청약정보일정1DtoList) {
+                    아파트분양정보1 아파트분양정보1 = 아파트분양정보1repository.findById(청약접수일정1.get공고번호()).get();
+                    아파트분양정보_청약접수일정1 아파트분양정보_청약접수일정11 = 아파트분양정보_청약접수일정1.builder()
+                            .아파트분양정보1(아파트분양정보1)
+                            .특별공급접수시작일(청약접수일정1.get특별공급접수시작일())
+                            .특별공급접수종료일(청약접수일정1.get특별공급접수종료일())
+                            .일순위접수일해당지역(청약접수일정1.get일순위접수일해당지역())
+                            .일순위접수일경기지역(청약접수일정1.get일순위접수일경기지역())
+                            .일순위접수일기타지역(청약접수일정1.get일순위접수일기타지역())
+                            .이순위접수일해당지역(청약접수일정1.get이순위접수일해당지역())
+                            .이순위접수일경기지역(청약접수일정1.get이순위접수일경기지역())
+                            .이순위접수일기타지역(청약접수일정1.get이순위접수일기타지역())
+                            .홈페이지(청약접수일정1.get홈페이지())
+                            .build();
+                    아파트분양정보_청약접수일정1repository.save(아파트분양정보_청약접수일정11);
+                }
+                for (아파트분양정보_특별공급대상1Dto 특별공급대상1 : 아파트분양정보_특별공급대상1DtoList) {
+            아파트분양정보1 아파트분양정보1 = 아파트분양정보1repository.findById(특별공급대상1.get공고번호()).get();
+            아파트분양정보_특별공급대상1 아파트분양정보_특별공급대상11 = 아파트분양정보_특별공급대상1.builder()
+                    .아파트분양정보1(아파트분양정보1)
+                    .주택형(특별공급대상1.get주택형())
+                    .공급세대수_다자녀가구(특별공급대상1.get공급세대수_다자녀가구())
+                    .공급세대수_신혼부부(특별공급대상1.get공급세대수_신혼부부())
+                    .공급세대수_생애최초(특별공급대상1.get공급세대수_생애최초())
+                    .공급세대수_노부모부양(특별공급대상1.get공급세대수_노부모부양())
+                    .공급세대수_기관추천(특별공급대상1.get공급세대수_기관추천())
+                    .공급세대수_이전기관(특별공급대상1.get공급세대수_이전기관())
+                    .공급세대수_기타(특별공급대상1.get공급세대수_기타())
+                    .build();
+                아파트분양정보_특별공급대상1repository.save(아파트분양정보_특별공급대상11);
         }
 
         // 아파트분양정보 테이블에 공고번호가 이미 있다면 공급대상 테이블에 해당공고번호와 관련된 공급대상은 추가하지 않는다.
-        for(아파트분양정보_공급대상1Dto 공급대상1 : 아파트분양정보_공급대상1DtoList){
-            아파트분양정보1repository.findById(공급대상1.공고번호).orElseGet(() ->{
-                아파트분양정보_공급대상1repository.save(공급대상1.toEntity());
+        for (아파트분양정보_공급대상1Dto 공급대상1 : 아파트분양정보_공급대상1DtoList) {
+            아파트분양정보1 아파트분양정보1 = 아파트분양정보1repository.findById(공급대상1.get공고번호()).get();
+            아파트분양정보_공급대상1 아파트분양정보_공급대상11 = 아파트분양정보_공급대상1.builder()
+                    .아파트분양정보1(아파트분양정보1)
+                    .주택형(공급대상1.get주택형())
+                    .주택공급면적(공급대상1.get주택공급면적())
+                    .공급세대수_일반(공급대상1.get공급세대수_일반())
+                    .공급세대수_특별(공급대상1.get공급세대수_특별())
+                    .공급세대수_계(공급대상1.get공급세대수_계())
+                    .build();
+            아파트분양정보_공급대상1repository.save(아파트분양정보_공급대상11);
+
+        }
+
+
+
+
                 return null;
             });
         }
 
-        // 아파트분양정보 테이블에 공고번호가 중복되는 값이 들어가면 안된다.
-        for(아파트분양정보1Dto 분양정보1 : 아파트분양정보1DtoList){
-            // 중복된 공고번호가 없을 때 저장한다.
-            아파트분양정보1repository.findById(분양정보1.공고번호).orElseGet(() -> {
-                아파트분양정보1repository.save(분양정보1.toEntity());
-                return null;
-            });
-        }
 
 
 

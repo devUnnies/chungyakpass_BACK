@@ -21,18 +21,12 @@ import java.util.List;
 
 @Entity
 @Getter
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor // 기본 생성자를 대신 생성해줍니다.
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Table
 public class 아파트분양정보1 {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "아파트분양정보id")
-    private Long id;
-
     @Id
-    //@Column(name = "공고번호")
     @Column(name = "아파트분양정보id")
     private Integer 공고번호;
 
@@ -114,7 +108,8 @@ public class 아파트분양정보1 {
     private 여부 대규모택지개발지구;
 
     @Builder
-    public 아파트분양정보1(String 상세주소, 지역_레벨1 지역_레벨1, 지역_레벨2 지역_레벨2, 주택유형 주택유형, String 주택명, String 건설업체, Integer 공급세대수_계, LocalDate 모집공고일, LocalDate 당첨자발표일, int 공고번호, LocalDate 계약시작일, LocalDate 계약종료일, 여부 투기과열지구, 여부 청약과열지역, 여부 위축지역,여부 공공주택특별법적용, 여부 분양가상한제, 여부 정비사업, 여부 공공주택지구, 여부 공공건설임대주택, 여부 대규모택지개발지구, YearMonth 입주예정월) {
+    public 아파트분양정보1(Integer 공고번호, String 상세주소, 지역_레벨1 지역_레벨1, 지역_레벨2 지역_레벨2, 주택유형 주택유형, String 주택명, String 건설업체, Integer 공급세대수_계, LocalDate 모집공고일, LocalDate 당첨자발표일, LocalDate 계약시작일, LocalDate 계약종료일, 여부 투기과열지구, 여부 청약과열지역, 여부 위축지역,여부 공공주택특별법적용, 여부 분양가상한제, 여부 정비사업, 여부 공공주택지구, 여부 공공건설임대주택, 여부 대규모택지개발지구, YearMonth 입주예정월) {
+        this.공고번호 = 공고번호;
         this.상세주소 = 상세주소;
         this.지역_레벨1 = 지역_레벨1;
         this.지역_레벨2 = 지역_레벨2;
@@ -123,7 +118,6 @@ public class 아파트분양정보1 {
         this.건설업체 = 건설업체;
         this.모집공고일 = 모집공고일;
         this.당첨자발표일 = 당첨자발표일;
-        this.공고번호 = 공고번호;
         this.계약시작일 = 계약시작일;
         this.계약종료일 = 계약종료일;
         this.공급세대수_계 = 공급세대수_계;

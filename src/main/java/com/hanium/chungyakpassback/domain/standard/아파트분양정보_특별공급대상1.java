@@ -15,12 +15,9 @@ public class 아파트분양정보_특별공급대상1 {
     @Column(name = "아파트분양정보_특별공급대상id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "아파트분양정보id")
     private 아파트분양정보1 아파트분양정보1;
-
-    @Column
-    private Integer 공고번호;
 
     @Column
     private String 주택형;
@@ -47,9 +44,8 @@ public class 아파트분양정보_특별공급대상1 {
     private int 공급세대수_기타;
 
     @Builder
-    public 아파트분양정보_특별공급대상1(아파트분양정보1 아파트분양정보1,Integer 공고번호, String 주택형, int 공급세대수_다자녀가구, int 공급세대수_신혼부부, int 공급세대수_생애최초, int 공급세대수_노부모부양, int 공급세대수_기관추천, int 공급세대수_이전기관, int 공급세대수_기타) {
+    public 아파트분양정보_특별공급대상1(아파트분양정보1 아파트분양정보1, String 주택형, int 공급세대수_다자녀가구, int 공급세대수_신혼부부, int 공급세대수_생애최초, int 공급세대수_노부모부양, int 공급세대수_기관추천, int 공급세대수_이전기관, int 공급세대수_기타) {
         this.아파트분양정보1 = 아파트분양정보1;
-        this.공고번호 =공고번호;
         this.주택형 = 주택형;
         this.공급세대수_다자녀가구 = 공급세대수_다자녀가구;
         this.공급세대수_신혼부부 = 공급세대수_신혼부부;
