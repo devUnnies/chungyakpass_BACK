@@ -1,13 +1,10 @@
 package com.hanium.chungyakpassback.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.text.ParseException;
 
 
 @RequiredArgsConstructor // final 멤버 변수를 자동으로 생성합니다.
