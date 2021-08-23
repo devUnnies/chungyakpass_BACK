@@ -2,7 +2,7 @@ package com.hanium.chungyakpassback.service;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
-import java.time.*;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
 @Converter(autoApply = true)

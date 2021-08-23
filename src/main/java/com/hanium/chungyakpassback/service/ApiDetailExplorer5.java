@@ -1,10 +1,8 @@
 package com.hanium.chungyakpassback.service;//package com.hanium.chungyakpassback.service;
 
-
-import com.hanium.chungyakpassback.domain.standard.*;
 import com.hanium.chungyakpassback.dto.*;
+import com.hanium.chungyakpassback.entity.standard.*;
 import com.hanium.chungyakpassback.repository.standard.*;
-import jdk.swing.interop.SwingInterOpUtils;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,28 +19,25 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
 public class ApiDetailExplorer5 {
-    private final 아파트분양정보1repository 아파트분양정보1repository;
-    private final 아파트분양정보_공급금액1repository 아파트분양정보_공급금액1repository;
-    private final 아파트분양정보_공급대상1repository 아파트분양정보_공급대상1repository;
-    private final 아파트분양정보_청약접수일정1repository 아파트분양정보_청약접수일정1repository;
-    private final 아파트분양정보_특별공급대상1repository 아파트분양정보_특별공급대상1repository;
+    private final AptInfoRepository aptInfoRepository;
+    private final AptInfoAmountRepository aptInfoAmountRepository;
+    private final AptInfoTargetRepository aptInfoTargetRepository;
+    private final AptInfoReceiptRepository aptInfoReceiptRepository;
+    private final AptInfoTargetSpecialRepository aptInfoTargetSpecialRepository;
     public static int INDENT_FACTOR = 4;
     public static String jsonPrettyPrintString;
-    public static String 분양정보조회 = "http://openapi.reb.or.kr/OpenAPI_ToolInstallPackage/service/rest/ApplyhomeInfoSvc/getLttotPblancList";
-    public static String 주택형별상세조회 = "http://openapi.reb.or.kr/OpenAPI_ToolInstallPackage/service/rest/ApplyhomeInfoSvc/getAPTLttotPblancMdl";
-    public static String 분양정보상세조회 = "http://openapi.reb.or.kr/OpenAPI_ToolInstallPackage/service/rest/ApplyhomeInfoSvc/getAPTLttotPblancDetail";
+    public static String salesInformation  = "http://openapi.reb.or.kr/OpenAPI_ToolInstallPackage/service/rest/ApplyhomeInfoSvc/getLttotPblancList";//분양정보조회
+    public static String detailInformationByHousingType = "http://openapi.reb.or.kr/OpenAPI_ToolInstallPackage/service/rest/ApplyhomeInfoSvc/getAPTLttotPblancMdl";//주택형별 분양정보
+    public static String detailSalesInformation = "http://openapi.reb.or.kr/OpenAPI_ToolInstallPackage/service/rest/ApplyhomeInfoSvc/getAPTLttotPblancDetail";//detailSalesInformation
     public static int cout;
     String date = YearMonth.now().format(DateTimeFormatter.ofPattern("yyyyMM"));
 
@@ -94,23 +89,22 @@ public class ApiDetailExplorer5 {
     public void apiDetailExplorer5() throws IOException {
         // 아래의 전체 코드가 일정한 시간간격을 두고 실행되어야한다.
         List<Integer> numbers = new ArrayList<>();//주택관리번호만 따로 리스트에 저장
-        List<아파트분양정보_청약접수일정1Dto> 아파트분양정보_청약정보일정1DtoList = new ArrayList<>();
-        List<아파트분양정보_공급대상1Dto> 아파트분양정보_공급대상1DtoList = new ArrayList<>();
-
-        List<아파트분양정보_특별공급대상1Dto> 아파트분양정보_특별공급대상1DtoList = new ArrayList<>();
-        List<아파트분양정보1Dto> 아파트분양정보1DtoList = new ArrayList<>();
-        List<아파트분양정보_공급금액1Dto> 아파트분양정보_공급금액1DtoList = new ArrayList<>();
+        List<AptInfoDto> aptInfoDtoList = new ArrayList<>();
+        List<AptInfoTargetDto> aptInfoTargetDtoList = new ArrayList<>();
+        List<AptInfoTargetSpecialDto> aptInfoTargetSpecialDtoList = new ArrayList<>();
+        List<AptInfoAmountDto> aptInfoAmountDtoList = new ArrayList<>();
+        List<AptInfoReceiptDto> aptInfoReceiptDtoList = new ArrayList<>();
         List<String> urlList = new ArrayList<>();
-        List<아파트분양정보1crawlingDto> 아파트분양정보1crawlingDtoList = new ArrayList<>();
+        List<CrawlingAptInfoDto> crawlingAptInfoDtoList = new ArrayList<>();
 
         // 아파트분양정보 2Dto 정보를 리스트로 담는다.
-        List<아파트분양정보2Dto> 아파트분양정보2DtoList = new ArrayList<>();
+        List<AptInfo2Dto> aptInfo2DtoList = new ArrayList<>();
 
 
         int pageNo = 1;
         // 페이지 수를 구해야한다.
         //String result = apiExplorer.AptApiData(pageNo);
-        String result = GetAptApi(분양정보조회, pageNo, 0);
+        String result = GetAptApi(salesInformation, pageNo, 0);
         JSONObject rjson = new JSONObject(result);
         JSONObject response = (JSONObject) rjson.get("response");//받아온 json에서 원하는 정보를 필터링한다.
         JSONObject body = (JSONObject) response.get("body");
@@ -124,10 +118,10 @@ public class ApiDetailExplorer5 {
 
         // 공고번호만 뽑았는데
         // 문의처, 주택유형, 건설업체도 뽑아야함
-        // 아파트분양정보1DTO에다가 넣어주면된다.
+        // AptInfoDto에다가 넣어주면된다.
         for (int i = 1; i <= pageNo; i++) {
             // apiExplorer.AptApiData(i);/페이지수만큼 AptApiData를 호출
-            GetAptApi(분양정보조회, i, 0);
+            GetAptApi(salesInformation, i, 0);
             rjson = new JSONObject(jsonPrettyPrintString);
             response = (JSONObject) rjson.get("response");//받아온 json에서 원하는 정보를 필터링한다.
             body = (JSONObject) response.get("body");
@@ -142,20 +136,20 @@ public class ApiDetailExplorer5 {
                     JSONObject itemJson = item.getJSONObject(j);
                     // houseManageNo 공고번호이다.
                     // 공고번호, 주택유형, 건설업체 정보를 가져온다.
-                    아파트분양정보2Dto 아파트분양정보2dto = new 아파트분양정보2Dto(itemJson);
-                    아파트분양정보2DtoList.add(아파트분양정보2dto);
+                    AptInfo2Dto aptInfo2dto = new AptInfo2Dto(itemJson);
+                    aptInfo2DtoList.add(aptInfo2dto);
 
-                    numbers.add(아파트분양정보2dto.공고번호);
+                    numbers.add(aptInfo2dto.getNotificationNumber());
 
                     //System.out.println(numbers);
                 }
             } else {//item이 object형식으로 들어올때
                 JSONObject itemJson = items.getJSONObject("item");
                 //int houseManageNo = itemJson.getInt("houseManageNo");//주택관리번호 뽑아냄
-                아파트분양정보2Dto 아파트분양정보2dto = new 아파트분양정보2Dto(itemJson);
-                아파트분양정보2DtoList.add(아파트분양정보2dto);
+                AptInfo2Dto aptInfo2dto = new AptInfo2Dto(itemJson);
+                aptInfo2DtoList.add(aptInfo2dto);
 
-                numbers.add(아파트분양정보2dto.공고번호);
+                numbers.add(aptInfo2dto.getNotificationNumber());
 
                 //System.out.println(numbers);
             }
@@ -183,16 +177,16 @@ public class ApiDetailExplorer5 {
 
             Integer number = numbers.get(a);
 
-            아파트분양정보1crawlingDto 아파트분양정보1crawlingdto = new 아파트분양정보1crawlingDto(content, number, string);
-            아파트분양정보1crawlingDtoList.add(아파트분양정보1crawlingdto);
+            CrawlingAptInfoDto CrawlingAptInfodto = new CrawlingAptInfoDto(content, number, string);
+            crawlingAptInfoDtoList.add(CrawlingAptInfodto);
 
         }
 
 
         // 공고번호를 가지고 API에서 데이터를 가져온다.
         for (Integer number : numbers) {//주택관리번호 리스트를 하나씩 반복
-            //String value = apiExplorer.GetAptDetail(numbers.get(i), 분양정보상세조회);//주택관리번호와 분양정보 상세 조회url을 GetAptDetail메소드에 보내서 실행
-            String value = GetAptApi(분양정보상세조회, 1, number);
+            //String value = apiExplorer.GetAptDetail(numbers.get(i), detailSalesInformation);//주택관리번호와 분양정보 상세 조회url을 GetAptDetail메소드에 보내서 실행
+            String value = GetAptApi(detailSalesInformation, 1, number);
             rjson = new JSONObject(value);//반환값을 필터링
             response = (JSONObject) rjson.get("response");
             body = (JSONObject) response.get("body");
@@ -202,43 +196,40 @@ public class ApiDetailExplorer5 {
                 JSONObject itemJson = items.getJSONObject("item");//item크기만큼 dto에 저장
                 //System.out.println(items);
 
-                아파트분양정보_청약접수일정1Dto 아파트분양정보_청약정보일정1dto = new 아파트분양정보_청약접수일정1Dto(itemJson);//item크기만큼 청약접수일정1Dto에 저장
-                아파트분양정보_청약정보일정1DtoList.add(아파트분양정보_청약정보일정1dto);
+                AptInfoReceiptDto AptInfoReceiptdto = new AptInfoReceiptDto(itemJson);//item크기만큼 청약접수일정1Dto에 저장
+                aptInfoReceiptDtoList.add(AptInfoReceiptdto);
 
-                아파트분양정보1Dto 아파트분양정보1dto = new 아파트분양정보1Dto(itemJson);
+                AptInfoDto AptInfodto = new AptInfoDto(itemJson);
 
-                for (아파트분양정보1crawlingDto 아파트분양정보1crawlingDto : 아파트분양정보1crawlingDtoList) {
-                    if (아파트분양정보1crawlingDto.공고번호.equals(아파트분양정보1dto.공고번호)) {
-                        아파트분양정보1dto.투기과열지구 = 아파트분양정보1crawlingDto.투기과열지구;
-                        아파트분양정보1dto.청약과열지역 = 아파트분양정보1crawlingDto.청약과열지역;
-                        아파트분양정보1dto.위축지역 = 아파트분양정보1crawlingDto.위축지역;
-                        아파트분양정보1dto.분양가상한제 = 아파트분양정보1crawlingDto.분양가상한제;
-                        아파트분양정보1dto.공공주택지구 = 아파트분양정보1crawlingDto.공공주택지구;
-                        아파트분양정보1dto.공공건설임대주택 = 아파트분양정보1crawlingDto.공공건설임대주택;
-                        아파트분양정보1dto.대규모택지개발지구 = 아파트분양정보1crawlingDto.대규모택지개발지구;
-                        아파트분양정보1dto.정비사업 = 아파트분양정보1crawlingDto.정비사업;
-                        아파트분양정보1dto.입주예정월 = 아파트분양정보1crawlingDto.입주예정월;
-                        아파트분양정보1dto.공공주택특별법적용 = 아파트분양정보1crawlingDto.공공주택특별법적용;
+                for (CrawlingAptInfoDto CrawlingAptInfodto : crawlingAptInfoDtoList) {
+                    if (CrawlingAptInfodto.notificationNumber.equals(AptInfodto.getNotificationNumber())) {
+                        AptInfodto.atrophyArea = CrawlingAptInfodto.atrophyArea;
+                        AptInfodto.largeDevelopmentzone = CrawlingAptInfodto.largeDevelopmentzone;
+                        AptInfodto.maintenanceWork = CrawlingAptInfodto.maintenanceWork;
+                        AptInfodto.publicHosingDistrict = CrawlingAptInfodto.publicHosingDistrict;
+                        AptInfodto.publicRentalHousing = CrawlingAptInfodto.publicRentalHousing;
+                        AptInfodto.salePriceLimit = CrawlingAptInfodto.salePriceLimit;
+                        AptInfodto.scheduledOccupancy = CrawlingAptInfodto.scheduledOccupancy;
+                        AptInfodto.subscriptionOverheated = CrawlingAptInfodto.subscriptionOverheated;
+                        AptInfodto.speculationOverheated = CrawlingAptInfodto.speculationOverheated;
+                        AptInfodto.specialActPublicHousing = CrawlingAptInfodto.specialActPublicHousing;
                     }
                 }
-                for (com.hanium.chungyakpassback.dto.아파트분양정보2Dto 아파트분양정보2Dto : 아파트분양정보2DtoList) {
-                    if (아파트분양정보2Dto.공고번호.equals(아파트분양정보1dto.공고번호)) {
-                        아파트분양정보1dto.주택유형 = 아파트분양정보2Dto.주택유형;
-                        아파트분양정보1dto.건설업체 = 아파트분양정보2Dto.건설업체;
-                        아파트분양정보1dto.지역_레벨1 = 아파트분양정보2Dto.지역_레벨1;
+                for (AptInfo2Dto aptInfo2dto : aptInfo2DtoList) {
+                    if (aptInfo2dto.notificationNumber.equals(AptInfodto.getNotificationNumber())) {
+                        AptInfodto.housingType = aptInfo2dto.housingType;
+                        AptInfodto.constructionCompany = aptInfo2dto.constructionCompany;
+                        AptInfodto.addressLevel1 = aptInfo2dto.addressLevel1;
                     }
                 }
-                아파트분양정보1DtoList.add(아파트분양정보1dto);
+                aptInfoDtoList.add(AptInfodto);
             }
         }
 
-        System.out.println("아파트분양정보List: " + 아파트분양정보1DtoList.size());
-
-
         // 주택관리번호 리스트만큼 반복 - 13개
         for (Integer number : numbers) {
-            //String value = apiExplorer.GetAptDetail(numbers.get(i), 주택형별상세조회);//주택관리번호와 url을 GetAptDetail에 넣는다.
-            String value = GetAptApi(주택형별상세조회, 1, number);
+            //String value = apiExplorer.GetAptDetail(numbers.get(i), detailInformationByHousingType);//주택관리번호와 url을 GetAptDetail에 넣는다.
+            String value = GetAptApi(detailInformationByHousingType, 1, number);
 
             rjson = new JSONObject(value);
             response = (JSONObject) rjson.get("response");
@@ -253,7 +244,7 @@ public class ApiDetailExplorer5 {
                 if (items.get("item") instanceof JSONArray) {//item이 array형식인지 확인
                     JSONArray item = (JSONArray) items.get("item");
 
-                    // 아파트분양정보1DtoList에 있는 아파트분양정보1Dto를 순서대로 전부 불러온다.
+                    // AptInfoDtoList에 있는 AptInfoDto를 순서대로 전부 불러온다.
                     for (int j = 0; j < item.length(); j++) {//item크기만큼 dto에 저장
                         JSONObject itemJson = item.getJSONObject(j);
                         objects.add(itemJson);
@@ -270,7 +261,7 @@ public class ApiDetailExplorer5 {
                 // totalCount가 10개 이상이면 페이지 넘버를 1개 추가한다
                 if (totalCount1 > 10) {
                     // 페이지 넘버를 1개 추가해서 값을 가져온다.
-                    String value2 = GetAptApi(주택형별상세조회, 2, number);
+                    String value2 = GetAptApi(detailInformationByHousingType, 2, number);
                     rjson = new JSONObject(value2);
                     response = (JSONObject) rjson.get("response");
                     body = (JSONObject) response.get("body");
@@ -282,7 +273,7 @@ public class ApiDetailExplorer5 {
                         if (items.get("item") instanceof JSONArray) {//item이 array형식인지 확인
                             JSONArray item = (JSONArray) items2.get("item");
 
-                            // 아파트분양정보1DtoList에 있는 아파트분양정보1Dto를 순서대로 전부 불러온다.
+                            // AptInfoDtoList에 있는 AptInfoDto를 순서대로 전부 불러온다.
                             for (int j = 0; j < item.length(); j++) {//item크기만큼 dto에 저장
                                 JSONObject itemJson = item.getJSONObject(j);
                                 objects.add(itemJson);
@@ -294,93 +285,89 @@ public class ApiDetailExplorer5 {
                     }
                 }
             }
-            // 아파트분양정보1DtoList의 첫번째 값을 objects 개수 만큼 돌린다.
-            for (아파트분양정보1Dto 분양정보1 : 아파트분양정보1DtoList) {
-                if (분양정보1.공고번호.equals(number)) {
+            // AptInfoDtoList의 첫번째 값을 objects 개수 만큼 돌린다.
+            for (AptInfoDto AptInfodto : aptInfoDtoList) {
+                if (AptInfodto.getNotificationNumber().equals(number)) {
                     for (JSONObject item : objects) {
                         // ID만 받는다.
                         //아파트분양정보_공급대상1Dto 아파트분양정보_공급대상1dto = new 아파트분양정보_공급대상1Dto(분양정보1.공고번호, item);
 
-                        아파트분양정보_공급대상1Dto 아파트분양정보_공급대상1dto = new 아파트분양정보_공급대상1Dto(item);
-                        아파트분양정보_공급대상1DtoList.add(아파트분양정보_공급대상1dto);
+                        AptInfoTargetDto AptInfoTargetdto = new AptInfoTargetDto(item);
+                        aptInfoTargetDtoList.add(AptInfoTargetdto);
 
-                        아파트분양정보_공급금액1Dto 아파트분양정보_공급금액1dto = new 아파트분양정보_공급금액1Dto(item);
-                        아파트분양정보_공급금액1DtoList.add(아파트분양정보_공급금액1dto);
+                        AptInfoAmountDto aptInfoAmountdto = new AptInfoAmountDto(item);
+                        aptInfoAmountDtoList.add(aptInfoAmountdto);
 
-                        아파트분양정보_특별공급대상1Dto 아파트분양정보_특별공급대상1dto = new 아파트분양정보_특별공급대상1Dto(item);
-                        아파트분양정보_특별공급대상1DtoList.add(아파트분양정보_특별공급대상1dto);
+                        AptInfoTargetSpecialDto AptInfoTargetSpecialdto = new AptInfoTargetSpecialDto(item);
+                        aptInfoTargetSpecialDtoList.add(AptInfoTargetSpecialdto);
                     }
                 }
             }
         }
 
         // 아파트분양정보 테이블에 공고번호가 중복되는 값이 들어가면 안된다.
-        for (아파트분양정보1Dto 분양정보1 : 아파트분양정보1DtoList) {
-            List<아파트분양정보1> 아파트분양정보1List = 아파트분양정보1DtoList.stream()
-                    .map(아파트분양정보1Dto::toEntity)
+        for (AptInfoDto aptInfodto : aptInfoDtoList) {
+            List<AptInfo> aptInfoList = aptInfoDtoList.stream()
+                    .map(AptInfoDto::toEntity)
                     .collect(Collectors.toList());
 
-            아파트분양정보1repository.findById(분양정보1.공고번호).orElseGet(() -> {
-                아파트분양정보1repository.saveAll(아파트분양정보1List);
-                for (아파트분양정보_공급금액1Dto 공급금액1 : 아파트분양정보_공급금액1DtoList) {
-                    아파트분양정보1 아파트분양정보1 = 아파트분양정보1repository.findById(공급금액1.get공고번호()).get();
-                    아파트분양정보_공급금액1 아파트분양정보_공급금액11 = 아파트분양정보_공급금액1.builder()
-                            .아파트분양정보1(아파트분양정보1)
-                            .공급금액(공급금액1.get공급금액())
-                            .주택형(공급금액1.get주택형())
+            aptInfoRepository.findById(aptInfodto.getNotificationNumber()).orElseGet(() -> {
+                aptInfoRepository.saveAll(aptInfoList);
+                for (AptInfoAmountDto AptInfoAmountdto : aptInfoAmountDtoList) {
+                    AptInfo aptInfo = aptInfoRepository.findById(AptInfoAmountdto.getNotificationNumber()).get();
+                    AptInfoAmount aptInfoAmount = AptInfoAmount.builder()
+                            .aptInfo(aptInfo)
+                            .supplyAmount(AptInfoAmountdto.getSupplyAmount())
+                            .housingType(AptInfoAmountdto.getHousingType())
                             .build();
-                    아파트분양정보_공급금액1repository.save(아파트분양정보_공급금액11);
+                    aptInfoAmountRepository.save(aptInfoAmount);
                 }
-                for (아파트분양정보_청약접수일정1Dto 청약접수일정1 : 아파트분양정보_청약정보일정1DtoList) {
-                    아파트분양정보1 아파트분양정보1 = 아파트분양정보1repository.findById(청약접수일정1.get공고번호()).get();
-                    아파트분양정보_청약접수일정1 아파트분양정보_청약접수일정11 = 아파트분양정보_청약접수일정1.builder()
-                            .아파트분양정보1(아파트분양정보1)
-                            .특별공급접수시작일(청약접수일정1.get특별공급접수시작일())
-                            .특별공급접수종료일(청약접수일정1.get특별공급접수종료일())
-                            .일순위접수일해당지역(청약접수일정1.get일순위접수일해당지역())
-                            .일순위접수일경기지역(청약접수일정1.get일순위접수일경기지역())
-                            .일순위접수일기타지역(청약접수일정1.get일순위접수일기타지역())
-                            .이순위접수일해당지역(청약접수일정1.get이순위접수일해당지역())
-                            .이순위접수일경기지역(청약접수일정1.get이순위접수일경기지역())
-                            .이순위접수일기타지역(청약접수일정1.get이순위접수일기타지역())
-                            .홈페이지(청약접수일정1.get홈페이지())
+                for (AptInfoReceiptDto AptInfoReceiptdto : aptInfoReceiptDtoList) {
+                    AptInfo aptInfo = aptInfoRepository.findById(AptInfoReceiptdto.getNotificationNumber()).get();
+                    AptInfoReceipt aptInfoReceipt = AptInfoReceipt.builder()
+                            .aptInfo(aptInfo)
+                            .specialReceptionStartDate(AptInfoReceiptdto.getSpecialReceptionStartDate())
+                            .specialReceptionEndDate(AptInfoReceiptdto.getSpecialReceptionEndDate())
+                            .priorityApplicableArea(AptInfoReceiptdto.getPriorityApplicableArea())
+                            .priorityGyeonggiArea(AptInfoReceiptdto.getPriorityGyeonggiArea())
+                            .priorityOtherArea(AptInfoReceiptdto.getPriorityOtherArea())
+                            .secondApplicableArea(AptInfoReceiptdto.getSecondApplicableArea())
+                            .secondGyeonggiArea(AptInfoReceiptdto.getSecondGyeonggiArea())
+                            .secondOtherArea(AptInfoReceiptdto.getSecondOtherArea())
+                            .homepage(AptInfoReceiptdto.getHomepage())
                             .build();
-                    아파트분양정보_청약접수일정1repository.save(아파트분양정보_청약접수일정11);
+                    aptInfoReceiptRepository.save(aptInfoReceipt);
                 }
-                for (아파트분양정보_특별공급대상1Dto 특별공급대상1 : 아파트분양정보_특별공급대상1DtoList) {
-            아파트분양정보1 아파트분양정보1 = 아파트분양정보1repository.findById(특별공급대상1.get공고번호()).get();
-            아파트분양정보_특별공급대상1 아파트분양정보_특별공급대상11 = 아파트분양정보_특별공급대상1.builder()
-                    .아파트분양정보1(아파트분양정보1)
-                    .주택형(특별공급대상1.get주택형())
-                    .공급세대수_다자녀가구(특별공급대상1.get공급세대수_다자녀가구())
-                    .공급세대수_신혼부부(특별공급대상1.get공급세대수_신혼부부())
-                    .공급세대수_생애최초(특별공급대상1.get공급세대수_생애최초())
-                    .공급세대수_노부모부양(특별공급대상1.get공급세대수_노부모부양())
-                    .공급세대수_기관추천(특별공급대상1.get공급세대수_기관추천())
-                    .공급세대수_이전기관(특별공급대상1.get공급세대수_이전기관())
-                    .공급세대수_기타(특별공급대상1.get공급세대수_기타())
+                for (AptInfoTargetSpecialDto AptInfoTargetSpecialdto : aptInfoTargetSpecialDtoList) {
+                    AptInfo aptInfo = aptInfoRepository.findById(AptInfoTargetSpecialdto.getNotificationNumber()).get();
+                    AptInfoTargetSpecial aptInfoTargetSpecial = AptInfoTargetSpecial.builder()
+                    .aptInfo(aptInfo)
+                    .housingType(AptInfoTargetSpecialdto.getHousingType())
+                    .supplyMultiChildHousehold(AptInfoTargetSpecialdto.getSupplyMultiChildHousehold())
+                    .supplyNewlyMarriedCouple(AptInfoTargetSpecialdto.getSupplyNewlyMarriedCouple())
+                    .supplyOldParentSupport(AptInfoTargetSpecialdto.getSupplyOldParentSupport())
+                    .supplyFirstLife(AptInfoTargetSpecialdto.getSupplyFirstLife())
+                    .supplyInstitutionalRecommendation(AptInfoTargetSpecialdto.getSupplyInstitutionalRecommendation())
+                    .supplyTransferAgency(AptInfoTargetSpecialdto.getSupplyTransferAgency())
+                    .supplyOther(AptInfoTargetSpecialdto.getSupplyOther())
                     .build();
-                아파트분양정보_특별공급대상1repository.save(아파트분양정보_특별공급대상11);
+                    aptInfoTargetSpecialRepository.save(aptInfoTargetSpecial);
         }
 
         // 아파트분양정보 테이블에 공고번호가 이미 있다면 공급대상 테이블에 해당공고번호와 관련된 공급대상은 추가하지 않는다.
-        for (아파트분양정보_공급대상1Dto 공급대상1 : 아파트분양정보_공급대상1DtoList) {
-            아파트분양정보1 아파트분양정보1 = 아파트분양정보1repository.findById(공급대상1.get공고번호()).get();
-            아파트분양정보_공급대상1 아파트분양정보_공급대상11 = 아파트분양정보_공급대상1.builder()
-                    .아파트분양정보1(아파트분양정보1)
-                    .주택형(공급대상1.get주택형())
-                    .주택공급면적(공급대상1.get주택공급면적())
-                    .공급세대수_일반(공급대상1.get공급세대수_일반())
-                    .공급세대수_특별(공급대상1.get공급세대수_특별())
-                    .공급세대수_계(공급대상1.get공급세대수_계())
+        for (AptInfoTargetDto AptInfoTargetdto : aptInfoTargetDtoList) {
+            AptInfo aptInfo = aptInfoRepository.findById(AptInfoTargetdto.getNotificationNumber()).get();
+            AptInfoTarget aptInfoTarget = AptInfoTarget.builder()
+                    .aptInfo(aptInfo)
+                    .housingType(AptInfoTargetdto.getHousingType())
+                    .supplyArea(AptInfoTargetdto.getSupplyArea())
+                    .supplyGeneral(AptInfoTargetdto.getSupplyGeneral())
+                    .supplySpecial(AptInfoTargetdto.getSupplySpecial())
+                    .supplyTotal(AptInfoTargetdto.getSupplyTotal())
                     .build();
-            아파트분양정보_공급대상1repository.save(아파트분양정보_공급대상11);
+            aptInfoTargetRepository.save(aptInfoTarget);
 
         }
-
-
-
-
                 return null;
             });
         }
