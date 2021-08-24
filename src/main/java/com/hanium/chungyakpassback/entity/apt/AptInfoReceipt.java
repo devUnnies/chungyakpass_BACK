@@ -1,4 +1,4 @@
-package com.hanium.chungyakpassback.entity.standard;
+package com.hanium.chungyakpassback.entity.apt;
 
 import lombok.*;
 
@@ -18,7 +18,7 @@ public class AptInfoReceipt {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notification_number_id")
-    private AptInfo AptInfo;
+    private com.hanium.chungyakpassback.entity.apt.AptInfo AptInfo;
 
     @Column
     private LocalDate specialReceptionStartDate;//특별공급접수시작일
@@ -66,7 +66,7 @@ public class AptInfoReceipt {
     private String homepage;//홈페이지
 
     @Builder
-    public AptInfoReceipt(AptInfo aptInfo, LocalDate specialReceptionStartDate, LocalDate specialReceptionEndDate, LocalDate priorityApplicableAreaStart,LocalDate priorityApplicableAreaEnd,LocalDate priorityGyeonggiAreaStart,LocalDate priorityGyeonggiAreaEnd,  LocalDate priorityOtherAreaStart,LocalDate priorityOtherAreaEnd, LocalDate secondApplicableAreaStart,LocalDate secondApplicableAreaEnd, LocalDate secondGyeonggiAreaStart,LocalDate secondGyeonggiAreaEnd, LocalDate secondOtherAreaStart,LocalDate secondOtherAreaEnd, String homepage) {
+    public AptInfoReceipt(com.hanium.chungyakpassback.entity.apt.AptInfo aptInfo, LocalDate specialReceptionStartDate, LocalDate specialReceptionEndDate, LocalDate priorityApplicableAreaStart, LocalDate priorityApplicableAreaEnd, LocalDate priorityGyeonggiAreaStart, LocalDate priorityGyeonggiAreaEnd, LocalDate priorityOtherAreaStart, LocalDate priorityOtherAreaEnd, LocalDate secondApplicableAreaStart, LocalDate secondApplicableAreaEnd, LocalDate secondGyeonggiAreaStart, LocalDate secondGyeonggiAreaEnd, LocalDate secondOtherAreaStart, LocalDate secondOtherAreaEnd, String homepage) {
         AptInfo = aptInfo;
         this.specialReceptionStartDate = specialReceptionStartDate;
         this.specialReceptionEndDate = specialReceptionEndDate;

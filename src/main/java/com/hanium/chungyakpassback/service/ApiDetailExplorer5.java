@@ -1,7 +1,7 @@
 package com.hanium.chungyakpassback.service;//package com.hanium.chungyakpassback.service;
 
 import com.hanium.chungyakpassback.dto.*;
-import com.hanium.chungyakpassback.entity.standard.*;
+import com.hanium.chungyakpassback.entity.apt.*;
 import com.hanium.chungyakpassback.repository.standard.*;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
@@ -50,7 +50,7 @@ public class ApiDetailExplorer5 {
             urlBuilder.append("&").append(URLEncoder.encode("pageNo", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(String.valueOf(pageNo), StandardCharsets.UTF_8));
 
             if (manageNo == 0) {
-                urlBuilder.append("&").append(URLEncoder.encode("startmonth", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("202002", StandardCharsets.UTF_8)); /*월 단위 모집공고일 (검색시작월)*/
+                urlBuilder.append("&").append(URLEncoder.encode("startmonth", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("202107", StandardCharsets.UTF_8)); /*월 단위 모집공고일 (검색시작월)*/
                 urlBuilder.append("&").append(URLEncoder.encode("endmonth", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(date, StandardCharsets.UTF_8)); /*월 단위 모집공고일 (검색종료월, 최대 12개월)*/
             } else {
                 urlBuilder.append("&").append(URLEncoder.encode("houseManageNo", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(String.valueOf(manageNo), StandardCharsets.UTF_8)); /*주택관리번호*/
@@ -130,7 +130,6 @@ public class ApiDetailExplorer5 {
 
             if (items.get("item") instanceof JSONArray) {//item이 array형식으로 들어올때
                 JSONArray item = (JSONArray) items.get("item");
-                int a = item.length();
 
                 for (int j = 0; j < item.length(); j++) {//item의 크기만큼 반복
                     JSONObject itemJson = item.getJSONObject(j);
@@ -167,7 +166,6 @@ public class ApiDetailExplorer5 {
 
         for (int a = 0; a < numbers.size(); a++) {
             Document getDetail = Jsoup.connect(urlList.get(a)).get();
-            Elements getContents = getDetail.select("table tbody tr td");
             String content = getDetail.select("ul[class=inde_txt] li").get(0).text();
             String content1 = getDetail.select("ul[class=inde_txt]").get(2).text();
             String[] content2 = content1.split(" ");
@@ -384,7 +382,6 @@ public class ApiDetailExplorer5 {
                     .supplyTotal(AptInfoTargetdto.getSupplyTotal())
                     .build();
             aptInfoTargetRepository.save(aptInfoTarget);
-
         }
                 return null;
             });

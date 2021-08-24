@@ -1,4 +1,4 @@
-package com.hanium.chungyakpassback.entity.standard;
+package com.hanium.chungyakpassback.entity.apt;
 
 import lombok.*;
 
@@ -17,7 +17,7 @@ public class AptInfoAmount {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notification_number_id")
-    private AptInfo AptInfo;
+    private com.hanium.chungyakpassback.entity.apt.AptInfo AptInfo;
 
     @Column
     private String housingType;
@@ -26,7 +26,7 @@ public class AptInfoAmount {
     private String supplyAmount;
 
     @Builder
-    public AptInfoAmount(com.hanium.chungyakpassback.entity.standard.AptInfo aptInfo, String housingType, String supplyAmount) {
+    public AptInfoAmount(com.hanium.chungyakpassback.entity.apt.AptInfo aptInfo, String housingType, String supplyAmount) {
         AptInfo = aptInfo;
         this.housingType = housingType;
         this.supplyAmount = supplyAmount;

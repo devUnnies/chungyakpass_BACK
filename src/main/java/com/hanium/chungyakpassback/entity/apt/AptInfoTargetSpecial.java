@@ -1,4 +1,4 @@
-package com.hanium.chungyakpassback.entity.standard;
+package com.hanium.chungyakpassback.entity.apt;
 
 import lombok.*;
 
@@ -17,7 +17,7 @@ public class AptInfoTargetSpecial {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notification_number_id")
-    private AptInfo AptInfo;
+    private com.hanium.chungyakpassback.entity.apt.AptInfo AptInfo;
 
     @Column
     private String housingType;
@@ -43,7 +43,7 @@ public class AptInfoTargetSpecial {
     private Integer supplyOther;//공급세대수_기타
 
     @Builder
-    public AptInfoTargetSpecial(com.hanium.chungyakpassback.entity.standard.AptInfo aptInfo, String housingType, int supplyMultiChildHousehold, int supplyNewlyMarriedCouple, int supplyFirstLife, int supplyOldParentSupport, int supplyInstitutionalRecommendation, Integer supplyTransferAgency, Integer supplyOther) {
+    public AptInfoTargetSpecial(com.hanium.chungyakpassback.entity.apt.AptInfo aptInfo, String housingType, int supplyMultiChildHousehold, int supplyNewlyMarriedCouple, int supplyFirstLife, int supplyOldParentSupport, int supplyInstitutionalRecommendation, Integer supplyTransferAgency, Integer supplyOther) {
         AptInfo = aptInfo;
         this.housingType = housingType;
         this.supplyMultiChildHousehold = supplyMultiChildHousehold;

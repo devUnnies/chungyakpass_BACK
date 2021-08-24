@@ -13,7 +13,6 @@ public class AptInfoTargetDto {
     private Integer supplyGeneral;
     private Integer supplySpecial;
     private Integer supplyTotal;
-    private String managementNumber;
 
     @Builder
     public AptInfoTargetDto(JSONObject itemJson){

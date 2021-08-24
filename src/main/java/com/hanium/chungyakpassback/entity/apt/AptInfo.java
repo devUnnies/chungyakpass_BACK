@@ -1,4 +1,4 @@
-package com.hanium.chungyakpassback.entity.standard;
+package com.hanium.chungyakpassback.entity.apt;
 
 import com.hanium.chungyakpassback.entity.enumtype.AddressLevel1;
 import com.hanium.chungyakpassback.entity.enumtype.AddressLevel2;

@@ -1,10 +1,10 @@
 package com.hanium.chungyakpassback.dto;
 
+import com.hanium.chungyakpassback.entity.apt.AptInfo;
 import com.hanium.chungyakpassback.entity.enumtype.AddressLevel1;
 import com.hanium.chungyakpassback.entity.enumtype.AddressLevel2;
 import com.hanium.chungyakpassback.entity.enumtype.HousingType;
 import com.hanium.chungyakpassback.entity.enumtype.Yn;
-import com.hanium.chungyakpassback.entity.standard.AptInfo;
 import lombok.Builder;
 import lombok.Getter;
 import org.json.JSONObject;
