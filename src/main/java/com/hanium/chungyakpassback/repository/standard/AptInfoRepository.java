@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface AptInfoRepository extends JpaRepository<AptInfo, Integer> {
-    List<AptInfo> findAptInfoBynotificationNumber(Integer notificationNumber);
 }

@@ -2,6 +2,7 @@ package com.hanium.chungyakpassback.dto;//package com.hanium.chungyakpassback.en
 
 import lombok.Builder;
 import lombok.Getter;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 @Getter
@@ -13,12 +14,21 @@ public class AptInfoAmountDto {
     @Builder
     public AptInfoAmountDto(JSONObject itemJson){
         this.notificationNumber = itemJson.getInt("pblancno");
-        if(itemJson.get("housety") instanceof Double) {
-            this.housingType = String.valueOf(itemJson.get("housety")); //Double -> String 1번방식
+        try {
+            if (itemJson.get("housety") instanceof Double) {
+                this.housingType = String.valueOf(itemJson.getDouble("housety")); //Double -> String 1번방식
+            } else {
+                this.housingType = itemJson.getString("housety");
+            }
         }
-        else{
-            this.housingType = itemJson.getString("housety");
+        catch (JSONException e){
+            this.housingType = String.valueOf(itemJson.getInt("housety"));
         }
-        this.supplyAmount = itemJson.getString("lttottopamount");
+        if(itemJson.get("lttottopamount") instanceof Integer) {
+            this.supplyAmount =String.valueOf(itemJson.getInt("lttottopamount"));
+        }
+        else {
+            this.supplyAmount = itemJson.getString("lttottopamount");
+        }
     }
 }

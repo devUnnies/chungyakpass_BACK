@@ -27,37 +27,61 @@ public class AptInfoReceipt {
     private LocalDate specialReceptionEndDate;//특별공급접수종료일
 
     @Column
-    private LocalDate priorityApplicableArea;//일순위접수일해당지역
+    private LocalDate priorityApplicableAreaStart;//일순위접수일해당지역;
 
     @Column
-    private LocalDate priorityGyeonggiArea;//일순위접수일경기지역
+    private LocalDate priorityApplicableAreaEnd;//일순위접수일해당지역;
 
     @Column
-    private LocalDate priorityOtherArea;//일순위접수일기타지역
+    private LocalDate priorityGyeonggiAreaStart;//일순위접수일경기지역
 
     @Column
-    private LocalDate secondApplicableArea;//이순위접수일해당지역
+    private LocalDate priorityGyeonggiAreaEnd;//일순위접수일경기지역
 
     @Column
-    private LocalDate secondGyeonggiArea;//이순위접수일경기지역
+    private LocalDate priorityOtherAreaStart;//일순위접수일기타지역
 
     @Column
-    private LocalDate secondOtherArea;//이순위접수일기타지역
+    private LocalDate priorityOtherAreaEnd;//일순위접수일기타지역
+
+    @Column
+    private LocalDate secondApplicableAreaStart;//이순위접수일해당지역
+
+    @Column
+    private LocalDate secondApplicableAreaEnd;//이순위접수일해당지역
+
+    @Column
+    private LocalDate secondGyeonggiAreaStart;//이순위접수일경기지역
+
+    @Column
+    private LocalDate secondGyeonggiAreaEnd;//이순위접수일경기지역
+
+    @Column
+    private LocalDate secondOtherAreaStart;//이순위접수일기타지역
+
+    @Column
+    private LocalDate secondOtherAreaEnd;//이순위접수일기타지역
 
     @Column
     private String homepage;//홈페이지
 
     @Builder
-    public AptInfoReceipt(AptInfo aptInfo, LocalDate specialReceptionStartDate, LocalDate specialReceptionEndDate, LocalDate priorityApplicableArea, LocalDate priorityGyeonggiArea, LocalDate priorityOtherArea, LocalDate secondApplicableArea, LocalDate secondGyeonggiArea, LocalDate secondOtherArea, String homepage) {
+    public AptInfoReceipt(AptInfo aptInfo, LocalDate specialReceptionStartDate, LocalDate specialReceptionEndDate, LocalDate priorityApplicableAreaStart,LocalDate priorityApplicableAreaEnd,LocalDate priorityGyeonggiAreaStart,LocalDate priorityGyeonggiAreaEnd,  LocalDate priorityOtherAreaStart,LocalDate priorityOtherAreaEnd, LocalDate secondApplicableAreaStart,LocalDate secondApplicableAreaEnd, LocalDate secondGyeonggiAreaStart,LocalDate secondGyeonggiAreaEnd, LocalDate secondOtherAreaStart,LocalDate secondOtherAreaEnd, String homepage) {
         AptInfo = aptInfo;
         this.specialReceptionStartDate = specialReceptionStartDate;
         this.specialReceptionEndDate = specialReceptionEndDate;
-        this.priorityApplicableArea = priorityApplicableArea;
-        this.priorityGyeonggiArea = priorityGyeonggiArea;
-        this.priorityOtherArea = priorityOtherArea;
-        this.secondApplicableArea = secondApplicableArea;
-        this.secondGyeonggiArea = secondGyeonggiArea;
-        this.secondOtherArea = secondOtherArea;
+        this.priorityApplicableAreaStart = priorityApplicableAreaStart;
+        this.priorityApplicableAreaEnd = priorityApplicableAreaEnd;
+        this.priorityGyeonggiAreaStart = priorityGyeonggiAreaStart;
+        this.priorityGyeonggiAreaEnd = priorityGyeonggiAreaEnd;
+        this.priorityOtherAreaStart = priorityOtherAreaStart;
+        this.priorityOtherAreaEnd = priorityOtherAreaEnd;
+        this.secondApplicableAreaStart = secondApplicableAreaStart;
+        this.secondApplicableAreaEnd = secondApplicableAreaEnd;
+        this.secondGyeonggiAreaStart = secondGyeonggiAreaStart;
+        this.secondGyeonggiAreaEnd = secondGyeonggiAreaEnd;
+        this.secondOtherAreaStart = secondOtherAreaStart;
+        this.secondOtherAreaEnd = secondOtherAreaEnd;
         this.homepage = homepage;
     }
 }

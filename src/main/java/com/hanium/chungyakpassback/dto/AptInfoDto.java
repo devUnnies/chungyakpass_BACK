@@ -40,12 +40,16 @@ public class AptInfoDto {
     @Builder
     public AptInfoDto(JSONObject itemJson) {
         this.detailAddress = itemJson.getString("hssplyadres");
-        String[] areaLevel = detailAddress.split(" ");
-        String areaLevel2 = areaLevel[1];
-        if (Arrays.stream(AddressLevel2.values()).anyMatch(v -> v.name().equals(areaLevel2))) {
-            this.addressLevel2 = AddressLevel2.valueOf(areaLevel2);
+        try {
+            String[] areaLevel = detailAddress.split(" ");
+            String areaLevel2 = areaLevel[1].trim();
+            if (Arrays.stream(AddressLevel2.values()).anyMatch(v -> v.name().equals(areaLevel2))) {
+                this.addressLevel2 = AddressLevel2.valueOf(areaLevel2);
+            } else {
+                this.addressLevel2 = null;
+            }
         }
-        else{
+        catch (ArrayIndexOutOfBoundsException e){
             this.addressLevel2 = null;
         }
 

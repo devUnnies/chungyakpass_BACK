@@ -45,12 +45,12 @@ public class ApiDetailExplorer5 {
     public String GetAptApi(String aptUrl, int pageNo, int manageNo) {
         try {
             StringBuilder urlBuilder = new StringBuilder(aptUrl); /*URL*///주택번호와 url을 받는다.
-            urlBuilder.append("?").append(URLEncoder.encode("ServiceKey", StandardCharsets.UTF_8)).append("=BmqDlfkTCepN%2F%2B8XBveSElPppoonFGeljKmlxIZDZV589UGOa%2B3U3sHN5fCNuT2jBnOn1iTVWFQTdDMcRdnohA%3D%3D"); /*Service Key*/
+            urlBuilder.append("?").append(URLEncoder.encode("ServiceKey", StandardCharsets.UTF_8)).append("=r%2B2HI8hwDijPaCvVzQvg1O6birty3yCNr1QCk30cBuFXESl9etAWiSqbfS8cCStGjXXcfT2yfcfXlEgViCgMmg%3D%3D"); /*Service Key*/
 
             urlBuilder.append("&").append(URLEncoder.encode("pageNo", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(String.valueOf(pageNo), StandardCharsets.UTF_8));
 
             if (manageNo == 0) {
-                urlBuilder.append("&").append(URLEncoder.encode("startmonth", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("202108", StandardCharsets.UTF_8)); /*월 단위 모집공고일 (검색시작월)*/
+                urlBuilder.append("&").append(URLEncoder.encode("startmonth", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("202002", StandardCharsets.UTF_8)); /*월 단위 모집공고일 (검색시작월)*/
                 urlBuilder.append("&").append(URLEncoder.encode("endmonth", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(date, StandardCharsets.UTF_8)); /*월 단위 모집공고일 (검색종료월, 최대 12개월)*/
             } else {
                 urlBuilder.append("&").append(URLEncoder.encode("houseManageNo", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(String.valueOf(manageNo), StandardCharsets.UTF_8)); /*주택관리번호*/
@@ -61,7 +61,7 @@ public class ApiDetailExplorer5 {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-type", "application/json");
-            //System.out.println("Response code: " + conn.getResponseCode());
+
             BufferedReader rd;
             if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
                 rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -172,6 +172,7 @@ public class ApiDetailExplorer5 {
             String content1 = getDetail.select("ul[class=inde_txt]").get(2).text();
             String[] content2 = content1.split(" ");
             String string = content2[3];
+
 //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM");
 //            LocalDate date = LocalDate.parse(string, formatter);
 
@@ -183,7 +184,7 @@ public class ApiDetailExplorer5 {
         }
 
 
-        // 공고번호를 가지고 API에서 데이터를 가져온다.
+//        // 공고번호를 가지고 API에서 데이터를 가져온다.
         for (Integer number : numbers) {//주택관리번호 리스트를 하나씩 반복
             //String value = apiExplorer.GetAptDetail(numbers.get(i), detailSalesInformation);//주택관리번호와 분양정보 상세 조회url을 GetAptDetail메소드에 보내서 실행
             String value = GetAptApi(detailSalesInformation, 1, number);
@@ -194,7 +195,13 @@ public class ApiDetailExplorer5 {
             if (body.get("items") instanceof JSONObject) {//주택번호와 url은 있는데 값이 안들어온 경우 값이 object형식으로 들어왔나 확인
                 JSONObject items = (JSONObject) body.get("items");
                 JSONObject itemJson = items.getJSONObject("item");//item크기만큼 dto에 저장
+                String detailAddress = itemJson.getString("hssplyadres");
+                String[] areaLevel = detailAddress.split(" ");
+                for (String s : areaLevel) {
+                    System.out.println(s.trim());
+                }
                 //System.out.println(items);
+                System.out.println(itemJson);
 
                 AptInfoReceiptDto AptInfoReceiptdto = new AptInfoReceiptDto(itemJson);//item크기만큼 청약접수일정1Dto에 저장
                 aptInfoReceiptDtoList.add(AptInfoReceiptdto);
@@ -240,6 +247,7 @@ public class ApiDetailExplorer5 {
             List<JSONObject> objects = new ArrayList<>();
             if (body.get("items") instanceof JSONObject) {//주택번호와 url은 있는데 값이 안들어온 경우 값이 object형식으로 들어왔나 확인
                 JSONObject items = body.getJSONObject("items");
+                System.out.println(items);
 
                 if (items.get("item") instanceof JSONArray) {//item이 array형식인지 확인
                     JSONArray item = (JSONArray) items.get("item");
@@ -255,6 +263,8 @@ public class ApiDetailExplorer5 {
                     JSONObject itemJson = items.getJSONObject("item");//item크기만큼 dto에 저장
                     objects.add(itemJson);
                 }
+            }
+
 
                 // 각 주택관리 번호별 총 item개수
                 int totalCount1 = body.getInt("totalCount");
@@ -269,8 +279,9 @@ public class ApiDetailExplorer5 {
 
                     if (body.get("items") instanceof JSONObject) {//주택번호와 url은 있는데 값이 안들어온 경우 값이 object형식으로 들어왔나 확인
                         JSONObject items2 = body.getJSONObject("items");
+                        System.out.println(items2);
 
-                        if (items.get("item") instanceof JSONArray) {//item이 array형식인지 확인
+                        if (items2.get("item") instanceof JSONArray) {//item이 array형식인지 확인
                             JSONArray item = (JSONArray) items2.get("item");
 
                             // AptInfoDtoList에 있는 AptInfoDto를 순서대로 전부 불러온다.
@@ -279,12 +290,13 @@ public class ApiDetailExplorer5 {
                                 objects.add(itemJson);
                             }
                         } else {
-                            JSONObject itemJson = items.getJSONObject("item");//item크기만큼 dto에 저장
+                            JSONObject itemJson = items2.getJSONObject("item");//item크기만큼 dto에 저장
                             objects.add(itemJson);
                         }
                     }
                 }
-            }
+
+
             // AptInfoDtoList의 첫번째 값을 objects 개수 만큼 돌린다.
             for (AptInfoDto AptInfodto : aptInfoDtoList) {
                 if (AptInfodto.getNotificationNumber().equals(number)) {
@@ -328,12 +340,18 @@ public class ApiDetailExplorer5 {
                             .aptInfo(aptInfo)
                             .specialReceptionStartDate(AptInfoReceiptdto.getSpecialReceptionStartDate())
                             .specialReceptionEndDate(AptInfoReceiptdto.getSpecialReceptionEndDate())
-                            .priorityApplicableArea(AptInfoReceiptdto.getPriorityApplicableArea())
-                            .priorityGyeonggiArea(AptInfoReceiptdto.getPriorityGyeonggiArea())
-                            .priorityOtherArea(AptInfoReceiptdto.getPriorityOtherArea())
-                            .secondApplicableArea(AptInfoReceiptdto.getSecondApplicableArea())
-                            .secondGyeonggiArea(AptInfoReceiptdto.getSecondGyeonggiArea())
-                            .secondOtherArea(AptInfoReceiptdto.getSecondOtherArea())
+                            .priorityApplicableAreaStart(AptInfoReceiptdto.getPriorityApplicableAreaStart())
+                            .priorityApplicableAreaEnd(AptInfoReceiptdto.getPriorityApplicableAreaEnd())
+                            .priorityGyeonggiAreaStart(AptInfoReceiptdto.getPriorityGyeonggiAreaStart())
+                            .priorityGyeonggiAreaEnd(AptInfoReceiptdto.getPriorityGyeonggiAreaEnd())
+                            .priorityOtherAreaStart(AptInfoReceiptdto.getPriorityOtherAreaStart())
+                            .priorityOtherAreaEnd(AptInfoReceiptdto.getPriorityOtherAreaEnd())
+                            .secondApplicableAreaStart(AptInfoReceiptdto.getSecondApplicableAreaStart())
+                            .secondApplicableAreaEnd(AptInfoReceiptdto.getSecondApplicableAreaEnd())
+                            .secondGyeonggiAreaStart(AptInfoReceiptdto.getSecondGyeonggiAreaStart())
+                            .secondGyeonggiAreaEnd(AptInfoReceiptdto.getSecondGyeonggiAreaEnd())
+                            .secondOtherAreaStart(AptInfoReceiptdto.getSecondOtherAreaStart())
+                            .secondOtherAreaEnd(AptInfoReceiptdto.getSecondOtherAreaEnd())
                             .homepage(AptInfoReceiptdto.getHomepage())
                             .build();
                     aptInfoReceiptRepository.save(aptInfoReceipt);

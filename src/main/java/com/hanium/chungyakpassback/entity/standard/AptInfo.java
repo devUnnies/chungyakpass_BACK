@@ -98,8 +98,12 @@ public class AptInfo {
     @Enumerated(EnumType.STRING)
     private Yn largeDevelopmentzone;//대규모택지개발지구
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Yn privateInMetropolitan;//수도권내민영공공주택지구
+
     @Builder
-    public AptInfo(Integer notificationNumber,AddressLevel1 addressLevel1, AddressLevel2 addressLevel2, String detailAddress, HousingType housingType, Yn specialActPublicHousing, String houseName, String constructionCompany, LocalDate announcementDate, LocalDate winnerAnnouncementDate, LocalDate contractStartDate, LocalDate contractEndDate, YearMonth scheduledOccupancy, Yn speculationOverheated, Yn subscriptionOverheated, Yn atrophyArea, Yn salePriceLimit, Yn maintenanceWork, Yn publicHosingDistrict, Yn publicRentalHousing, Yn largeDevelopmentzone) {
+    public AptInfo(Integer notificationNumber,AddressLevel1 addressLevel1, AddressLevel2 addressLevel2, String detailAddress, HousingType housingType, Yn specialActPublicHousing, String houseName, String constructionCompany, LocalDate announcementDate, LocalDate winnerAnnouncementDate, LocalDate contractStartDate, LocalDate contractEndDate, YearMonth scheduledOccupancy, Yn speculationOverheated, Yn subscriptionOverheated, Yn atrophyArea, Yn salePriceLimit, Yn maintenanceWork, Yn publicHosingDistrict, Yn publicRentalHousing, Yn largeDevelopmentzone,  Yn privateInMetropolitan) {
         this.notificationNumber = notificationNumber;
         this.addressLevel1 = addressLevel1;
         this.addressLevel2 = addressLevel2;
@@ -121,5 +125,6 @@ public class AptInfo {
         this.publicHosingDistrict = publicHosingDistrict;
         this.publicRentalHousing = publicRentalHousing;
         this.largeDevelopmentzone = largeDevelopmentzone;
+        this.privateInMetropolitan = privateInMetropolitan;
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CrawlingAptInfoDto {
     public Integer notificationNumber;
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy.MM", timezone="Asia/Seoul")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM", timezone = "Asia/Seoul")
     public YearMonth scheduledOccupancy;//입주예정월
     public Yn speculationOverheated;//투기과열지구
     public Yn subscriptionOverheated;//청약과열지역
@@ -22,6 +22,7 @@ public class CrawlingAptInfoDto {
     public Yn publicRentalHousing;//공공건설임대주택
     public Yn largeDevelopmentzone;//대규모택지개발지구
     public Yn specialActPublicHousing;//공공주택특별법적용
+    public Yn privateInMetropolitan;
 
     @Builder
     public CrawlingAptInfoDto(String content, Integer number, String string) {
@@ -56,7 +57,7 @@ public class CrawlingAptInfoDto {
                 this.publicHosingDistrict = Yn.y;
 
             } else {
-                this.publicHosingDistrict =Yn.n;
+                this.publicHosingDistrict = Yn.n;
             }
             if (yn2.contains("대규모택지개발지구")) {
                 this.largeDevelopmentzone = Yn.y;
@@ -84,22 +85,23 @@ public class CrawlingAptInfoDto {
                 this.specialActPublicHousing = Yn.n;
             }
 
-//        if (여부3.contains("수도권내민영공공주택지구")) {
-//            수도권내민영공공주택지구 = com.hanium.chungyakpassback.domain.enumtype.여부.y;
-//        } else {
-//            수도권내민영공공주택지구 = com.hanium.chungyakpassback.domain.enumtype.여부.n;
-//        }
+            if (yn2.contains("수도권내민영공공주택지구")) {
+                this.privateInMetropolitan = Yn.y;
+            } else {
+                this.privateInMetropolitan = Yn.n;
+            }
 
         } else {
-            this.atrophyArea =Yn.n;
+            this.atrophyArea = Yn.n;
             this.subscriptionOverheated = Yn.n;
             this.speculationOverheated = Yn.n;
             this.salePriceLimit = Yn.n;
             this.maintenanceWork = Yn.n;
-            this.publicHosingDistrict =Yn.n;
-            this.publicRentalHousing= Yn.n;
+            this.publicHosingDistrict = Yn.n;
+            this.publicRentalHousing = Yn.n;
             this.largeDevelopmentzone = Yn.n;
             this.specialActPublicHousing = Yn.n;
+            this.privateInMetropolitan = Yn.n;
         }
     }
 //    public AptInfo toEntity() {
