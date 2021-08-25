@@ -17,10 +17,13 @@ public interface GeneralPrivateVerificationService {
 
     public boolean 특이사항충족();
 
+    public boolean 인근지역여부();
 
     public boolean 예치금액충족();
 
     public boolean 가입기간충족();
+
+
 
 
     // public boolean 규제지역로직();

@@ -48,6 +48,11 @@ class 일반민영검증seviceTest {
     public void 가입기간충족() {
         System.out.println("가입기간충족: "+GeneralPrivateVerificationservice.가입기간충족());
     }
+
+    @Test
+    public void 인근지역여부() {
+        System.out.println("인근지역여부: "+GeneralPrivateVerificationservice.인근지역여부());
+    }
     @Test
     public void 특이사항충족() {
         System.out.println("특이사항충족: "+GeneralPrivateVerificationservice.특이사항충족());

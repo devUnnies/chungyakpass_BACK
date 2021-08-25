@@ -84,7 +84,6 @@ public class CrawlingAptInfoDto {
             } else {
                 this.specialActPublicHousing = Yn.n;
             }
-
             if (yn2.contains("수도권내민영공공주택지구")) {
                 this.privateInMetropolitan = Yn.y;
             } else {

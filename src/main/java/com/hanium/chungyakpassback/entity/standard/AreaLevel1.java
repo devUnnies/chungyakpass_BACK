@@ -20,7 +20,7 @@ public class AreaLevel1 {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private AddressLevel1 area_level1;
+    private AddressLevel1 addressLevel1;
 
     @Column
     private int nearbyArea;
@@ -34,8 +34,8 @@ public class AreaLevel1 {
     private Yn metropolitanArea;
 
     @Builder
-    public AreaLevel1(AddressLevel1 area_level1, int nearbyArea, DepositAmountRegionClassification depositAmountArea, Yn metropolitanArea) {
-        this.area_level1 = area_level1;
+    public AreaLevel1(AddressLevel1 addressLevel1, int nearbyArea, DepositAmountRegionClassification depositAmountArea, Yn metropolitanArea) {
+        this.addressLevel1 = addressLevel1;
         this.nearbyArea = nearbyArea;
         this.depositAmountArea = depositAmountArea;
         this.metropolitanArea = metropolitanArea;

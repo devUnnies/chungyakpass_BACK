@@ -9,6 +9,7 @@ import com.hanium.chungyakpassback.entity.standard.AreaLevel1;
 import com.hanium.chungyakpassback.repository.input.*;
 import com.hanium.chungyakpassback.repository.standard.AptInfoRepository;
 import com.hanium.chungyakpassback.repository.standard.AreaLevel1Repository;
+import com.hanium.chungyakpassback.repository.standard.PriorityDepositAmountRepository;
 import com.hanium.chungyakpassback.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +27,14 @@ import static com.hanium.chungyakpassback.entity.enumtype.AddressLevel1.서울;
 @Service
 public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVerificationService {
 
-    @Autowired
-    HouseholdMemberRepository householdMemberRepository;//세대구성원
-    HouseholdRepository householdRepository;//세대 리포지토리
-    UserBankbookRepository userBankbookRepository;//청약통장
-    AptInfoRepository aptInfoRepository;//아파트 분양정보
-    HouseMemberApplicationDetailsRepository houseMemberApplicationDetailsRepository;//세대구성원_청약신청이력repository
-    AreaLevel1Repository areaLevel1Repository;
-    UserRepository userRepository;
+    final HouseholdMemberRepository householdMemberRepository;//세대구성원
+    final HouseholdRepository householdRepository;//세대 리포지토리
+    final UserBankbookRepository userBankbookRepository;//청약통장
+    final PriorityDepositAmountRepository priorityDepositAmountRepository;
+    final AreaLevel1Repository areaLevel1Repository;
+    final UserRepository userRepository;//청약통장
+    final AptInfoRepository aptInfoRepository;//아파트 분양정보
+    final HouseMemberApplicationDetailsRepository houseMemberApplicationDetailsRepository;//세대구성원_청약신청이력repository
 
     // 객체 생성
     //회원_청약통장 청약통장 = 회원_청약통장.builder().청약통장종류(청약통장종류.청약저축).build();
@@ -73,13 +74,13 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
 
     @Override
     public boolean 청약통장충족여부() {
-        if (aptInfo.equals(HousingType.국민)) { // 주택유형이 국민일 경우 청약통장종류는 주택청약종합저축 or 청약저축이어야 true
+        if (aptInfoRepository.findById(2021000580).get().getHousingType().equals(HousingType.국민)) { // 주택유형이 국민일 경우 청약통장종류는 주택청약종합저축 or 청약저축이어야 true
             if (userBankbook.getBankbookType().equals(BankbookType.주택청약종합저축) || userBankbook.getBankbookType().equals(BankbookType.청약저축)) {
                 return true;
             }
         }
 
-        if (aptInfo.equals(HousingType.민영)) {// 주택유형이 민영일 경우 청약통장종류는 주택청약종합저축 or 청약예금 or 청약부금이어야 true
+        if (aptInfoRepository.findById(2021000580).get().getHousingType().equals(HousingType.민영)) {// 주택유형이 민영일 경우 청약통장종류는 주택청약종합저축 or 청약예금 or 청약부금이어야 true
             if (userBankbook.getBankbookType().equals(BankbookType.주택청약종합저축) || userBankbook.getBankbookType().equals(BankbookType.청약예금) || userBankbook.getBankbookType().equals(BankbookType.청약부금)) {
                 return true;
             }
@@ -88,6 +89,18 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
         return false; // 그 이외에는 false
     }
 
+    @Override
+    public boolean 인근지역여부() {//아파트 분양정보의 인근지역과 거주지의 인근지역이 같다면
+        AddressLevel1 userAdressLevel1 = user.getHouseMember().getHouse().getAddressLevel1();
+        AddressLevel1 aptAddressLevel1 = aptInfo.getAddressLevel1();
+
+        AreaLevel1 userAreaLevel1 = areaLevel1Repository.findByAddressLevel1(userAdressLevel1);
+        AreaLevel1 aptAreaLevel1 = areaLevel1Repository.findByAddressLevel1(aptAddressLevel1);
+
+        if (userAdressLevel1.equals(aptAddressLevel1))
+            return true;
+        else return false;
+    }
     @Override
     public int 만나이계산() {
         // 생일이 지났는지 여부를 판단
@@ -127,7 +140,7 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
         return false; // 그 외에는 false
     }
 
-    // 가입기간충족 여부
+    @Override
     public boolean 가입기간충족() {
         User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
         UserBankbook userBankbook = userBankbookRepository.findByUser_Id(user.getId()).get(); // user_id(fk)를 통해서 해당하는 user의 통장 정보를 가져옴
@@ -146,6 +159,7 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
                 return true;
             }
             if (joinPeriod >= 12 && (aptInfo.getSpeculationOverheated().equals(Yn.n) && aptInfo.getSubscriptionOverheated().equals(Yn.n) && aptInfo.getAtrophyArea().equals(Yn.n)))
+
                 return false;
         }
         return false;
@@ -159,58 +173,59 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
     }
 
     // 예치금액충족 여부
-    public boolean 예치금액충족() {
-        User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
-        UserBankbook userBankbook = userBankbookRepository.findByUser_Id(user.getId()).get(); // user_id(fk)를 통해서 해당하는 user의 통장 정보를 가져옴
+        public boolean 예치금액충족() {
+            User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
+            UserBankbook userBankbook = userBankbookRepository.findByUser_Id(user.getId()).get(); // user_id(fk)를 통해서 해당하는 user의 통장 정보를 가져옴
 
-        int housingTypeChange = 주택형변환();
-        System.out.println(user.getHouseMember().getHouse().getAddressLevel1());
-        System.out.println(housingTypeChange);
-        System.out.println(userBankbook.getDeposit());
+            int housingTypeChange = 주택형변환();
+            System.out.println(user.getHouseMember().getHouse().getAddressLevel1());
+            System.out.println(housingTypeChange);
+            System.out.println(userBankbook.getDeposit());
 
-        if ((user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.서울) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.부산))) { // 지역_레벨1이 서울 or 부산일 경우
-            if (housingTypeChange <= 85 && userBankbook.getDeposit() >= 3000000) {
-                return true;
-            }
-            if (housingTypeChange <= 102 && userBankbook.getDeposit() >= 6000000) {
-                return true;
-            }
-            if (housingTypeChange <= 135 && userBankbook.getDeposit() >= 10000000) {
-                return true;
-            }
-            if (housingTypeChange > 135 && userBankbook.getDeposit() >= 15000000) {
-                return true;
-            }
-        } else if ((user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.인천) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.대구) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.울산) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.대전) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.광주))) { // 지역_레벨1이 기타광역시에 해당할 경우
-            if (housingTypeChange <= 85 && userBankbook.getDeposit() >= 2500000) {
-                return true;
-            }
-            if (housingTypeChange <= 102 && userBankbook.getDeposit() >= 4000000) {
-                return true;
-            }
-            if (housingTypeChange <= 135 && userBankbook.getDeposit() >= 7000000) {
-                return true;
-            }
-            if (housingTypeChange > 135 && userBankbook.getDeposit() >= 10000000) {
-                return true;
-            }
+            if ((user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.서울) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.부산))) { // 지역_레벨1이 서울 or 부산일 경우
+                if (housingTypeChange <= 85 && userBankbook.getDeposit() >= 3000000) {
+                    return true;
+                }
+                if (housingTypeChange <= 102 && userBankbook.getDeposit() >= 6000000) {
+                    return true;
+                }
+                if (housingTypeChange <= 135 && userBankbook.getDeposit() >= 10000000) {
+                    return true;
+                }
+                if (housingTypeChange > 135 && userBankbook.getDeposit() >= 15000000) {
+                    return true;
+                }
+            } else if ((user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.인천) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.대구) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.울산) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.대전) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.광주))) { // 지역_레벨1이 기타광역시에 해당할 경우
+                if (housingTypeChange <= 85 && userBankbook.getDeposit() >= 2500000) {
+                    return true;
+                }
+                if (housingTypeChange <= 102 && userBankbook.getDeposit() >= 4000000) {
+                    return true;
+                }
+                if (housingTypeChange <= 135 && userBankbook.getDeposit() >= 7000000) {
+                    return true;
+                }
+                if (housingTypeChange > 135 && userBankbook.getDeposit() >= 10000000) {
+                    return true;
+                }
 
-        } else { // 지역_레벨1이 기타시군일 경우
-            if (housingTypeChange <= 85 && userBankbook.getDeposit() >= 2000000) {
-                return true;
+            } else { // 지역_레벨1이 기타시군일 경우
+                if (housingTypeChange <= 85 && userBankbook.getDeposit() >= 2000000) {
+                    return true;
+                }
+                if (housingTypeChange <= 102 && userBankbook.getDeposit() >= 3000000) {
+                    return true;
+                }
+                if (housingTypeChange <= 135 && userBankbook.getDeposit() >= 4000000) {
+                    return true;
+                }
+                if (housingTypeChange > 135 && userBankbook.getDeposit() >= 5000000) {
+                    return true;
+                }
             }
-            if (housingTypeChange <= 102 && userBankbook.getDeposit() >= 3000000) {
-                return true;
-            }
-            if (housingTypeChange <= 135 && userBankbook.getDeposit() >= 4000000) {
-                return true;
-            }
-            if (housingTypeChange > 135 && userBankbook.getDeposit() >= 5000000) {
-                return true;
-            }
+            return false;
         }
-        return false;
-    }
+
 
     @Override
     public boolean 특이사항충족() {
@@ -283,7 +298,6 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
 //        return 세대repository.findAll();
 //    }
 //
-
     @Override
     public boolean 전세대원5년이내당첨이력존재여부() {
         LocalDate now = LocalDate.now();
