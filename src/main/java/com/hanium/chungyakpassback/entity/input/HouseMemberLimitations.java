@@ -29,30 +29,30 @@ public class HouseMemberLimitations {
     private LocalDate windDate;
 
     @Column
-    private LocalDate reWinning_restriction;
+    private LocalDate reWinningRestriction;
 
     @Column
     @Enumerated(EnumType.STRING)
-    private SpecialSupplyLimit special_supply_limit;
+    private SpecialSupplyLimit specialSupplyLimit;
 
     @Column
-    private LocalDate unqualified_subscriber_limit;
+    private LocalDate unqualifiedSubscriberLimit;
 
     @Column
     private LocalDate firstPlaceLimit;
 
     @Column
-    private LocalDate additionalPointSystem_winningLimit;
+    private LocalDate pointSystemWinningLimit;
 
     @Builder
-    public HouseMemberLimitations(com.hanium.chungyakpassback.entity.input.HouseMember houseMember, com.hanium.chungyakpassback.entity.input.HouseMemberApplicationDetails houseMemberApplicationDetails, LocalDate windDate, LocalDate reWinning_restriction, SpecialSupplyLimit special_supply_limit, LocalDate unqualified_subscriber_limit, LocalDate firstPlaceLimit, LocalDate additionalPointSystem_winningLimit) {
+    public HouseMemberLimitations(com.hanium.chungyakpassback.entity.input.HouseMember houseMember, com.hanium.chungyakpassback.entity.input.HouseMemberApplicationDetails houseMemberApplicationDetails, LocalDate windDate, LocalDate reWinningRestriction, SpecialSupplyLimit specialSupplyLimit, LocalDate unqualifiedSubscriberLimit, LocalDate firstPlaceLimit, LocalDate pointSystemWinningLimit) {
         HouseMember = houseMember;
         HouseMemberApplicationDetails = houseMemberApplicationDetails;
         this.windDate = windDate;
-        this.reWinning_restriction = reWinning_restriction;
-        this.special_supply_limit = special_supply_limit;
-        this.unqualified_subscriber_limit = unqualified_subscriber_limit;
+        this.reWinningRestriction = reWinningRestriction;
+        this.specialSupplyLimit = specialSupplyLimit;
+        this.unqualifiedSubscriberLimit = unqualifiedSubscriberLimit;
         this.firstPlaceLimit = firstPlaceLimit;
-        this.additionalPointSystem_winningLimit = additionalPointSystem_winningLimit;
+        this.pointSystemWinningLimit = pointSystemWinningLimit;
     }
 }

@@ -21,7 +21,7 @@ public class SubscriptionQualificationsOldParentSupport {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscription_qualifications_id")
-    private SubscriptionQualifications SubscriptionQualifications;
+    private SubscriptionQualifications subscriptionQualifications;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -30,7 +30,7 @@ public class SubscriptionQualificationsOldParentSupport {
 
     @Builder
     public SubscriptionQualificationsOldParentSupport(com.hanium.chungyakpassback.entity.input.SubscriptionQualifications subscriptionQualifications, Yn oldParentSupportYn) {
-        SubscriptionQualifications = subscriptionQualifications;
+        this.subscriptionQualifications = subscriptionQualifications;
         this.oldParentSupportYn = oldParentSupportYn;
     }
 }

@@ -23,11 +23,11 @@ public class HouseMemberIncome {
     private HouseMember HouseMember;
 
     @Column
-    private int average_income;
+    private int averageIncome;
 
     @Builder
-    public HouseMemberIncome(com.hanium.chungyakpassback.entity.input.HouseMember houseMember, int average_income) {
+    public HouseMemberIncome(com.hanium.chungyakpassback.entity.input.HouseMember houseMember, int averageIncome) {
         HouseMember = houseMember;
-        this.average_income = average_income;
+        this.averageIncome = averageIncome;
     }
 }

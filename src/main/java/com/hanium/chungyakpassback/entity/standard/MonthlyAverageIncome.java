@@ -20,7 +20,7 @@ public class MonthlyAverageIncome {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private Yn application_public_housing_specialLaws;
+    private Yn applicationPublicHousingSpecialLaws;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -35,42 +35,42 @@ public class MonthlyAverageIncome {
     private Yn dualIncome;
 
     @Column
-    private Integer monthly_average_income_percentage_excess;
+    private Integer monthlyAverageIncomeExcess;
 
     @Column
-    private int monthly_average_income_percentage_below;
+    private int monthlyAverageIncomeBelow;
 
     @Column
-    private Integer averageMonthlyIncome_3peopleLess_excess;
+    private Integer averageMonthlyIncome3peopleLessExcess;
 
     @Column
-    private int averageMonthlyIncome_3peopleLess_below;
+    private int averageMonthlyIncome3peopleLessBelow;
 
     @Column
-    private Integer averageMonthlyIncome_4peopleLess_excess;
+    private Integer averageMonthlyIncome4peopleLessExcess;
 
     @Column
-    private Integer averageMonthlyIncome_4peopleLess_below;
+    private Integer averageMonthlyIncome4peopleLessBelow;
 
     @Column
-    private Integer averageMonthlyIncome_5peopleLess_excess;
+    private Integer averageMonthlyIncome5peopleLessExcess;
 
     @Column
-    private Integer averageMonthlyIncome_5peopleLess_below;
+    private Integer averageMonthlyIncome5peopleLessBelow;
 
     @Builder
-    public MonthlyAverageIncome(Yn application_public_housing_specialLaws, SpecialSupplyType specialSupplyType, SupplyMethod supplyMethod, Yn dualIncome, Integer monthly_average_income_percentage_excess, int monthly_average_income_percentage_below, Integer averageMonthlyIncome_3peopleLess_excess, int averageMonthlyIncome_3peopleLess_below, Integer averageMonthlyIncome_4peopleLess_excess, Integer averageMonthlyIncome_4peopleLess_below, Integer averageMonthlyIncome_5peopleLess_excess, Integer averageMonthlyIncome_5peopleLess_below) {
-        this.application_public_housing_specialLaws = application_public_housing_specialLaws;
+    public MonthlyAverageIncome(Yn applicationPublicHousingSpecialLaws, SpecialSupplyType specialSupplyType, SupplyMethod supplyMethod, Yn dualIncome, Integer monthlyAverageIncomeExcess, int monthlyAverageIncomeBelow, Integer averageMonthlyIncome3peopleLessExcess, int averageMonthlyIncome3peopleLessBelow, Integer averageMonthlyIncome4peopleLessExcess, Integer averageMonthlyIncome4peopleLessBelow, Integer averageMonthlyIncome5peopleLessExcess, Integer averageMonthlyIncome5peopleLessBelow) {
+        this.applicationPublicHousingSpecialLaws = applicationPublicHousingSpecialLaws;
         this.specialSupplyType = specialSupplyType;
         this.supplyMethod = supplyMethod;
         this.dualIncome = dualIncome;
-        this.monthly_average_income_percentage_excess = monthly_average_income_percentage_excess;
-        this.monthly_average_income_percentage_below = monthly_average_income_percentage_below;
-        this.averageMonthlyIncome_3peopleLess_excess = averageMonthlyIncome_3peopleLess_excess;
-        this.averageMonthlyIncome_3peopleLess_below = averageMonthlyIncome_3peopleLess_below;
-        this.averageMonthlyIncome_4peopleLess_excess = averageMonthlyIncome_4peopleLess_excess;
-        this.averageMonthlyIncome_4peopleLess_below = averageMonthlyIncome_4peopleLess_below;
-        this.averageMonthlyIncome_5peopleLess_excess = averageMonthlyIncome_5peopleLess_excess;
-        this.averageMonthlyIncome_5peopleLess_below = averageMonthlyIncome_5peopleLess_below;
+        this.monthlyAverageIncomeExcess = monthlyAverageIncomeExcess;
+        this.monthlyAverageIncomeBelow = monthlyAverageIncomeBelow;
+        this.averageMonthlyIncome3peopleLessExcess = averageMonthlyIncome3peopleLessExcess;
+        this.averageMonthlyIncome3peopleLessBelow = averageMonthlyIncome3peopleLessBelow;
+        this.averageMonthlyIncome4peopleLessExcess = averageMonthlyIncome4peopleLessExcess;
+        this.averageMonthlyIncome4peopleLessBelow = averageMonthlyIncome4peopleLessBelow;
+        this.averageMonthlyIncome5peopleLessExcess = averageMonthlyIncome5peopleLessExcess;
+        this.averageMonthlyIncome5peopleLessBelow = averageMonthlyIncome5peopleLessBelow;
     }
 }

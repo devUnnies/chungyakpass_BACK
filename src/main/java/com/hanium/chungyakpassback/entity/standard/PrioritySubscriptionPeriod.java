@@ -29,31 +29,31 @@ public class PrioritySubscriptionPeriod {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private Yn overheated_speculation_zone;
+    private Yn speculationOverheated;
 
     @Column
     @Enumerated(EnumType.STRING)
-    private Yn overheated_subscription_area;
+    private Yn subscriptionOverheated;
 
     @Column
     @Enumerated(EnumType.STRING)
-    private Yn atrophy_area;
+    private Yn atrophyArea;
 
     @Column
     @Enumerated(EnumType.STRING)
     private Yn metropolitanAreaYn;
 
     @Column
-    private int subscription_period;
+    private int subscriptionPeriod;
 
     @Builder
-    public PrioritySubscriptionPeriod(SupplyType supplyType, SpecialSupplyType specialSupplyType, Yn overheated_speculation_zone, Yn overheated_subscription_area, Yn atrophy_area, Yn metropolitanAreaYn, int subscription_period) {
+    public PrioritySubscriptionPeriod(SupplyType supplyType, SpecialSupplyType specialSupplyType, Yn speculationOverheated, Yn subscriptionOverheated, Yn atrophy_area, Yn metropolitanAreaYn, int subscriptionPeriod) {
         this.supplyType = supplyType;
         this.specialSupplyType = specialSupplyType;
-        this.overheated_speculation_zone = overheated_speculation_zone;
-        this.overheated_subscription_area = overheated_subscription_area;
-        this.atrophy_area = atrophy_area;
+        this.speculationOverheated = speculationOverheated;
+        this.subscriptionOverheated = subscriptionOverheated;
+        this.atrophyArea = atrophy_area;
         this.metropolitanAreaYn = metropolitanAreaYn;
-        this.subscription_period = subscription_period;
+        this.subscriptionPeriod = subscriptionPeriod;
     }
 }

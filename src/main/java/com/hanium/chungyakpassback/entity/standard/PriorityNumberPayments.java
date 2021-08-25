@@ -28,31 +28,31 @@ public class PriorityNumberPayments {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private Yn overheated_speculation_zone;
+    private Yn speculationOverheated;
 
     @Column
     @Enumerated(EnumType.STRING)
-    private Yn overheated_subscription_area;
+    private Yn subscriptionOverheated;
 
     @Column
     @Enumerated(EnumType.STRING)
-    private Yn atrophy_area;
+    private Yn atrophyArea;
 
     @Column
     @Enumerated(EnumType.STRING)
     private Yn metropolitanAreaYn;
 
     @Column
-    private int number_payments;
+    private int countPayments;
 
     @Builder
     public PriorityNumberPayments(SupplyType supplyType, SpecialSupplyType specialSupplyType, Yn overheated_speculation_zone, Yn overheated_subscription_area, Yn atrophy_area, Yn metropolitanAreaYn, int number_payments) {
         this.supplyType = supplyType;
         this.specialSupplyType = specialSupplyType;
-        this.overheated_speculation_zone = overheated_speculation_zone;
-        this.overheated_subscription_area = overheated_subscription_area;
-        this.atrophy_area = atrophy_area;
+        this.speculationOverheated = overheated_speculation_zone;
+        this.subscriptionOverheated = overheated_subscription_area;
+        this.atrophyArea = atrophy_area;
         this.metropolitanAreaYn = metropolitanAreaYn;
-        this.number_payments = number_payments;
+        this.countPayments = number_payments;
     }
 }

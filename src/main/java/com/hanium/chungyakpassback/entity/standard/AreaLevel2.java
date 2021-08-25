@@ -22,11 +22,11 @@ public class AreaLevel2 {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private AddressLevel2 area_level2;
+    private AddressLevel2 areaLevel2;
 
     @Builder
-    public AreaLevel2(com.hanium.chungyakpassback.entity.standard.AreaLevel1 areaLevel1, AddressLevel2 area_level2) {
+    public AreaLevel2(com.hanium.chungyakpassback.entity.standard.AreaLevel1 areaLevel1, AddressLevel2 areaLevel2) {
         AreaLevel1 = areaLevel1;
-        this.area_level2 = area_level2;
+        this.areaLevel2 = areaLevel2;
     }
 }

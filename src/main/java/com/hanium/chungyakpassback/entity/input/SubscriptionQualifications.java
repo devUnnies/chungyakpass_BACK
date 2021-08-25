@@ -4,7 +4,7 @@ import com.hanium.chungyakpassback.entity.enumtype.SupplyType;
 import com.hanium.chungyakpassback.entity.enumtype.Ranking;
 import com.hanium.chungyakpassback.entity.enumtype.Yn;
 import com.hanium.chungyakpassback.entity.enumtype.SpecialSupplyType;
-import com.hanium.chungyakpassback.entity.standard.AptInfo;
+import com.hanium.chungyakpassback.entity.apt.AptInfo;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -57,13 +57,13 @@ public class SubscriptionQualifications {
     private int subscriptionPeriod;
 
     @Column
-    private boolean result_subscriptionEligibility;
+    private boolean resultSubscriptionEligibility;
 
     @Column
-    private int result_score;
+    private int resultScore;
 
     @Builder
-    public SubscriptionQualifications(User user, AptInfo AptInfo, SupplyType supplyType, SpecialSupplyType specialSupplyType, Ranking ranking, String housingType, Yn housingPrescription, int dependent, int subscriptionPeriod, boolean result_subscriptionEligibility, int result_score) {
+    public SubscriptionQualifications(User user, AptInfo AptInfo, SupplyType supplyType, SpecialSupplyType specialSupplyType, Ranking ranking, String housingType, Yn housingPrescription, int dependent, int subscriptionPeriod, boolean resultSubscriptionEligibility, int resultScore) {
         this.user = user;
         this.AptInfo = AptInfo;
         this.supplyType = supplyType;
@@ -73,7 +73,7 @@ public class SubscriptionQualifications {
         this.housingPrescription = housingPrescription;
         this.dependent = dependent;
         this.subscriptionPeriod = subscriptionPeriod;
-        this.result_subscriptionEligibility = result_subscriptionEligibility;
-        this.result_score = result_score;
+        this.resultSubscriptionEligibility = resultSubscriptionEligibility;
+        this.resultScore = resultScore;
     }
 }

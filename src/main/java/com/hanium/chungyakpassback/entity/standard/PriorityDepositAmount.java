@@ -17,10 +17,10 @@ public class PriorityDepositAmount {
     private Long id;
 
     @Column
-    private Integer area_excess;
+    private Integer areaExcess;
 
     @Column
-    private Integer area_below;
+    private Integer areaBelow;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -30,9 +30,9 @@ public class PriorityDepositAmount {
     private int depositAmount;
 
     @Builder
-    public PriorityDepositAmount(Integer area_excess, Integer area_below, DepositAmountRegionClassification depositAmountArea, int depositAmount) {
-        this.area_excess = area_excess;
-        this.area_below = area_below;
+    public PriorityDepositAmount(Integer areaExcess, Integer areaBelow, DepositAmountRegionClassification depositAmountArea, int depositAmount) {
+        this.areaExcess = areaExcess;
+        this.areaBelow = areaBelow;
         this.depositAmountArea = depositAmountArea;
         this.depositAmount = depositAmount;
     }

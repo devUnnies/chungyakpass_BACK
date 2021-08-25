@@ -33,7 +33,7 @@ public class HouseMemberApplicationDetails {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private SpecialSupplyType special_supply_type;
+    private SpecialSupplyType specialSupplyType;
 
     @Column
     private String housingType;
@@ -47,7 +47,7 @@ public class HouseMemberApplicationDetails {
     private Result result;
 
     @Column
-    private Integer preliminary_number;
+    private Integer preliminaryNumber;
 
     @Column
     private LocalDate winDate;
@@ -61,15 +61,15 @@ public class HouseMemberApplicationDetails {
     private Yn cancelwinYn;
 
     @Builder
-    public HouseMemberApplicationDetails(com.hanium.chungyakpassback.entity.input.HouseMember houseMember, String houseName, SupplyType supplyType, SpecialSupplyType special_supply_type, String housingType, Ranking ranking, Result result, Integer preliminary_number, LocalDate winDate, RaffleMethod lotteryMethod, Yn cancelwinYn) {
+    public HouseMemberApplicationDetails(com.hanium.chungyakpassback.entity.input.HouseMember houseMember, String houseName, SupplyType supplyType, SpecialSupplyType specialSupplyType, String housingType, Ranking ranking, Result result, Integer preliminaryNumber, LocalDate winDate, RaffleMethod lotteryMethod, Yn cancelwinYn) {
         HouseMember = houseMember;
         this.houseName = houseName;
         this.supplyType = supplyType;
-        this.special_supply_type = special_supply_type;
+        this.specialSupplyType = specialSupplyType;
         this.housingType = housingType;
         this.ranking = ranking;
         this.result = result;
-        this.preliminary_number = preliminary_number;
+        this.preliminaryNumber = preliminaryNumber;
         this.winDate = winDate;
         this.lotteryMethod = lotteryMethod;
         this.cancelwinYn = cancelwinYn;

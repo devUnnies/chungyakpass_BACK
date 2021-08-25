@@ -20,7 +20,7 @@ public class SubscriptionQualificationsMultiChildHousehold {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscription_qualifications_id")
-    private SubscriptionQualifications SubscriptionQualifications;
+    private SubscriptionQualifications subscriptionQualifications;
 
     @Column
     private int numberMinors;
@@ -34,7 +34,7 @@ public class SubscriptionQualificationsMultiChildHousehold {
 
     @Builder
     public SubscriptionQualificationsMultiChildHousehold(com.hanium.chungyakpassback.entity.input.SubscriptionQualifications subscriptionQualifications, int numberMinors, int numberInfantsChildren, MultiChildHouseholdType multiChildHouseholdType) {
-        SubscriptionQualifications = subscriptionQualifications;
+        this.subscriptionQualifications = subscriptionQualifications;
         this.numberMinors = numberMinors;
         this.numberInfantsChildren = numberInfantsChildren;
         this.multiChildHouseholdType = multiChildHouseholdType;

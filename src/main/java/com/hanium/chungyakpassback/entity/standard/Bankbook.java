@@ -23,20 +23,20 @@ public class Bankbook {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private Yn national_housing_supply_possible;
+    private Yn nationalHousingSupplyPossible;
 
     @Column
     @Enumerated(EnumType.STRING)
-    private Yn private_housing_supplyIs_possible;
+    private Yn privateHousingSupplyIsPossible;
 
     @Column
     private Integer restrictionSaleArea;
 
     @Builder
-    public Bankbook(BankbookType bankbookType, Yn national_housing_supply_possible, Yn private_housing_supplyIs_possible, Integer restrictionSaleArea) {
+    public Bankbook(BankbookType bankbookType, Yn nationalHousingSupplyPossible, Yn privateHousingSupplyIsPossible, Integer restrictionSaleArea) {
         this.bankbookType = bankbookType;
-        this.national_housing_supply_possible = national_housing_supply_possible;
-        this.private_housing_supplyIs_possible = private_housing_supplyIs_possible;
+        this.nationalHousingSupplyPossible = nationalHousingSupplyPossible;
+        this.privateHousingSupplyIsPossible = privateHousingSupplyIsPossible;
         this.restrictionSaleArea = restrictionSaleArea;
     }
 }

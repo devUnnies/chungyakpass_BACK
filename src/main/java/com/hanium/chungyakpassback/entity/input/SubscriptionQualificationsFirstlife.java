@@ -21,7 +21,7 @@ public class SubscriptionQualificationsFirstlife {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscription_qualifications_id")
-    private SubscriptionQualifications SubscriptionQualifications;
+    private SubscriptionQualifications subscriptionQualifications;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -32,7 +32,7 @@ public class SubscriptionQualificationsFirstlife {
 
     @Builder
     public SubscriptionQualificationsFirstlife(com.hanium.chungyakpassback.entity.input.SubscriptionQualifications subscriptionQualifications, Yn incomeTax5YearsMoreYn, int savingsAmount) {
-        SubscriptionQualifications = subscriptionQualifications;
+        this.subscriptionQualifications = subscriptionQualifications;
         this.incomeTax5YearsMoreYn = incomeTax5YearsMoreYn;
         this.savingsAmount = savingsAmount;
     }

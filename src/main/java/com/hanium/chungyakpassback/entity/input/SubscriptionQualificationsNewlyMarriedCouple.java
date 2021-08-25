@@ -21,11 +21,11 @@ public class SubscriptionQualificationsNewlyMarriedCouple {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subscription_qualifications_id")
-    private SubscriptionQualifications SubscriptionQualifications;
+    private SubscriptionQualifications subscriptionQualifications;
 
     @Column
     @Enumerated(EnumType.STRING)
-    private NewlywedType NewlywedType;
+    private NewlywedType newlywedType;
 
     @Column
     private int numberMinors;
@@ -35,8 +35,8 @@ public class SubscriptionQualificationsNewlyMarriedCouple {
 
     @Builder
     public SubscriptionQualificationsNewlyMarriedCouple(com.hanium.chungyakpassback.entity.input.SubscriptionQualifications subscriptionQualifications, com.hanium.chungyakpassback.entity.enumtype.NewlywedType newlywedType, int numberMinors, Integer singleParentFamilyChildAge) {
-        SubscriptionQualifications = subscriptionQualifications;
-        NewlywedType = newlywedType;
+        this.subscriptionQualifications = subscriptionQualifications;
+        this.newlywedType = newlywedType;
         this.numberMinors = numberMinors;
         this.singleParentFamilyChildAge = singleParentFamilyChildAge;
     }

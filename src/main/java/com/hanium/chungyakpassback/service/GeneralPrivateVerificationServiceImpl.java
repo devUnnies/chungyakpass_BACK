@@ -131,27 +131,29 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
 
     @Override
     public boolean termsOfPolicy() {
-        User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
-        UserBankbook userBankbook = userBankbookRepository.findByUser_Id(user.getId()).get(); // user_id(fk)를 통해서 해당하는 user의 통장 정보를 가져옴
+            User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
+            UserBankbook userBankbook = userBankbookRepository.findByUser_Id(user.getId()).get(); // user_id(fk)를 통해서 해당하는 user의 통장 정보를 가져옴
+            AptInfo aptInfo = aptInfoRepository.findById(2021000043).get();
 
-        LocalDate now = LocalDate.now();
-        LocalDate joinDate = userBankbook.getJoinDate();
-        Period period = joinDate.until(now);
-        int joinPeriod = period.getYears() * 12 + period.getMonths(); // 가입날짜를 받아와서 현재까지의 개월수를 계산
+            LocalDate now = LocalDate.now();
+            LocalDate joinDate = userBankbook.getJoinDate();
+            Period period = joinDate.until(now);
+            int joinPeriod = period.getYears() * 12 + period.getMonths(); // 가입날짜를 받아와서 현재까지의 개월수를 계산
 
-        System.out.println(joinPeriod);
-        if (userBankbook.getValidYn().equals(Yn.y)) {
-            if (joinPeriod >= 24 && (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y))) {
-                return true;
+            System.out.println(joinPeriod);
+            if (userBankbook.getValidYn().equals(Yn.y)) {
+                if (joinPeriod >= 24 && (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y))) {
+                    return true;
+                }
+                if (joinPeriod >= 1 && (aptInfo.getSpeculationOverheated().equals(Yn.n) && aptInfo.getSubscriptionOverheated().equals(Yn.n) && aptInfo.getAtrophyArea().equals(Yn.y))) { // 위축지역, 1개월 이상 충족 (수도권 여부 조건 추가해야됨)
+                    return true;
+                }
+                if (joinPeriod >= 12 && (aptInfo.getSpeculationOverheated().equals(Yn.n) && aptInfo.getSubscriptionOverheated().equals(Yn.n) && aptInfo.getAtrophyArea().equals(Yn.n)))
+
+                    return false;
             }
-            if (joinPeriod >= 1 && (aptInfo.getSpeculationOverheated().equals(Yn.n) && aptInfo.getSubscriptionOverheated().equals(Yn.n) && aptInfo.getAtrophyArea().equals(Yn.y))) { // 위축지역, 1개월 이상 충족 (수도권 여부 조건 추가해야됨)
-                return true;
-            }
-            if (joinPeriod >= 12 && (aptInfo.getSpeculationOverheated().equals(Yn.n) && aptInfo.getSubscriptionOverheated().equals(Yn.n) && aptInfo.getAtrophyArea().equals(Yn.n)))
+            return false;
 
-                return false;
-        }
-        return false;
     }
 
     public int houseTypeConverter() { // . 기준으로 주택형 자른후 면적 비교를 위해서 int 형으로 형변환
