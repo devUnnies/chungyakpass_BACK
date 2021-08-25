@@ -12,7 +12,6 @@ import com.hanium.chungyakpassback.repository.standard.AreaLevel1Repository;
 import com.hanium.chungyakpassback.repository.standard.PriorityDepositAmountRepository;
 import com.hanium.chungyakpassback.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,7 +19,6 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hanium.chungyakpassback.entity.enumtype.AddressLevel1.부산;
 import static com.hanium.chungyakpassback.entity.enumtype.AddressLevel1.서울;
 
 @RequiredArgsConstructor
@@ -38,7 +36,7 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
 
     // 객체 생성
     //회원_청약통장 청약통장 = 회원_청약통장.builder().청약통장종류(청약통장종류.청약저축).build();
-    UserBankbook userBankbook = UserBankbook.builder().bankbookType(BankbookType.주택청약종합저축).deposit(500).validYn(Yn.y).joinDate(LocalDate.of(2021, 06, 28)).build();
+    UserBankbook userBankbook = UserBankbook.builder().bankbookType(BankbookType.주택청약종합저축).deposit(500).validYn(Yn.y).joinDate(LocalDate.of(2021, 6, 28)).build();
 
     //세대 세대1 = 세대.builder().build();
     House house = House.builder().addressLevel1(서울).build();
@@ -63,7 +61,7 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
     //주택유형(주택유형.민영).투기과열지구(여부.y).청약과열지역(여부.n).build();
     //HousingType housingType = HousingType.(HousingType.민영주택).
     //세대구성원_청약신청이력 신청이력 = 세대구성원_청약신청이력.builder().주택명("테스트").결과(결과.당첨).build();
-    HouseMemberApplicationDetails houseMemberApplicationDetails = HouseMemberApplicationDetails.builder().houseName("테스트").result(Result.당첨).build();
+    //HouseMemberApplicationDetails houseMemberApplicationDetails = HouseMemberApplicationDetails.builder().houseName("테스트").result(Result.당첨).build();
 
     String typeChange = aptInfoAmount.getHousingType().substring(0, aptInfoAmount.getHousingType().indexOf("."));
     int int_typeChange = Integer.parseInt(typeChange);
@@ -73,7 +71,7 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
     int americanAge = now.minusYears(parsedBirthDate.getYear()).getYear();
 
     @Override
-    public boolean 청약통장충족여부() {
+    public boolean accountStatus() {
         if (aptInfoRepository.findById(2021000580).get().getHousingType().equals(HousingType.국민)) { // 주택유형이 국민일 경우 청약통장종류는 주택청약종합저축 or 청약저축이어야 true
             if (userBankbook.getBankbookType().equals(BankbookType.주택청약종합저축) || userBankbook.getBankbookType().equals(BankbookType.청약저축)) {
                 return true;
@@ -89,8 +87,29 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
         return false; // 그 이외에는 false
     }
 
+
     @Override
-    public boolean 인근지역여부() {//아파트 분양정보의 인근지역과 거주지의 인근지역이 같다면
+    public int americanAgeCount() {
+        // 생일이 지났는지 여부를 판단
+        if (parsedBirthDate.plusYears(americanAge).isAfter(now)) {
+            americanAge = americanAge - 1;
+        }
+        return americanAge;
+    }
+
+
+    @Override
+    public Yn householderYn() {
+        if (houseMember.getHouseholderYn().equals(Yn.y)) {
+            return Yn.y; // 세대주여부 y 이면 true 출력
+        } else if (houseMember.getHouseholderYn().equals(Yn.n)) {
+            return Yn.n; // 세대주여부 n 이면 false 출력
+        }
+        return Yn.n;
+    }
+
+    @Override
+    public boolean surroundingArea() {//아파트 분양정보의 인근지역과 거주지의 인근지역이 같다면
         AddressLevel1 userAdressLevel1 = user.getHouseMember().getHouse().getAddressLevel1();
         AddressLevel1 aptAddressLevel1 = aptInfo.getAddressLevel1();
 
@@ -101,39 +120,9 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
             return true;
         else return false;
     }
-    @Override
-    public int 만나이계산() {
-        // 생일이 지났는지 여부를 판단
-        if (parsedBirthDate.plusYears(americanAge).isAfter(now)) {
-            americanAge = americanAge - 1;
-        }
-        return americanAge;
-    }
-
 
     @Override
-    public Yn 세대주여부() {
-        if (houseMember.getHouseholderYn().equals(Yn.y)) {
-            return Yn.y; // 세대주여부 y 이면 true 출력
-        } else if (houseMember.getHouseholderYn().equals(Yn.n)) {
-            return Yn.n; // 세대주여부 n 이면 false 출력
-        }
-        return Yn.n;
-    }
-
-//    @Override
-//    public boolean 인근지역여부() {//아파트 분양정보의 인근지역과 거주지의 인근지역이 같다면
-//        AddressLevel1 userAdressLevel1 = user.getHouseMember().getHouse().getAddress().getAddress_level1();
-//
-//        List<AreaLevel1> areaLevel1List = areaLevel1Repository.;
-//
-//
-//        // if(user.getHouseMember().getHouse().getAddress().getAddress_level1().)
-//
-//    }
-
-    @Override
-    public boolean 규제지역여부() {
+    public boolean restrictedAreaYn() {
         if (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y)) {
             return true; // 투기과열지구 or 청약과열지역이면 규제지역
         }
@@ -141,7 +130,7 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
     }
 
     @Override
-    public boolean 가입기간충족() {
+    public boolean termsOfPolicy() {
         User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
         UserBankbook userBankbook = userBankbookRepository.findByUser_Id(user.getId()).get(); // user_id(fk)를 통해서 해당하는 user의 통장 정보를 가져옴
 
@@ -165,7 +154,7 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
         return false;
     }
 
-    public int 주택형변환() { // . 기준으로 주택형 자른후 면적 비교를 위해서 int 형으로 형변환
+    public int houseTypeConverter() { // . 기준으로 주택형 자른후 면적 비교를 위해서 int 형으로 형변환
         String housingTypeChange = aptInfoTarget.getHousingType().substring(0, aptInfoTarget.getHousingType().indexOf("."));
         int intTypeChage = Integer.parseInt(housingTypeChange);
 
@@ -173,11 +162,11 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
     }
 
     // 예치금액충족 여부
-        public boolean 예치금액충족() {
+        public boolean depositAmount() {
             User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
             UserBankbook userBankbook = userBankbookRepository.findByUser_Id(user.getId()).get(); // user_id(fk)를 통해서 해당하는 user의 통장 정보를 가져옴
 
-            int housingTypeChange = 주택형변환();
+            int housingTypeChange = houseTypeConverter();
             System.out.println(user.getHouseMember().getHouse().getAddressLevel1());
             System.out.println(housingTypeChange);
             System.out.println(userBankbook.getDeposit());
@@ -228,15 +217,13 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
 
 
     @Override
-    public boolean 특이사항충족() {
-        if ((int_typeChange > 85 && aptInfo.getPublicRentalHousing().equals(Yn.y)) || (aptInfo.getHousingType().equals(HousingType.민영) && aptInfo.getPublicHosingDistrict().equals(Yn.y) && aptInfo.getAddressLevel1().equals(areaLevel1Repository.findAllByMetropolitanArea(Yn.y)))) {
-            return true;//진행
-        }
-        return false;//1순위
+    public boolean specialNote() {
+        return (int_typeChange > 85 && aptInfo.getPublicRentalHousing().equals(Yn.y)) || (aptInfo.getHousingType().equals(HousingType.민영) && aptInfo.getPublicHosingDistrict().equals(Yn.y) && aptInfo.getAddressLevel1().equals(areaLevel1Repository.findAllByMetropolitanArea(Yn.y)));//진행
+//1순위
     }
 
     @Override
-    public Integer 주택소유() {
+    public Integer hasHouseYn() {
         HouseMemberProperty houseMemberproperty =
                 HouseMemberProperty.builder()
                         .houseMember(houseMember)
@@ -270,16 +257,14 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
                         .build();
         houseMemberPropertyList.add(houseMemberproperty1);
 
-        for (int i = 0; i < houseMemberPropertyList.size(); i++) {
+        for (HouseMemberProperty houseMemberProperty : houseMemberPropertyList) {
 
-            if (houseMemberPropertyList.get(i).getResidentialYn().equals(Yn.y)) {//소유주택이 주거용이면
-                if (houseMemberPropertyList.get(i).getDedicatedArea() <= 20 || houseMemberPropertyList.get(i).getResidentialType().equals(ResidentialType.오피스텔) || (houseMemberRelation.getRelation().equals(Relation.부모) && americanAge >= 60)) {
-                    hasHouse = hasHouse;
+            if (houseMemberProperty.getResidentialYn().equals(Yn.y)) {//소유주택이 주거용이면
+                if (houseMemberProperty.getDedicatedArea() <= 20 || houseMemberProperty.getResidentialType().equals(ResidentialType.오피스텔) || (houseMemberRelation.getRelation().equals(Relation.부모) && americanAge >= 60)) {
                 } else {
                     hasHouse = hasHouse + 1;
                 }
             }
-            hasHouse = hasHouse;
 
         }
         return hasHouse;
@@ -299,16 +284,16 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
 //    }
 //
     @Override
-    public boolean 전세대원5년이내당첨이력존재여부() {
+    public boolean winningHistory() {
         LocalDate now = LocalDate.now();
         HouseMemberLimitations houseMemberLimitations = HouseMemberLimitations.builder().houseMember(houseMember).windDate(LocalDate.of(1998, 2, 12)).build();
         houseMemberLimitationsList.add(houseMemberLimitations);
         HouseMemberLimitations houseMemberLimitations1 = HouseMemberLimitations.builder().houseMember(houseMember1).windDate(LocalDate.of(1998, 2, 12)).build();
         houseMemberLimitationsList.add(houseMemberLimitations1);
-        for(int i=0;i<houseMemberLimitationsList.size();i++){
-            int reWinningRestriction = now.minusYears(houseMemberLimitationsList.get(i).getWindDate().getYear()).getYear();
-            if(reWinningRestriction<=5) {
-            return false;
+        for (HouseMemberLimitations memberLimitations : houseMemberLimitationsList) {
+            int reWinningRestriction = now.minusYears(memberLimitations.getWindDate().getYear()).getYear();
+            if (reWinningRestriction <= 5) {
+                return false;
             }
         }
         return true;
