@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface UserBankbookRepository extends JpaRepository<UserBankbook, Long> {
     Optional<UserBankbook> findOneByBankbookType(BankbookType BankbookType);
+        Optional<UserBankbook> findByUser_Id(Long userId);
 }

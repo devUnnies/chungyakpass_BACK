@@ -52,6 +52,10 @@ class 일반민영검증seviceTest {
     public void 특이사항충족() {
         System.out.println("특이사항충족: "+GeneralPrivateVerificationservice.특이사항충족());
     }
+    @Test
+    public void 전세대원5년이내당첨이력존재여부() {
+        System.out.println("전세대원5년이내당첨이력존재여부: "+GeneralPrivateVerificationservice.전세대원5년이내당첨이력존재여부());
+    }
     public void 조회() {
 
     }

@@ -8,6 +8,7 @@ import com.hanium.chungyakpassback.entity.standard.AreaLevel1;
 import com.hanium.chungyakpassback.repository.input.*;
 import com.hanium.chungyakpassback.repository.standard.AptInfoRepository;
 import com.hanium.chungyakpassback.repository.standard.AreaLevel1Repository;
+import com.hanium.chungyakpassback.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
     AptInfoRepository aptInfoRepository;//아파트 분양정보
     HouseMemberApplicationDetailsRepository houseMemberApplicationDetailsRepository;//세대구성원_청약신청이력repository
     AreaLevel1Repository areaLevel1Repository;
+    UserRepository userRepository;
 
     // 객체 생성
     //회원_청약통장 청약통장 = 회원_청약통장.builder().청약통장종류(청약통장종류.청약저축).build();
@@ -157,6 +159,59 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
         return false;
     }
 
+    // 예치금액충족 여부
+//    public boolean 예치금액충족() {
+//        User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
+//        UserBankbook userBankbook = userBankbookRepository.findByUser_Id(user.getId()).get(); // user_id(fk)를 통해서 해당하는 user의 통장 정보를 가져옴
+//
+//        int housingTypeChange = 주택형변환();
+//        System.out.println(user.getHouseMember().getHouse().getAddressLevel1());
+//        System.out.println(housingTypeChange);
+//        System.out.println(userBankbook.getDeposit());
+//
+//        if ((user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.서울) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.부산))) { // 지역_레벨1이 서울 or 부산일 경우
+//            if (housingTypeChange <= 85 && userBankbook.getDeposit() >= 3000000) {
+//                return true;
+//            }
+//            if (housingTypeChange <= 102 && userBankbook.getDeposit() >= 6000000) {
+//                return true;
+//            }
+//            if (housingTypeChange <= 135 && userBankbook.getDeposit() >= 10000000) {
+//                return true;
+//            }
+//            if (housingTypeChange > 135 && userBankbook.getDeposit() >= 15000000) {
+//                return true;
+//            }
+//        } else if ((user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.인천) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.대구) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.울산) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.대전) || user.getHouseMember().getHouse().getAddressLevel1().equals(AddressLevel1.광주))) { // 지역_레벨1이 기타광역시에 해당할 경우
+//            if (housingTypeChange <= 85 && userBankbook.getDeposit() >= 2500000) {
+//                return true;
+//            }
+//            if (housingTypeChange <= 102 && userBankbook.getDeposit() >= 4000000) {
+//                return true;
+//            }
+//            if (housingTypeChange <= 135 && userBankbook.getDeposit() >= 7000000) {
+//                return true;
+//            }
+//            if (housingTypeChange > 135 && userBankbook.getDeposit() >= 10000000) {
+//                return true;
+//            }
+//
+//        } else { // 지역_레벨1이 기타시군일 경우
+//            if (housingTypeChange <= 85 && userBankbook.getDeposit() >= 2000000) {
+//                return true;
+//            }
+//            if (housingTypeChange <= 102 && userBankbook.getDeposit() >= 3000000) {
+//                return true;
+//            }
+//            if (housingTypeChange <= 135 && userBankbook.getDeposit() >= 4000000) {
+//                return true;
+//            }
+//            if (housingTypeChange > 135 && userBankbook.getDeposit() >= 5000000) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     @Override
     public boolean 예치금액충족() {
@@ -197,7 +252,7 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
 
     @Override
     public boolean 특이사항충족() {
-        if ((int_typeChange > 85 && aptInfo.getPublicRentalHousing().equals(Yn.y)) || (aptInfo.getHousingType().equals(HousingType.민영) && aptInfo.getPublicHosingDistrict().equals(Yn.y) && (aptInfo.getAddressLevel1().equals(서울) || aptInfo.getAddressLevel1().equals(AddressLevel1.인천) || aptInfo.getAddressLevel1().equals(AddressLevel1.경기)))) {
+        if ((int_typeChange > 85 && aptInfo.getPublicRentalHousing().equals(Yn.y)) || (aptInfo.getHousingType().equals(HousingType.민영) && aptInfo.getPublicHosingDistrict().equals(Yn.y) && aptInfo.getAddressLevel1().equals(areaLevel1Repository.findAllByMetropolitanArea(Yn.y)))) {
             return true;//진행
         }
         return false;//1순위
@@ -266,18 +321,19 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
 //        return 세대repository.findAll();
 //    }
 //
-//    @Override
-//    public boolean 전세대원5년이내당첨이력존재여부() {
-//        LocalDate now = LocalDate.now();
-//        HouseMemberLimitations houseMemberLimitations = HouseMemberLimitations.builder().houseMember(houseMember).windDate(LocalDate.of(1998, 2, 12)).build();
-//        houseMemberLimitationsList.add(houseMemberLimitations);
-//        HouseMemberLimitations houseMemberLimitations1 = HouseMemberLimitations.builder().houseMember(houseMember1).windDate(LocalDate.of(1998, 2, 12)).build();
-//        houseMemberLimitationsList.add(houseMemberLimitations1);
-//        for(int i=0;i<houseMemberLimitationsList.size();i++){
-//            int reWinning restriction = now.minusYears(houseMemberLimitationsList.get(i).getWindDate().getYear()).getYear();
-//            if(houseMemberLimitationsList.get(i).getWindDate())
-//                houseMemberLimitationsList.get(i).getHouseMember().getWindDate().
-//        }
-//        return true;
-//    }
+    @Override
+    public boolean 전세대원5년이내당첨이력존재여부() {
+        LocalDate now = LocalDate.now();
+        HouseMemberLimitations houseMemberLimitations = HouseMemberLimitations.builder().houseMember(houseMember).windDate(LocalDate.of(1998, 2, 12)).build();
+        houseMemberLimitationsList.add(houseMemberLimitations);
+        HouseMemberLimitations houseMemberLimitations1 = HouseMemberLimitations.builder().houseMember(houseMember1).windDate(LocalDate.of(1998, 2, 12)).build();
+        houseMemberLimitationsList.add(houseMemberLimitations1);
+        for(int i=0;i<houseMemberLimitationsList.size();i++){
+            int reWinningRestriction = now.minusYears(houseMemberLimitationsList.get(i).getWindDate().getYear()).getYear();
+            if(reWinningRestriction<=5) {
+            return false;
+            }
+        }
+        return true;
+    }
 }
