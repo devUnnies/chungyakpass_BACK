@@ -13,4 +13,5 @@ public interface HouseMemberRelationRepository extends JpaRepository<HouseMember
     List<HouseMemberRelation> findAllByUser(User user);
     Optional<HouseMemberRelation> findByUserAndOpponent(User user, HouseMember opponent);
     Optional<HouseMemberRelation> findByUserAndRelation(User user, Relation relation);
+    Optional<HouseMemberRelation> findByOpponent(HouseMember opponent);
 }
