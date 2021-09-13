@@ -107,7 +107,6 @@ public class UserDataController {
     }
 
 
-
 //    @PatchMapping("/house")
 //    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 //    public ResponseEntity patchHouse(@RequestBody HouseDto houseDto){
