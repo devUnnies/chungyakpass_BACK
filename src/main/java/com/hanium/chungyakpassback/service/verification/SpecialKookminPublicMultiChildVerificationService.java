@@ -6,7 +6,7 @@ import com.hanium.chungyakpassback.entity.input.User;
 
 import java.time.LocalDate;
 
-public interface SpecialPrivateMultiChildVerificationService {
+public interface SpecialKookminPublicMultiChildVerificationService {
 
     int calcAmericanAge(LocalDate birthday); //만나이
 
@@ -14,23 +14,20 @@ public interface SpecialPrivateMultiChildVerificationService {
 
     boolean meetBankbookType(User user, AptInfo aptInfo, AptInfoTarget aptInfoTarget); //청약통장유형조건충족여부
 
+    boolean meetMonthlyAverageIncome(User user); //월평균소충족여부
+
     boolean meetHomelessHouseholdMembers(User user); //전세대원무주택세대구성원충족여부
 
     int calcMinorChildren(User user); //미성년자녀수계산(태아 포함)
 
     boolean isHouseholder(User user); //세대주여부
 
-    boolean meetAllHouseMemberNotWinningIn5years(User user); //전세대원5년이내미당첨조건충족여부
-
     boolean isRestrictedArea(AptInfo aptInfo); //규제지역여부
 
-    boolean meetHouseHavingLessThan2Apt(User user); //소유주택2개미만세대충족여부
-
-    boolean isPriorityApt(AptInfo aptInfo, AptInfoTarget aptInfoTarget); //주거전용 85 초과 공공건설임대주택, 수도권에 지정된 공공주택에서 공급하는 민영주택에 청약하는지 여부 확인
-
-    boolean meetDeposit(User user, AptInfoTarget aptInfoTarget); //예치금액충족여부확인
+    boolean meetAllHouseMemberNotWinningIn5years(User user); //전세대원5년이내미당첨조건충족여부
 
     boolean meetBankbookJoinPeriod(User user, AptInfo aptInfo); //가입기간충족여부확인
 
+    boolean meetNumberOfPayments(User user, AptInfo aptInfo); //납입횟수충족여부확인
 
 }

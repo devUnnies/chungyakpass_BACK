@@ -7,9 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GeneralMultiChildDto {
-
+public class SpecialKookminPublicMultiChildDto {
     public Integer notificationNumber;
     public String housingType;
-
 }

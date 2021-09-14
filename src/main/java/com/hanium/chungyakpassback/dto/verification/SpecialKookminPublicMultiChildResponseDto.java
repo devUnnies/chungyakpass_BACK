@@ -1,5 +1,7 @@
 package com.hanium.chungyakpassback.dto.verification;
 
+import com.hanium.chungyakpassback.entity.apt.AptInfo;
+import com.hanium.chungyakpassback.entity.input.User;
 import lombok.*;
 
 @Getter
@@ -7,18 +9,16 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GeneralMultiChildResponseDto {
-
+public class SpecialKookminPublicMultiChildResponseDto {
     Integer americanAge;
     boolean meetLivingInSurroundAreaTf;
     boolean accountTf;
+    boolean meetMonthlyAverageIncome;
     boolean meetHomelessHouseholdMembersTf;
-    boolean meet3MoreMinorChildrenTf;
+    Integer calcMinorChildren;
     boolean householderTf;
     boolean meetAllHouseMemberNotWinningIn5yearsTf;
     boolean isRestrictedAreaTf;
-    boolean hasHouse;
-    boolean specialTf;
-    boolean meetDepositTf;
-    boolean meetBankbookJoinPeriodTf;
+    boolean meetBankJoinPeriodTf;
+    boolean meetNumberOfPaymentsTf;
 }

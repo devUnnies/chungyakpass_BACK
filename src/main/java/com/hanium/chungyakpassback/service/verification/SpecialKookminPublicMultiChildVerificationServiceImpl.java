@@ -3,7 +3,6 @@ package com.hanium.chungyakpassback.service.verification;
 import com.hanium.chungyakpassback.entity.apt.AptInfo;
 import com.hanium.chungyakpassback.entity.apt.AptInfoTarget;
 import com.hanium.chungyakpassback.entity.input.*;
-import com.hanium.chungyakpassback.entity.standard.AddressLevel1;
 import com.hanium.chungyakpassback.enumtype.*;
 import com.hanium.chungyakpassback.handler.CustomException;
 import com.hanium.chungyakpassback.repository.input.*;
@@ -19,15 +18,14 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class SpecialPrivateMultiChildVerificationServiceImpl implements SpecialPrivateMultiChildVerificationService {
+public class SpecialKookminPublicMultiChildVerificationServiceImpl implements SpecialKookminPublicMultiChildVerificationService {
 
     final UserBankbookRepository userBankbookRepository;
-    final AddressLevel1Repository addressLevel1Repository;
     final HouseMemberRepository houseMemberRepository;
     final HouseMemberPropertyRepository houseMemberPropertyRepository;
     final HouseMemberRelationRepository houseMemberRelationRepository;
+    final AddressLevel1Repository addressLevel1Repository;
     final HouseMemberChungyakRepository houseMemberChungyakRepository;
-
 
     public int houseTypeConverter(AptInfoTarget aptInfoTarget) { // . 기준으로 주택형 자른후 면적 비교를 위해서 int 형으로 형변환
         String housingTypeChange = aptInfoTarget.getHousingType().substring(0, aptInfoTarget.getHousingType().indexOf("."));
@@ -44,6 +42,16 @@ public class SpecialPrivateMultiChildVerificationServiceImpl implements SpecialP
             americanAge = americanAge - 1;
 
         return americanAge;
+    }
+
+    @Override
+    public boolean meetLivingInSurroundArea(User user, AptInfo aptInfo) {//아파트 분양정보의 인근지역과 거주지의 인근지역이 같다면
+        com.hanium.chungyakpassback.entity.standard.AddressLevel1 userAddressLevel1 = Optional.ofNullable(user.getHouseMember().getHouse().getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
+        com.hanium.chungyakpassback.entity.standard.AddressLevel1 aptAddressLevel1 = addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
+
+        if (userAddressLevel1.getNearbyArea() == aptAddressLevel1.getNearbyArea())
+            return true;
+        return false;
     }
 
     @Override
@@ -66,6 +74,24 @@ public class SpecialPrivateMultiChildVerificationServiceImpl implements SpecialP
     }
 
     @Override
+    public boolean meetMonthlyAverageIncome(User user) {
+        List<HouseMember> houseMemberListUser = houseMemberRepository.findAllByHouse(user.getHouseMember().getHouse());
+
+        int houseMemberCount = 0; //세대구성원수
+        int sumIncome = 0; // 소득합산
+        System.out.println("세대구성원 수 : " + houseMemberCount);
+        System.out.println("소득합산 : " + sumIncome);
+
+        if (houseMemberCount <= 10) {
+            return true;
+        }
+
+
+        return false;
+
+    }
+
+    @Override
     public boolean meetHomelessHouseholdMembers(User user) { //전세대원무주택세대구성원충족여부
         List<HouseMember> houseMemberListUser = houseMemberRepository.findAllByHouse(user.getHouseMember().getHouse()); //신청자의 세대구성원 가져오기
 
@@ -84,19 +110,13 @@ public class SpecialPrivateMultiChildVerificationServiceImpl implements SpecialP
                             continue;
                         else if (houseMemberProperty.getResidentialBuilding().equals(ResidentialBuilding.오피스텔)) //주거용건물유형이 오피스텥일 경우
                             continue;
-                        else if (houseMemberProperty.getExclusiveArea() <= 20) { //20제곱미터 이하의 주택읊 소유하고 있는 경우
+                        else if (houseMemberProperty.getExclusiveArea() <= 20) { //20제곱미터 이하의 주택을 소유하고 있는 경우
                             flag++;
-                            if (flag == 1) // 단, 2호 또는 2세대 이상의 주택은 제외. 즉, 하나까진 count 안 한다는 의미.
+                            if (flag == 1) // 단, 2호 또는 2세대 이상의 주택 또는 분양권은 제외. 즉, 하나까진 count 안 한다는 의미.
                                 continue;
                             else
                                 houseCount++;
                         } else if (houseMemberProperty.getSaleRightYn().equals(Yn.y) && houseMemberProperty.getAcquisitionDate().isBefore(LocalDate.parse("2018-12-11"))) //2018.12.11 이전에 취득한 분양권일 경우
-                            continue;
-                        else
-                            houseCount++;
-                    } else if (houseMemberProperty.getSaleRightYn().equals(Yn.y) && houseMemberProperty.getExclusiveArea() <= 20) { //20제곱미터 이하의 분양권을 소유하고 있는 경우
-                        flag++;
-                        if (flag == 1) // 단, 2호 또는 2세대 이상의 분양권은 제외. 즉, 하나까진 count 안 한다는 의미.
                             continue;
                         else
                             houseCount++;
@@ -116,23 +136,17 @@ public class SpecialPrivateMultiChildVerificationServiceImpl implements SpecialP
                 for (HouseMemberProperty houseMemberProperty : houseMemberPropertyList) {
                     if (houseMemberProperty.getResidentialBuildingYn().equals(Yn.y)) {//소유주택이 주거용일경우
                         HouseMemberRelation houseMemberRelation = houseMemberRelationRepository.findByUserAndOpponent(user, houseMember).get();
-                        if ((houseMemberRelation.getRelation().getRelation().equals(Relation.부) || houseMemberRelation.getRelation().getRelation().equals(Relation.모) || houseMemberRelation.getRelation().getRelation().equals(Relation.조부) || houseMemberRelation.getRelation().getRelation().equals(Relation.조모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의부)) && calcAmericanAge(houseMember.getBirthDay()) >= 60) //직계존속의 나이가 만60세일 경우
+                        if ((houseMemberRelation.getRelation().getRelation().equals(Relation.부) || houseMemberRelation.getRelation().getRelation().equals(Relation.모) || houseMemberRelation.getRelation().getRelation().equals(Relation.조부) || houseMemberRelation.getRelation().getRelation().equals(Relation.조모)) && calcAmericanAge(houseMember.getBirthDay()) >= 60) //직계존속의 나이가 만60세일 경우
                             continue;
-                        else if (houseMemberProperty.getResidentialBuilding().equals(ResidentialBuilding.오피스텔))
+                        else if (houseMemberProperty.getResidentialBuilding().equals(ResidentialBuilding.오피스텔)) //주거용건물유형이 오피스텥일 경우
                             continue;
-                        else if (houseMemberProperty.getExclusiveArea() <= 20) {
+                        else if (houseMemberProperty.getExclusiveArea() <= 20) { //20제곱미터 이하의 주택을 소유하고 있는 경우
                             flag++;
-                            if (flag == 1)
+                            if (flag == 1) // 단, 2호 또는 2세대 이상의 주택 또는 분양권은 제외. 즉, 하나까진 count 안 한다는 의미.
                                 continue;
                             else
                                 houseCount++;
-                        } else if (houseMemberProperty.getSaleRightYn().equals(Yn.y) && houseMemberProperty.getAcquisitionDate().isBefore(LocalDate.parse("2018-12-11")))
-                            continue;
-                        else
-                            houseCount++;
-                    } else if (houseMemberProperty.getSaleRightYn().equals(Yn.y) && houseMemberProperty.getExclusiveArea() <= 20) { //20제곱미터 이하의 분양권을 소유하고 있는 경우
-                        flag++;
-                        if (flag == 1)
+                        } else if (houseMemberProperty.getSaleRightYn().equals(Yn.y) && houseMemberProperty.getAcquisitionDate().isBefore(LocalDate.parse("2018-12-11"))) //2018.12.11 이전에 취득한 분양권일 경우
                             continue;
                         else
                             houseCount++;
@@ -148,21 +162,15 @@ public class SpecialPrivateMultiChildVerificationServiceImpl implements SpecialP
                         HouseMemberRelation houseMemberRelation = houseMemberRelationRepository.findByUserAndOpponent(user, houseMember).get();
                         if ((houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의부) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의조부) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의조모)) && calcAmericanAge(houseMember.getBirthDay()) >= 60) //직계존속의 나이가 만60세일 경우
                             continue;
-                        else if (houseMemberProperty.getResidentialBuilding().equals(ResidentialBuilding.오피스텔))
+                        else if (houseMemberProperty.getResidentialBuilding().equals(ResidentialBuilding.오피스텔)) //주거용건물유형이 오피스텥일 경우
                             continue;
-                        else if (houseMemberProperty.getExclusiveArea() <= 20) {
+                        else if (houseMemberProperty.getExclusiveArea() <= 20) { //20제곱미터 이하의 주택을 소유하고 있는 경우
                             flag++;
-                            if (flag == 1)
+                            if (flag == 1) // 단, 2호 또는 2세대 이상의 주택 또는 분양권은 제외. 즉, 하나까진 count 안 한다는 의미.
                                 continue;
                             else
                                 houseCount++;
                         } else if (houseMemberProperty.getSaleRightYn().equals(Yn.y) && houseMemberProperty.getAcquisitionDate().isBefore(LocalDate.parse("2018-12-11"))) //2018.12.11 이전에 취득한 분양권일 경우
-                            continue;
-                        else
-                            houseCount++;
-                    } else if (houseMemberProperty.getSaleRightYn().equals(Yn.y) && houseMemberProperty.getExclusiveArea() <= 20) { //20제곱미터 이하의 분양권을 소유하고 있는 경우
-                        flag++;
-                        if (flag == 1)
                             continue;
                         else
                             houseCount++;
@@ -224,17 +232,6 @@ public class SpecialPrivateMultiChildVerificationServiceImpl implements SpecialP
     }
 
     @Override
-    public boolean meetLivingInSurroundArea(User user, AptInfo aptInfo) {//아파트 분양정보의 인근지역과 거주지의 인근지역이 같다면
-        AddressLevel1 userAddressLevel1 = Optional.ofNullable(user.getHouseMember().getHouse().getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
-        AddressLevel1 aptAddressLevel1 = addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
-
-        if (userAddressLevel1.getNearbyArea() == aptAddressLevel1.getNearbyArea())
-            return true;
-        return false;
-    }
-
-
-    @Override
     public boolean isRestrictedArea(AptInfo aptInfo) { // 규제지역여부
         if (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y))
             return true;
@@ -242,7 +239,22 @@ public class SpecialPrivateMultiChildVerificationServiceImpl implements SpecialP
     }
 
     @Override
-    public boolean meetBankbookJoinPeriod(User user, AptInfo aptInfo) { // 가입기간충족여부확인
+    public boolean meetAllHouseMemberNotWinningIn5years(User user) {
+        HouseMember houseMember = user.getHouseMember();
+        List<HouseMemberChungyak> houseMemberChungyakList = houseMemberChungyakRepository.findAllByHouseMember(houseMember);
+        LocalDate now = LocalDate.now();
+        int periodYear = 0;
+
+        for (HouseMemberChungyak houseMemberChungyak : houseMemberChungyakList) {
+            periodYear = now.minusYears(houseMemberChungyak.getWinningDate().getYear()).getYear();
+            if (periodYear <= 5)
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean meetBankbookJoinPeriod(User user, AptInfo aptInfo) {
         Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user);
         if (optUserBankbook.isEmpty())
             throw new RuntimeException("등록된 청약통장이 없습니다.");
@@ -269,103 +281,27 @@ public class SpecialPrivateMultiChildVerificationServiceImpl implements SpecialP
         return false;
     }
 
-    // 예치금액충족 여부
-    public boolean meetDeposit(User user, AptInfoTarget aptInfoTarget) { // 예치금액충족여부확인
+    @Override
+    public boolean meetNumberOfPayments(User user, AptInfo aptInfo) {
         Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user);
         if (optUserBankbook.isEmpty())
             throw new RuntimeException("등록된 청약통장이 없습니다.");
         UserBankbook userBankbook = optUserBankbook.get();
 
-        int housingTypeChange = houseTypeConverter(aptInfoTarget);
-
-        if ((user.getHouseMember().getHouse().getAddressLevel1().equals(com.hanium.chungyakpassback.enumtype.AddressLevel1.서울) || user.getHouseMember().getHouse().getAddressLevel1().equals(com.hanium.chungyakpassback.enumtype.AddressLevel1.부산))) { // 지역_레벨1이 서울 or 부산일 경우
-            if (housingTypeChange <= 85 && userBankbook.getDeposit() >= 3000000)
-                return true;
-            if (housingTypeChange <= 102 && userBankbook.getDeposit() >= 6000000)
-                return true;
-            if (housingTypeChange <= 135 && userBankbook.getDeposit() >= 10000000)
-                return true;
-            if (housingTypeChange > 135 && userBankbook.getDeposit() >= 15000000)
-                return true;
-        } else if ((user.getHouseMember().getHouse().getAddressLevel1().equals(com.hanium.chungyakpassback.enumtype.AddressLevel1.인천) || user.getHouseMember().getHouse().getAddressLevel1().equals(com.hanium.chungyakpassback.enumtype.AddressLevel1.대구) || user.getHouseMember().getHouse().getAddressLevel1().equals(com.hanium.chungyakpassback.enumtype.AddressLevel1.울산) || user.getHouseMember().getHouse().getAddressLevel1().equals(com.hanium.chungyakpassback.enumtype.AddressLevel1.대전) || user.getHouseMember().getHouse().getAddressLevel1().equals(com.hanium.chungyakpassback.enumtype.AddressLevel1.광주))) { // 지역_레벨1이 기타광역시에 해당할 경우
-            if (housingTypeChange <= 85 && userBankbook.getDeposit() >= 2500000)
-                return true;
-            if (housingTypeChange <= 102 && userBankbook.getDeposit() >= 4000000)
-                return true;
-            if (housingTypeChange <= 135 && userBankbook.getDeposit() >= 7000000)
-                return true;
-            if (housingTypeChange > 135 && userBankbook.getDeposit() >= 10000000)
-                return true;
-
-        } else { // 지역_레벨1이 기타시군일 경우
-            if (housingTypeChange <= 85 && userBankbook.getDeposit() >= 2000000)
-                return true;
-            if (housingTypeChange <= 102 && userBankbook.getDeposit() >= 3000000)
-                return true;
-            if (housingTypeChange <= 135 && userBankbook.getDeposit() >= 4000000)
-                return true;
-            if (housingTypeChange > 135 && userBankbook.getDeposit() >= 5000000)
-                return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isPriorityApt(AptInfo aptInfo, AptInfoTarget aptInfoTarget) { // 주거전용 85 초과 공공건설임대주택, 수도권에 지정된 공공주택에서 공급하는 민영주택에 청약하는지 여부 확인
-        if ((houseTypeConverter(aptInfoTarget) > 85 && aptInfo.getPublicRentalHousing().equals(Yn.y)))
-            return true;
-        else if (aptInfo.getHousingType().equals(HousingType.민영) && aptInfo.getPublicHosingDistrict().equals(Yn.y) && addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).equals(addressLevel1Repository.findAllByMetropolitanAreaYn(Yn.y)))
-            return true;
-        return false;
-    }
-
-    @Override
-    public boolean meetHouseHavingLessThan2Apt(User user) { // 소유주택2개미만세대충족여부
-        List<HouseMember> houseMemberList = houseMemberRepository.findAllByHouse(user.getHouseMember().getHouse());
-
-        int houseCount = 0;
-        for (HouseMember houseMember : houseMemberList) {
-            List<HouseMemberProperty> houseMemberPropertyList = houseMemberPropertyRepository.findAllByHouseMember(houseMember);
-
-            int flag = 0;
-            for (HouseMemberProperty houseMemberProperty : houseMemberPropertyList) {
-                if (houseMemberProperty.getResidentialBuildingYn().equals(Yn.y)) {//소유주택이 주거용이면
-                    HouseMemberRelation houseMemberRelation = houseMemberRelationRepository.findByUserAndOpponent(user, houseMember).get();
-                    if ((houseMemberRelation.getRelation().getRelation().equals(Relation.부) || houseMemberRelation.getRelation().getRelation().equals(Relation.모)) && calcAmericanAge(houseMember.getBirthDay()) >= 60)
-                        continue;
-                    else if (houseMemberProperty.getResidentialBuilding().equals(ResidentialBuilding.오피스텔))
-                        continue;
-                    else if (houseMemberProperty.getExclusiveArea() <= 60) {
-                        flag++;
-                        if (flag == 0)
-                            houseCount++;
-                        else
-                            continue;
-                    } else if (houseMemberProperty.getSaleRightYn().equals(Yn.y) && houseMemberProperty.getAcquisitionDate().isBefore(LocalDate.parse("2018-12-11")))
-                        continue;
-                    else
-                        houseCount++;
-                }
+        if (userBankbook.getValidYn().equals(Yn.y)) { //지역별 납입횟수 충족 여부 판단
+            if (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y)) {
+                if (userBankbook.getPaymentsCount() >= 24)
+                    return true;
+                else if (aptInfo.getAtrophyArea().equals(Yn.y))
+                    if (userBankbook.getPaymentsCount() >= 1)
+                        return true;
+                    else if (addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).get().getMetropolitanAreaYn().equals(Yn.y))
+                        if (userBankbook.getPaymentsCount() >= 12)
+                            return true;
+                        else if (userBankbook.getPaymentsCount() >= 6)
+                            return true;
             }
         }
-        if (houseCount < 2)
-            return true;
-        else return false;
+        return false;
     }
-
-    @Override
-    public boolean meetAllHouseMemberNotWinningIn5years(User user) {
-        HouseMember houseMember = user.getHouseMember();
-        List<HouseMemberChungyak> houseMemberChungyakList = houseMemberChungyakRepository.findAllByHouseMember(houseMember);
-        LocalDate now = LocalDate.now();
-        int periodYear = 0;
-
-        for (HouseMemberChungyak houseMemberChungyak : houseMemberChungyakList) {
-            periodYear = now.minusYears(houseMemberChungyak.getWinningDate().getYear()).getYear();
-            if (periodYear <= 5)
-                return false;
-        }
-        return true;
-    }
-
 }
