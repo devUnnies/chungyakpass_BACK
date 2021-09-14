@@ -6,7 +6,7 @@ import com.hanium.chungyakpassback.entity.input.User;
 
 import java.time.LocalDate;
 
-public interface GeneralPrivateMultiChildVerificationService {
+public interface SpecialPrivateMultiChildVerificationService {
 
     int calcAmericanAge(LocalDate birthday); //만나이
 

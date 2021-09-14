@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class GeneralPrivateMultiChildVerificationServiceImpl implements GeneralPrivateMultiChildVerificationService {
+public class SpecialPrivateMultiChildVerificationServiceImpl implements SpecialPrivateMultiChildVerificationService {
 
     final UserBankbookRepository userBankbookRepository;
     final AddressLevel1Repository addressLevel1Repository;
