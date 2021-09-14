@@ -16,7 +16,8 @@ import java.time.LocalDate;
 @Table(name = "inp_house_member_property")
 public class HouseMemberProperty {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "house_member_property_id")
     private Long id;
 
@@ -45,6 +46,10 @@ public class HouseMemberProperty {
     private NonResidentialBuilding nonResidentialBuilding; //비주거용건물유형
 
     @Column
+    @Enumerated(EnumType.STRING)
+    private Yn metropolitanYn; //건물수도권여부
+
+    @Column
     private LocalDate acquisitionDate; //취득일
 
     @Column
@@ -59,15 +64,15 @@ public class HouseMemberProperty {
     @Column
     private LocalDate taxBaseDate; //과세기준일
 
-
     @Builder
-    public HouseMemberProperty(HouseMember houseMember, Property property, Yn saleRightYn, Yn residentialBuildingYn, ResidentialBuilding residentialBuilding, NonResidentialBuilding nonResidentialBuilding, LocalDate acquisitionDate, LocalDate dispositionDate, Integer exclusiveArea, Integer amount, LocalDate taxBaseDate) {
+    public HouseMemberProperty(HouseMember houseMember, Property property, Yn saleRightYn, Yn residentialBuildingYn, ResidentialBuilding residentialBuilding, NonResidentialBuilding nonResidentialBuilding, Yn metropolitanYn, LocalDate acquisitionDate, LocalDate dispositionDate, Integer exclusiveArea, Integer amount, LocalDate taxBaseDate) {
         this.houseMember = houseMember;
         this.property = property;
         this.saleRightYn = saleRightYn;
         this.residentialBuildingYn = residentialBuildingYn;
         this.residentialBuilding = residentialBuilding;
         this.nonResidentialBuilding = nonResidentialBuilding;
+        this.metropolitanYn = metropolitanYn;
         this.acquisitionDate = acquisitionDate;
         this.dispositionDate = dispositionDate;
         this.exclusiveArea = exclusiveArea;
