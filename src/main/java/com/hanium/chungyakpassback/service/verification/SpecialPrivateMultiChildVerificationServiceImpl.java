@@ -254,17 +254,10 @@ public class SpecialPrivateMultiChildVerificationServiceImpl implements SpecialP
         int joinPeriod = period.getYears() * 12 + period.getMonths(); // 가입날짜를 받아와서 현재까지의 개월수를 계산
 
         if (userBankbook.getValidYn().equals(Yn.y)) {
-            if (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y))
-                if (joinPeriod >= 24)
+            if (userBankbook.getValidYn().equals(Yn.y)) {
+                if (joinPeriod >= 6) //가입기간이 6개월 이상일 경우 true
                     return true;
-                else if (aptInfo.getAtrophyArea().equals(Yn.y))
-                    if (joinPeriod >= 1)
-                        return true;
-                    else if (addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).get().getMetropolitanAreaYn().equals(Yn.y))
-                        if (joinPeriod >= 12)
-                            return true;
-                        else if (joinPeriod >= 6)
-                            return true;
+            }
         }
         return false;
     }

@@ -3,10 +3,12 @@ package com.hanium.chungyakpassback.service.verification;
 import com.hanium.chungyakpassback.entity.apt.AptInfo;
 import com.hanium.chungyakpassback.entity.apt.AptInfoTarget;
 import com.hanium.chungyakpassback.entity.input.*;
+import com.hanium.chungyakpassback.entity.standard.Income;
 import com.hanium.chungyakpassback.enumtype.*;
 import com.hanium.chungyakpassback.handler.CustomException;
 import com.hanium.chungyakpassback.repository.input.*;
 import com.hanium.chungyakpassback.repository.standard.AddressLevel1Repository;
+import com.hanium.chungyakpassback.repository.standard.IncomeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,7 @@ public class SpecialKookminPublicMultiChildVerificationServiceImpl implements Sp
     final HouseMemberRelationRepository houseMemberRelationRepository;
     final AddressLevel1Repository addressLevel1Repository;
     final HouseMemberChungyakRepository houseMemberChungyakRepository;
+    final IncomeRepository incomeRepository;
 
     public int houseTypeConverter(AptInfoTarget aptInfoTarget) { // . 기준으로 주택형 자른후 면적 비교를 위해서 int 형으로 형변환
         String housingTypeChange = aptInfoTarget.getHousingType().substring(0, aptInfoTarget.getHousingType().indexOf("."));
@@ -74,21 +77,84 @@ public class SpecialKookminPublicMultiChildVerificationServiceImpl implements Sp
     }
 
     @Override
-    public boolean meetMonthlyAverageIncome(User user) {
+    public boolean meetMonthlyAverageIncome(User user) { //월평균소득기준충족여부
         List<HouseMember> houseMemberListUser = houseMemberRepository.findAllByHouse(user.getHouseMember().getHouse());
+        Income income = incomeRepository.findBySpecialSupply(SpecialSupply.다자녀가구).get();
 
         int houseMemberCount = 0; //세대구성원수
         int sumIncome = 0; // 소득합산
-        System.out.println("세대구성원 수 : " + houseMemberCount);
-        System.out.println("소득합산 : " + sumIncome);
 
-        if (houseMemberCount <= 10) {
-            return true;
+        if (user.getHouse() == user.getSpouseHouse() || user.getSpouseHouse() == null) {
+            for (HouseMember houseMember : houseMemberListUser) {
+                houseMemberCount++;
+                if (calcAmericanAge(houseMember.getBirthDay()) >= 19) //만19세 이상만 소득 산정
+                    sumIncome += houseMember.getIncome();
+            }
+
+            System.out.println("세대구성원 수 : " + houseMemberCount);
+            System.out.println("소득합산 : " + sumIncome);
+
+            if (houseMemberCount <= 3) {
+                if (sumIncome <= income.getAverageMonthlyIncome3peopleLessBelow())
+                    return true;
+            } else if (houseMemberCount <= 4) {
+                if (sumIncome <= income.getAverageMonthlyIncome4peopleLessBelow())
+                    return true;
+            } else if (houseMemberCount <= 5) {
+                if (sumIncome <= income.getAverageMonthlyIncome5peopleLessBelow())
+                    return true;
+            } else if (houseMemberCount <= 6) {
+                if (sumIncome <= income.getAverageMonthlyIncome6peopleLessBelow())
+                    return true;
+            } else if (houseMemberCount <= 7) {
+                if (sumIncome <= income.getAverageMonthlyIncome7peopleLessBelow())
+                    return true;
+            } else if (houseMemberCount <= 8) {
+                if (sumIncome <= income.getAverageMonthlyIncome8peopleLessBelow())
+                    return true;
+            }
+        }
+        //배우자분리세대일 경우
+        else {
+            List<HouseMember> houseMemberListSpouse = houseMemberRepository.findAllByHouse(user.getSpouseHouseMember().getHouse());
+
+            for (HouseMember houseMember : houseMemberListUser) { //신청자 세대 월평균 소득 조회
+                houseMemberCount++;
+                if (calcAmericanAge(houseMember.getBirthDay()) >= 19)
+                    sumIncome += houseMember.getIncome();
+            }
+
+            for (HouseMember houseMember : houseMemberListSpouse) { //배우자 세대 월평균 소득 조회
+                houseMemberCount++;
+                if (calcAmericanAge(houseMember.getBirthDay()) >= 19)
+                    sumIncome += houseMember.getIncome();
+            }
+
+            System.out.println("세대구성원 수 : " + houseMemberCount);
+            System.out.println("소득합산 : " + sumIncome);
+
+            if (houseMemberCount <= 3) {
+                if (sumIncome <= income.getAverageMonthlyIncome3peopleLessBelow())
+                    return true;
+            } else if (houseMemberCount <= 4) {
+                if (sumIncome <= income.getAverageMonthlyIncome4peopleLessBelow())
+                    return true;
+            } else if (houseMemberCount <= 5) {
+                if (sumIncome <= income.getAverageMonthlyIncome5peopleLessBelow())
+                    return true;
+            } else if (houseMemberCount <= 6) {
+                if (sumIncome <= income.getAverageMonthlyIncome6peopleLessBelow())
+                    return true;
+            } else if (houseMemberCount <= 7) {
+                if (sumIncome <= income.getAverageMonthlyIncome7peopleLessBelow())
+                    return true;
+            } else if (houseMemberCount <= 8) {
+                if (sumIncome <= income.getAverageMonthlyIncome8peopleLessBelow())
+                    return true;
+            }
         }
 
-
         return false;
-
     }
 
     @Override
@@ -266,19 +332,11 @@ public class SpecialKookminPublicMultiChildVerificationServiceImpl implements Sp
         int joinPeriod = period.getYears() * 12 + period.getMonths(); // 가입날짜를 받아와서 현재까지의 개월수를 계산
 
         if (userBankbook.getValidYn().equals(Yn.y)) {
-            if (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y))
-                if (joinPeriod >= 24)
-                    return true;
-                else if (aptInfo.getAtrophyArea().equals(Yn.y))
-                    if (joinPeriod >= 1)
-                        return true;
-                    else if (addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).get().getMetropolitanAreaYn().equals(Yn.y))
-                        if (joinPeriod >= 12)
-                            return true;
-                        else if (joinPeriod >= 6)
-                            return true;
+            if (joinPeriod >= 6) //가입기간이 6개월 이상일 경우 true
+                return true;
         }
-        return false;
+
+        return false; //충족하지 못할 경우 false
     }
 
     @Override
@@ -289,19 +347,9 @@ public class SpecialKookminPublicMultiChildVerificationServiceImpl implements Sp
         UserBankbook userBankbook = optUserBankbook.get();
 
         if (userBankbook.getValidYn().equals(Yn.y)) { //지역별 납입횟수 충족 여부 판단
-            if (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y)) {
-                if (userBankbook.getPaymentsCount() >= 24)
-                    return true;
-                else if (aptInfo.getAtrophyArea().equals(Yn.y))
-                    if (userBankbook.getPaymentsCount() >= 1)
-                        return true;
-                    else if (addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).get().getMetropolitanAreaYn().equals(Yn.y))
-                        if (userBankbook.getPaymentsCount() >= 12)
-                            return true;
-                        else if (userBankbook.getPaymentsCount() >= 6)
-                            return true;
-            }
+            if (userBankbook.getPaymentsCount() >= 6) //납입횟수가 6회 이상일 경우, true
+                return true;
         }
-        return false;
+        return false; //충족하지 못할 경우 false
     }
 }

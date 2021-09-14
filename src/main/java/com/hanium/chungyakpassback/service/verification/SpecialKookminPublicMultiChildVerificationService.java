@@ -14,7 +14,7 @@ public interface SpecialKookminPublicMultiChildVerificationService {
 
     boolean meetBankbookType(User user, AptInfo aptInfo, AptInfoTarget aptInfoTarget); //청약통장유형조건충족여부
 
-    boolean meetMonthlyAverageIncome(User user); //월평균소충족여부
+    boolean meetMonthlyAverageIncome(User user); //월평균소득기준충족여부
 
     boolean meetHomelessHouseholdMembers(User user); //전세대원무주택세대구성원충족여부
 
