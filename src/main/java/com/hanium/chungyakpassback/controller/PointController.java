@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/point")
@@ -29,11 +32,9 @@ public class PointController {
     public ResponseEntity<GeneralMinyeongResponsePointDto> generalMinyeongPoint(@RequestBody GeneralMinyeongPointDto generalMinyeongPointDto){
         System.out.println("!!!!!!!!!!!");
         User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
-        System.out.println("!!!!!!!!!!!!!"+generalMinyeongPointDto.getTypeOfApplication());
         Integer periodOfHomelessness = pointCalculationService.periodOfHomelessness(user);
         Integer periodOfBankbook = pointCalculationService.bankbookJoinPeriod(user);
         Integer numberOfDependents = pointCalculationService.numberOfDependents(user, generalMinyeongPointDto);
-
         return new ResponseEntity<>(new GeneralMinyeongResponsePointDto(periodOfHomelessness, periodOfBankbook, numberOfDependents), HttpStatus.OK);
     }
 

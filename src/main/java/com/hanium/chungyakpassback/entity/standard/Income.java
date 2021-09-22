@@ -44,7 +44,7 @@ public class Income {
     private Integer averageMonthlyIncome3peopleLessExcess;
 
     @Column
-    private int averageMonthlyIncome3peopleLessBelow;
+    private Integer averageMonthlyIncome3peopleLessBelow;
 
     @Column
     private Integer averageMonthlyIncome4peopleLessExcess;
@@ -59,7 +59,7 @@ public class Income {
     private Integer averageMonthlyIncome5peopleLessBelow;
 
     @Builder
-    public Income(Yn applicationPublicHousingSpecialLaws, Supply supply, SpecialSupply specialSupply, Yn dualIncome, Integer monthlyAverageIncomeExcess, int monthlyAverageIncomeBelow, Integer averageMonthlyIncome3peopleLessExcess, int averageMonthlyIncome3peopleLessBelow, Integer averageMonthlyIncome4peopleLessExcess, Integer averageMonthlyIncome4peopleLessBelow, Integer averageMonthlyIncome5peopleLessExcess, Integer averageMonthlyIncome5peopleLessBelow) {
+    public Income(Yn applicationPublicHousingSpecialLaws, Supply supply, SpecialSupply specialSupply, Yn dualIncome, Integer monthlyAverageIncomeExcess, int monthlyAverageIncomeBelow, Integer averageMonthlyIncome3peopleLessExcess, Integer averageMonthlyIncome3peopleLessBelow, Integer averageMonthlyIncome4peopleLessExcess, Integer averageMonthlyIncome4peopleLessBelow, Integer averageMonthlyIncome5peopleLessExcess, Integer averageMonthlyIncome5peopleLessBelow) {
         this.applicationPublicHousingSpecialLaws = applicationPublicHousingSpecialLaws;
         this.supply = supply;
         this.specialSupply = specialSupply;

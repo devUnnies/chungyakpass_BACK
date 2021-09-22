@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "std_relation")
 public class Relation {
     @Id

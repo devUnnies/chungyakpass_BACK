@@ -1,13 +1,51 @@
-INSERT INTO inp_user (USER_ID, EMAIL, PASSWORD, ACTIVATED) VALUES (1, 'admin@gmail.com', '$2a$08$lDnHPz7eUkSi6ao14Twuau08mzhWrL4kyZGGU5xfiGALO/Vxd5DOi', 1);
-INSERT INTO inp_user (USER_ID, EMAIL, PASSWORD, ACTIVATED) VALUES (2, 'user@gmail.com', '$2a$08$lDnHPz7eUkSi6ao14Twuau08mzhWrL4kyZGGU5xfiGALO/Vxd5DOi', 1);
+INSERT INTO inp_user (USER_ID, EMAIL, PASSWORD, ACTIVATED)
+VALUES (1, 'admin@gmail.com', '$2a$08$lDnHPz7eUkSi6ao14Twuau08mzhWrL4kyZGGU5xfiGALO/Vxd5DOi', 1);
+INSERT INTO inp_user (USER_ID, EMAIL, PASSWORD, ACTIVATED)
+VALUES (2, 'user@gmail.com', '$2a$08$lDnHPz7eUkSi6ao14Twuau08mzhWrL4kyZGGU5xfiGALO/Vxd5DOi', 1);
 
-INSERT INTO authority (AUTHORITY_NAME) values ('ROLE_USER');
-INSERT INTO authority (AUTHORITY_NAME) values ('ROLE_ADMIN');
+INSERT INTO authority (AUTHORITY_NAME)
+values ('ROLE_USER');
+INSERT INTO authority (AUTHORITY_NAME)
+values ('ROLE_ADMIN');
 
-INSERT INTO user_authority (USER_ID, AUTHORITY_NAME) values (1, 'ROLE_USER');
-INSERT INTO user_authority (USER_ID, AUTHORITY_NAME) values (1, 'ROLE_ADMIN');
-INSERT INTO user_authority (USER_ID, AUTHORITY_NAME) values (2, 'ROLE_USER');
+INSERT INTO user_authority (USER_ID, AUTHORITY_NAME)
+values (1, 'ROLE_USER');
+INSERT INTO user_authority (USER_ID, AUTHORITY_NAME)
+values (1, 'ROLE_ADMIN');
+INSERT INTO user_authority (USER_ID, AUTHORITY_NAME)
+values (2, 'ROLE_USER');
 
+
+
+INSERT INTO STD_MONTHLY_AVERAGE_INCOME (MONTHLY_AVERAGE_INCOME_ID,
+                                        APPLICATION_PUBLIC_HOUSING_SPECIAL_LAWS,
+                                        SPECIAL_SUPPLY,
+                                        SUPPLY,
+                                        DUAL_INCOME,
+                                        MONTHLY_AVERAGE_INCOME_EXCESS,
+                                        MONTHLY_AVERAGE_INCOME_BELOW,
+                                        AVERAGE_MONTHLY_INCOME3PEOPLE_LESS_EXCESS,
+                                        AVERAGE_MONTHLY_INCOME3PEOPLE_LESS_BELOW,
+                                        AVERAGE_MONTHLY_INCOME4PEOPLE_LESS_EXCESS,
+                                        AVERAGE_MONTHLY_INCOME4PEOPLE_LESS_BELOW,
+                                        AVERAGE_MONTHLY_INCOME5PEOPLE_LESS_EXCESS,
+                                        AVERAGE_MONTHLY_INCOME5PEOPLE_LESS_BELOW)
+VALUES (1, 'y', '신혼부부', '우선공급', 'n', NULL, 100, NULL, 6030160, NULL, 7094205, NULL, 7094205),
+       (2, 'y', '신혼부부', '우선공급', 'y', NULL, 120, NULL, 7236192, NULL, 8513046, NULL, 8513046),
+       (3, 'y', '신혼부부', '일반공급', 'n', NULL, 130, NULL, 7839208, NULL, 9222467, NULL, 9222467),
+       (4, 'y', '신혼부부', '일반공급', 'y', NULL, 140, NULL, 8442224, NULL, 9931887, NULL, 9931887),
+       (5, 'y', '신혼부부', '특별공급가점', 'n', NULL, 80, NULL, 4824128, NULL, 5675364, NULL, 5675364),
+       (6, 'y', '신혼부부', '특별공급가점', 'y', NULL, 100, NULL, 6030160, NULL, 7094205, NULL, 7094205),
+       (7, 'y', '생애최초', '우선공급', NULL, NULL, 100, NULL, 6030160, NULL, 7094205, NULL, 7094205),
+       (8, 'y', '생애최초', '일반공급', NULL, NULL, 130, NULL, 7839208, NULL, 9222467, NULL, 9222467),
+       (9, 'y', '노부모부양', NULL, NULL, NULL, 120, NULL, 7236192, NULL, 8513046, NULL, 8513046),
+       (10, 'y', '다자녀가구', NULL, NULL, NULL, 120, NULL, 7236192, NULL, 8513046, NULL, 8513046),
+       (11, 'n', '신혼부부', '우선공급', 'n', NULL, 100, NULL, 6030160, NULL, 7094205, NULL, 7094205),
+       (12, 'n', '신혼부부', '우선공급', 'y', NULL, 120, NULL, 7236192, NULL, 8513046, NULL, 8513046),
+       (13, 'n', '신혼부부', '일반공급', 'n', 100, 140, 6030161, 8442224, 7094206, 9931887, 7094206, 9931887),
+       (14, 'n', '신혼부부', '일반공급', 'y', 120, 160, 7236193, 9648256, 8513047, 11350728, 8513047, 11350728),
+       (15, 'n', '생애최초', '우선공급', NULL, NULL, 130, NULL, 7830208, NULL, 9222467, NULL, 9222467),
+       (16, 'n', '생애최초', '일반공급', NULL, 130, 160, 7839209, 9648256, 9222468, 11350768, 9222468, 11350728);
 INSERT INTO std_relation (relation_id, relation, only_one_yn)
 VALUES (1, '본인', 'y'),
        (2, '배우자', 'y'),
@@ -24,6 +62,153 @@ VALUES (1, '본인', 'y'),
        (13, '손자녀', 'n'),
        (14, '손자녀의배우자', 'n');
 
+INSERT INTO STD_PRIORITY_NUMEBER_PAYMENTS (PRIORITY_NUMEBER_PAYMENTS_ID, SUPPLY, SPECIAL_SUPPLY, SPECULATION_OVERHEATED,
+                                           SUBSCRIPTION_OVERHEATED, ATROPHY_AREA, METROPOLITAN_AREA_YN, COUNT_PAYMENTS)
+VALUES (1, '일반공급', NULL, 'y', 'y', 'n', 'y', 24),
+       (2, '일반공급', NULL, 'y', 'y', 'n', 'n', 24),
+       (3, '일반공급', NULL, 'y', 'n', 'n', 'n', 24),
+       (4, '일반공급', NULL, 'y', 'n', 'n', 'y', 24),
+       (5, '일반공급', NULL, 'n', 'y', 'n', 'y', 24),
+       (6, '일반공급', NULL, 'n', 'y', 'n', 'n', 24),
+       (7, '일반공급', NULL, 'n', 'n', 'y', 'y', 1),
+       (8, '일반공급', NULL, 'n', 'n', 'y', 'n', 1),
+       (9, '일반공급', NULL, 'n', 'n', 'n', 'y', 12),
+       (10, '일반공급', NULL, 'n', 'n', 'n', 'n', 6),
+       (11, '특별공급', '노부모부양', 'y', 'y', 'n', 'y', 24),
+       (12, '특별공급', '노부모부양', 'y', 'y', 'n', 'n', 24),
+       (13, '특별공급', '노부모부양', 'y', 'n', 'n', 'y', 24),
+       (14, '특별공급', '노부모부양', 'y', 'n', 'n', 'n', 24),
+       (15, '특별공급', '노부모부양', 'n', 'y', 'n', 'y', 24),
+       (16, '특별공급', '노부모부양', 'n', 'y', 'n', 'n', 24),
+       (17, '특별공급', '노부모부양', 'n', 'n', 'y', 'y', 1),
+       (18, '특별공급', '노부모부양', 'n', 'n', 'y', 'n', 1),
+       (19, '특별공급', '노부모부양', 'n', 'n', 'n', 'y', 12),
+       (20, '특별공급', '노부모부양', 'n', 'n', 'n', 'n', 6),
+       (21, '특별공급', '생애최초', 'y', 'y', 'n', 'y', 24),
+       (22, '특별공급', '생애최초', 'y', 'y', 'n', 'n', 24),
+       (23, '특별공급', '생애최초', 'y', 'n', 'n', 'y', 24),
+       (24, '특별공급', '생애최초', 'y', 'n', 'n', 'n', 24),
+       (25, '특별공급', '생애최초', 'n', 'y', 'n', 'y', 24),
+       (26, '특별공급', '생애최초', 'n', 'y', 'n', 'n', 24),
+       (27, '특별공급', '생애최초', 'n', 'n', 'y', 'y', 1),
+       (28, '특별공급', '생애최초', 'n', 'n', 'y', 'n', 1),
+       (29, '특별공급', '생애최초', 'n', 'n', 'n', 'y', 12),
+       (30, '특별공급', '생애최초', 'n', 'n', 'n', 'n', 6),
+       (31, '특별공급', '기관추천', 'y', 'y', 'n', 'y', 6),
+       (32, '특별공급', '기관추천', 'y', 'y', 'n', 'n', 6),
+       (33, '특별공급', '기관추천', 'y', 'n', 'n', 'y', 6),
+       (34, '특별공급', '기관추천', 'y', 'n', 'n', 'n', 6),
+       (35, '특별공급', '기관추천', 'n', 'y', 'n', 'y', 6),
+       (36, '특별공급', '기관추천', 'n', 'y', 'n', 'n', 6),
+       (37, '특별공급', '기관추천', 'n', 'n', 'y', 'y', 1),
+       (38, '특별공급', '기관추천', 'n', 'n', 'y', 'n', 1),
+       (39, '특별공급', '기관추천', 'n', 'n', 'n', 'y', 6),
+       (40, '특별공급', '기관추천', 'n', 'n', 'n', 'n', 6),
+       (41, '특별공급', '신혼부부', 'y', 'y', 'n', 'y', 6),
+       (42, '특별공급', '신혼부부', 'y', 'y', 'n', 'n', 6),
+       (43, '특별공급', '신혼부부', 'y', 'n', 'n', 'y', 6),
+       (44, '특별공급', '신혼부부', 'y', 'n', 'n', 'n', 6),
+       (45, '특별공급', '신혼부부', 'n', 'y', 'n', 'y', 6),
+       (46, '특별공급', '신혼부부', 'n', 'y', 'n', 'n', 6),
+       (47, '특별공급', '신혼부부', 'n', 'n', 'y', 'y', 1),
+       (48, '특별공급', '신혼부부', 'n', 'n', 'y', 'n', 1),
+       (49, '특별공급', '신혼부부', 'n', 'n', 'n', 'y', 6),
+       (50, '특별공급', '신혼부부', 'n', 'n', 'n', 'n', 6),
+       (51, '특별공급', '다자녀가구', 'y', 'y', 'n', 'y', 6),
+       (52, '특별공급', '다자녀가구', 'y', 'y', 'n', 'n', 6),
+       (53, '특별공급', '다자녀가구', 'y', 'n', 'n', 'y', 6),
+       (54, '특별공급', '다자녀가구', 'y', 'n', 'n', 'n', 6),
+       (55, '특별공급', '다자녀가구', 'n', 'y', 'n', 'y', 6),
+       (56, '특별공급', '다자녀가구', 'n', 'y', 'n', 'n', 6),
+       (57, '특별공급', '다자녀가구', 'n', 'n', 'y', 'y', 1),
+       (58, '특별공급', '다자녀가구', 'n', 'n', 'y', 'n', 1),
+       (59, '특별공급', '다자녀가구', 'n', 'n', 'n', 'y', 6),
+       (60, '특별공급', '다자녀가구', 'n', 'n', 'n', 'n', 6);
+
+INSERT INTO STD_PRIORITY_SUBSCRIPTION_PERIOD(PRIORITY_SUBSCRIPTION_PERIOD_ID, SUPPLY, SPECIAL_SUPPLY,
+                                             SPECULATION_OVERHEATED, SUBSCRIPTION_OVERHEATED,ATROPHY_AREA,
+                                             METROPOLITAN_AREA_YN, SUBSCRIPTION_PERIOD)
+VALUES (1, '일반공급', NULL, 'y', 'y', 'n', 'y', 24),
+       (2, '일반공급', NULL, 'y', 'y', 'n', 'y', 24),
+       (3, '일반공급', NULL, 'y', 'y', 'n', 'n', 24),
+       (4, '일반공급', NULL, 'y', 'n', 'n', 'n', 24),
+       (5, '일반공급', NULL, 'y', 'n', 'n', 'y', 24),
+       (6, '일반공급', NULL, 'n', 'y', 'n', 'y', 24),
+       (7, '일반공급', NULL, 'n', 'n', 'y', 'y', 1),
+       (8, '일반공급', NULL, 'n', 'n', 'y', 'n', 1),
+       (9, '일반공급', NULL, 'n', 'n', 'n', 'y', 12),
+       (10, '일반공급', NULL, 'n', 'n', 'n', 'n', 6),
+       (11, '특별공급', '노부모부양', 'y', 'y', 'n', 'y', 24),
+       (12, '특별공급', '노부모부양', 'y', 'y', 'n', 'n', 24),
+       (13, '특별공급', '노부모부양', 'y', 'n', 'n', 'y', 24),
+       (14, '특별공급', '노부모부양', 'y', 'n', 'n', 'n', 24),
+       (15, '특별공급', '노부모부양', 'n', 'y', 'n', 'y', 24),
+       (16, '특별공급', '노부모부양', 'n', 'y', 'n', 'n', 24),
+       (17, '특별공급', '노부모부양', 'n', 'n', 'y', 'y', 1),
+       (18, '특별공급', '노부모부양', 'n', 'n', 'y', 'n', 1),
+       (19, '특별공급', '노부모부양', 'n', 'n', 'n', 'y', 12),
+       (20, '특별공급', '노부모부양', 'n', 'n', 'n', 'n', 6),
+       (21, '특별공급', '생애최초', 'y', 'y', 'n', 'y', 24),
+       (22, '특별공급', '생애최초', 'y', 'y', 'n', 'n', 24),
+       (23, '특별공급', '생애최초', 'y', 'n', 'n', 'y', 24),
+       (24, '특별공급', '생애최초', 'y', 'n', 'n', 'n', 24),
+       (25, '특별공급', '생애최초', 'n', 'y', 'n', 'y', 24),
+       (26, '특별공급', '생애최초', 'n', 'y', 'n', 'n', 24),
+       (27, '특별공급', '생애최초', 'n', 'n', 'y', 'y', 1),
+       (28, '특별공급', '생애최초', 'n', 'n', 'y', 'n', 1),
+       (29, '특별공급', '생애최초', 'n', 'n', 'n', 'y', 12),
+       (30, '특별공급', '생애최초', 'n', 'n', 'n', 'n', 6),
+       (31, '특별공급', '기관추천', 'y', 'y', 'n', 'y', 6),
+       (32, '특별공급', '기관추천', 'y', 'y', 'n', 'n', 6),
+       (33, '특별공급', '기관추천', 'y', 'n', 'n', 'y', 6),
+       (34, '특별공급', '기관추천', 'y', 'n', 'n', 'n', 6),
+       (35, '특별공급', '기관추천', 'n', 'y', 'n', 'y', 6),
+       (36, '특별공급', '기관추천', 'n', 'y', 'n', 'n', 6),
+       (37, '특별공급', '기관추천', 'n', 'n', 'y', 'y', 1),
+       (38, '특별공급', '기관추천', 'n', 'n', 'y', 'n', 1),
+       (39, '특별공급', '기관추천', 'n', 'n', 'n', 'y', 6),
+       (40, '특별공급', '기관추천', 'n', 'n', 'n', 'n', 6),
+       (41, '특별공급', '신혼부부', 'y', 'y', 'n', 'y', 6),
+       (42, '특별공급', '신혼부부', 'y', 'y', 'n', 'n', 6),
+       (43, '특별공급', '신혼부부', 'y', 'n', 'n', 'y', 6),
+       (44, '특별공급', '신혼부부', 'y', 'n', 'n', 'n', 6),
+       (45, '특별공급', '신혼부부', 'n', 'y', 'n', 'y', 6),
+       (46, '특별공급', '신혼부부', 'n', 'y', 'n', 'n', 6),
+       (47, '특별공급', '신혼부부', 'n', 'n', 'y', 'y', 1),
+       (48, '특별공급', '신혼부부', 'n', 'n', 'y', 'n', 1),
+       (49, '특별공급', '신혼부부', 'n', 'n', 'n', 'y', 6),
+       (50, '특별공급', '신혼부부', 'n', 'n', 'n', 'n', 6),
+       (51, '특별공급', '다자녀가구', 'y', 'y', 'n', 'y', 6),
+       (52, '특별공급', '다자녀가구', 'y', 'y', 'n', 'n', 6),
+       (53, '특별공급', '다자녀가구', 'y', 'n', 'n', 'y', 6),
+       (54, '특별공급', '다자녀가구', 'y', 'n', 'n', 'n', 6),
+       (55, '특별공급', '다자녀가구', 'n', 'y', 'n', 'y', 6),
+       (56, '특별공급', '다자녀가구', 'n', 'y', 'n', 'n', 6),
+       (57, '특별공급', '다자녀가구', 'n', 'n', 'y', 'y', 1),
+       (58, '특별공급', '다자녀가구', 'n', 'n', 'y', 'n', 1),
+       (59, '특별공급', '다자녀가구', 'n', 'n', 'n', 'y', 6),
+       (60, '특별공급', '다자녀가구', 'n', 'n', 'n', 'n', 6);
+
+insert into STD_BANKBOOK (STD_BANKBOOK_ID, BANKBOOK, NATIONAL_HOUSING_SUPPLY_POSSIBLE,
+                          PRIVATE_HOUSING_SUPPLY_IS_POSSIBLE, RESTRICTION_SALE_AREA)
+VALUES (1, '주택청약종합저축', 'y', 'y', NULL),
+       (2, '청약저축', 'y', 'n', NULL),
+       (3, '청약예금', 'n', 'y', NULL),
+       (4, '청약부금', 'n', 'y', 85);
+
+insert into STD_PRIORITY_DEPOSIT (PRIORITY_DEPOSIT_ID, AREA_OVER, AREA_LESS_OR_EQUAL, DEPOSIT_AREA, DEPOSIT)
+values (1, 0, 85, '서울부산', 3000000),
+       (2, 0, 85, '기타광역시', 2500000),
+       (3, 0, 85, '기타시군', 2000000),
+       (4, 85, 102, '서울부산', 6000000),
+       (5, 85, 102, '기타광역시', 4000000),
+       (6, 85, 102, '기타시군', 3000000),
+       (7, 102, 135, '서울부산', 10000000),
+       (8, 102, 135, '기타광역시', 7000000),
+       (9, 102, 135, '기타시군', 4000000),
+       (10, 135, NULL, '서울부산', 15000000),
+       (11, 135, NULL, '기타광역시', 10000000),
+       (12, 135, NULL, '기타시군', 5000000);
 
 INSERT INTO std_address_level1 (address_level1_id, address_level1, nearby_area, deposit_area, metropolitan_area_yn)
 VALUES (1, '서울', 1, '서울부산', 'y'),
@@ -281,6 +466,7 @@ VALUES (1, 1, '종로구'),
        (234, 16, '양양군'),
        (235, 17, '제주시'),
        (236, 17, '서귀포시');
+
 
 
 --

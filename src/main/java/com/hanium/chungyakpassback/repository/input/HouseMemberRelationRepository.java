@@ -11,7 +11,10 @@ import java.util.Optional;
 
 public interface HouseMemberRelationRepository extends JpaRepository<HouseMemberRelation, Long> {
     List<HouseMemberRelation> findAllByUser(User user);
+    List<HouseMemberRelation> findAllByUserAndRelation_Id(User user, Long id);
     Optional<HouseMemberRelation> findByUserAndOpponent(User user, HouseMember opponent);
     Optional<HouseMemberRelation> findByUserAndRelation(User user, Relation relation);
     Optional<HouseMemberRelation> findByOpponent(HouseMember opponent);
+    Optional<HouseMemberRelation> findByOpponentId(Long id);
+
 }

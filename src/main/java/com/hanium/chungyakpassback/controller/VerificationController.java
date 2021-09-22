@@ -44,18 +44,18 @@ public class VerificationController {
         AptInfo aptInfo = aptInfoRepository.findById(generalMinyeongDto.getNotificationNumber()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APT));
         AptInfoTarget aptInfoTarget = aptInfoTargetRepository.findByHousingType(generalMinyeongDto.getHousingType()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APT));
 
-        boolean meetLivingInSurroundAreaTf = generalPrivateVerificationService.meetLivingInSurroundArea(user, aptInfo);
-        boolean accountTf = generalPrivateVerificationService.meetBankbookType(user, aptInfo, aptInfoTarget);
-        Integer americanAge = generalPrivateVerificationService.calcAmericanAge(Optional.ofNullable(houseMember.getBirthDay()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BIRTHDAY)));
-        boolean houseHolderTf = generalPrivateVerificationService.isHouseholder(user);
-        boolean isRestrictedAreaTf = generalPrivateVerificationService.isRestrictedArea(aptInfo);
-        boolean meetAllHouseMemberNotWinningIn5yearsTf = generalPrivateVerificationService.meetAllHouseMemberNotWinningIn5years(user);
+        boolean meetLivingInSurroundArea = generalPrivateVerificationService.meetLivingInSurroundArea(user, aptInfo);
+        boolean meetBankbookType = generalPrivateVerificationService.meetBankbookType(user, aptInfo, aptInfoTarget);
+        Integer calcAmericanAge = generalPrivateVerificationService.calcAmericanAge(Optional.ofNullable(houseMember.getBirthDay()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_BIRTHDAY)));
+        boolean isHouseholder = generalPrivateVerificationService.isHouseholder(user);
+        boolean isRestrictedArea = generalPrivateVerificationService.isRestrictedArea(aptInfo);
+        boolean meetAllHouseMemberNotWinningIn5years = generalPrivateVerificationService.meetAllHouseMemberNotWinningIn5years(user);
         boolean meetHouseHavingLessThan2Apt = generalPrivateVerificationService.meetHouseHavingLessThan2Apt(user);
-        boolean meetBankbookJoinPeriodTf = generalPrivateVerificationService.meetBankbookJoinPeriod(user, aptInfo);
-        boolean meetDepositTf = generalPrivateVerificationService.meetDeposit(user, aptInfoTarget);
-        boolean specialTf = generalPrivateVerificationService.isPriorityApt(aptInfo, aptInfoTarget);
+        boolean meetBankbookJoinPeriod = generalPrivateVerificationService.meetBankbookJoinPeriod(user, aptInfo);
+        boolean meetDeposit = generalPrivateVerificationService.meetDeposit(user, aptInfoTarget);
+        boolean isPriorityApt = generalPrivateVerificationService.isPriorityApt(aptInfo, aptInfoTarget);
 
 
-        return new ResponseEntity<>(new GeneralMinyeongResponseDto(meetLivingInSurroundAreaTf, accountTf, americanAge, houseHolderTf, isRestrictedAreaTf, meetAllHouseMemberNotWinningIn5yearsTf, meetHouseHavingLessThan2Apt, meetBankbookJoinPeriodTf, meetDepositTf, specialTf), HttpStatus.OK);
+        return new ResponseEntity<>(new GeneralMinyeongResponseDto(meetLivingInSurroundArea, meetBankbookType, calcAmericanAge, isHouseholder, isRestrictedArea, meetAllHouseMemberNotWinningIn5years, meetHouseHavingLessThan2Apt, meetBankbookJoinPeriod, meetDeposit, isPriorityApt), HttpStatus.OK);
     }
 }
