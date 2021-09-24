@@ -13,27 +13,39 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class SpecialKookminPublicMultiChildVerificationServiceImpl implements SpecialKookminPublicMultiChildVerificationService {
+public class SpecialKookminPublicOldParentVerificationServiceImpl implements SpecialKookminPublicOldParentVerificationService {
 
     final UserBankbookRepository userBankbookRepository;
     final HouseMemberRepository houseMemberRepository;
-    final HouseMemberPropertyRepository houseMemberPropertyRepository;
     final HouseMemberRelationRepository houseMemberRelationRepository;
+    final HouseMemberPropertyRepository houseMemberPropertyRepository;
     final AddressLevel1Repository addressLevel1Repository;
-    final HouseMemberChungyakRepository houseMemberChungyakRepository;
     final IncomeRepository incomeRepository;
+    final HouseMemberChungyakRepository houseMemberChungyakRepository;
+
 
     public int houseTypeConverter(AptInfoTarget aptInfoTarget) { // . 기준으로 주택형 자른후 면적 비교를 위해서 int 형으로 형변환
         String housingTypeChange = aptInfoTarget.getHousingType().substring(0, aptInfoTarget.getHousingType().indexOf("."));
 
         return Integer.parseInt(housingTypeChange);
+    }
+
+    public Long calcDate(LocalDate transferdate) { //주민등록표에 등재된 기간 구하기
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        LocalDateTime departure = transferdate.atStartOfDay();
+
+        Long days = Duration.between(departure, today).toDays();
+
+        return days;
     }
 
     @Override
@@ -45,16 +57,6 @@ public class SpecialKookminPublicMultiChildVerificationServiceImpl implements Sp
             americanAge = americanAge - 1;
 
         return americanAge;
-    }
-
-    @Override
-    public boolean meetLivingInSurroundArea(User user, AptInfo aptInfo) {//아파트 분양정보의 인근지역과 거주지의 인근지역이 같다면
-        com.hanium.chungyakpassback.entity.standard.AddressLevel1 userAddressLevel1 = Optional.ofNullable(user.getHouseMember().getHouse().getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
-        com.hanium.chungyakpassback.entity.standard.AddressLevel1 aptAddressLevel1 = addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
-
-        if (userAddressLevel1.getNearbyArea() == aptAddressLevel1.getNearbyArea())
-            return true;
-        return false;
     }
 
     @Override
@@ -218,6 +220,32 @@ public class SpecialKookminPublicMultiChildVerificationServiceImpl implements Sp
     }
 
     @Override
+    public boolean meetOldParentSupportMore3years(User user) { //3년이상노부모부양충족여부
+        List<HouseMember> houseMemberListUser = houseMemberRepository.findAllByHouse(user.getHouseMember().getHouse());
+
+        int oldParentSupportCount = 0;
+
+        for (HouseMember houseMember : houseMemberListUser) {
+            HouseMemberRelation houseMemberRelation = houseMemberRelationRepository.findByUserAndOpponent(user, houseMember).get();
+
+            if (user.getHouse() == houseMember.getHouse()) { // 신청자와 같은 세대인지 판단 후,
+                if (calcAmericanAge(houseMember.getBirthDay()) >= 65 && ((houseMemberRelation.getRelation().getRelation().equals(Relation.부) || houseMemberRelation.getRelation().getRelation().equals(Relation.모) || houseMemberRelation.getRelation().getRelation().equals(Relation.조부) || houseMemberRelation.getRelation().getRelation().equals(Relation.조모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의부)))) { // 만 65세 이상의 직계존속(배우자의 직계존속)인지 판단 후,
+                    if (calcDate(houseMember.getTransferDate()) >= 1095 && calcDate(user.getHouseMember().getTransferDate()) >= 1095) { //신청자와 부양자가 둘 다 3년 이상 등본에 등재한 경우
+                        oldParentSupportCount++;
+                    }
+                }
+            }
+        }
+
+        System.out.println("노부모부양수부 : " + oldParentSupportCount);
+
+        if (oldParentSupportCount >= 1) // 1명 이상의 노부모 부양을 할 경우 true
+            return true;
+        else // 그렇지 않으면 false
+            return false;
+    }
+
+    @Override
     public boolean meetHomelessHouseholdMembers(User user) { //전세대원무주택세대구성원충족여부
         List<HouseMember> houseMemberListUser = houseMemberRepository.findAllByHouse(user.getHouseMember().getHouse()); //신청자의 세대구성원 가져오기
 
@@ -314,42 +342,6 @@ public class SpecialKookminPublicMultiChildVerificationServiceImpl implements Sp
     }
 
     @Override
-    public int calcMinorChildren(User user) { //미성년자녀수계산
-        List<HouseMember> houseMemberListUser = houseMemberRepository.findAllByHouse(user.getHouseMember().getHouse()); //신청자의 세대구성원 가져오기
-
-        int minorCount = 0;
-
-        //배우자와 같은 세대일 경우
-        if (user.getHouse() == user.getSpouseHouse() || user.getSpouseHouse() == null) {
-            for (HouseMember houseMember : houseMemberListUser) {
-                HouseMemberRelation houseMemberRelation = houseMemberRelationRepository.findByUserAndOpponent(user, houseMember).get();
-                if (((houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반)) && (calcAmericanAge(houseMember.getBirthDay()) < 19) && (houseMember.getMarriageDate() == null)) || (houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_태아))) { //결혼을 하지 않은 미성년자녀(태아 포함)
-                    minorCount++;
-                }
-            }
-        }
-        //배우자분리세대일 경우
-        else {
-            for (HouseMember houseMember : houseMemberListUser) { //신청자 세대 조회
-                HouseMemberRelation houseMemberRelation = houseMemberRelationRepository.findByUserAndOpponent(user, houseMember).get();
-                if (((houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반)) && (calcAmericanAge(houseMember.getBirthDay()) < 19) && (houseMember.getMarriageDate() == null)) || (houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_태아))) {
-                    minorCount++;
-                }
-            }
-
-            List<HouseMember> houseMemberListSpouse = houseMemberRepository.findAllByHouse(user.getSpouseHouseMember().getHouse()); //배우자 세대 조회
-            for (HouseMember houseMember : houseMemberListSpouse) {
-                HouseMemberRelation houseMemberRelation = houseMemberRelationRepository.findByUserAndOpponent(user, houseMember).get();
-                if ((houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반)) && (calcAmericanAge(houseMember.getBirthDay()) < 19) && (houseMember.getMarriageDate() == null)) {
-                    minorCount++;
-                }
-            }
-        }
-
-        return minorCount;
-    }
-
-    @Override
     public boolean isHouseholder(User user) { // 세대주여부
         if (user.getHouse().getHouseHolder().getId().equals(user.getHouseMember().getId()))
             return true;
@@ -380,7 +372,17 @@ public class SpecialKookminPublicMultiChildVerificationServiceImpl implements Sp
     }
 
     @Override
-    public boolean meetBankbookJoinPeriod(User user, AptInfo aptInfo) {
+    public boolean meetLivingInSurroundArea(User user, AptInfo aptInfo) {//아파트 분양정보의 인근지역과 거주지의 인근지역이 같다면
+        com.hanium.chungyakpassback.entity.standard.AddressLevel1 userAddressLevel1 = Optional.ofNullable(user.getHouseMember().getHouse().getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
+        com.hanium.chungyakpassback.entity.standard.AddressLevel1 aptAddressLevel1 = addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
+
+        if (userAddressLevel1.getNearbyArea() == aptAddressLevel1.getNearbyArea())
+            return true;
+        return false;
+    }
+
+    @Override
+    public boolean meetBankbookJoinPeriod(User user, AptInfo aptInfo) { //가입기간충족여부
         Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user);
         if (optUserBankbook.isEmpty())
             throw new RuntimeException("등록된 청약통장이 없습니다.");
@@ -392,11 +394,19 @@ public class SpecialKookminPublicMultiChildVerificationServiceImpl implements Sp
         int joinPeriod = period.getYears() * 12 + period.getMonths(); // 가입날짜를 받아와서 현재까지의 개월수를 계산
 
         if (userBankbook.getValidYn().equals(Yn.y)) {
-            if (joinPeriod >= 6) //가입기간이 6개월 이상일 경우 true
-                return true;
+            if (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y))
+                if (joinPeriod >= 24)
+                    return true;
+                else if (aptInfo.getAtrophyArea().equals(Yn.y))
+                    if (joinPeriod >= 1)
+                        return true;
+                    else if (addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).get().getMetropolitanAreaYn().equals(Yn.y))
+                        if (joinPeriod >= 12)
+                            return true;
+                        else if (joinPeriod >= 6)
+                            return true;
         }
-
-        return false; //충족하지 못할 경우 false
+        return false;
     }
 
     @Override
@@ -407,9 +417,19 @@ public class SpecialKookminPublicMultiChildVerificationServiceImpl implements Sp
         UserBankbook userBankbook = optUserBankbook.get();
 
         if (userBankbook.getValidYn().equals(Yn.y)) { //지역별 납입횟수 충족 여부 판단
-            if (userBankbook.getPaymentsCount() >= 6) //납입횟수가 6회 이상일 경우, true
-                return true;
+            if (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y)) {
+                if (userBankbook.getPaymentsCount() >= 24)
+                    return true;
+                else if (aptInfo.getAtrophyArea().equals(Yn.y))
+                    if (userBankbook.getPaymentsCount() >= 1)
+                        return true;
+                    else if (addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).get().getMetropolitanAreaYn().equals(Yn.y))
+                        if (userBankbook.getPaymentsCount() >= 12)
+                            return true;
+                        else if (userBankbook.getPaymentsCount() >= 6)
+                            return true;
+            }
         }
-        return false; //충족하지 못할 경우 false
+        return false;
     }
 }

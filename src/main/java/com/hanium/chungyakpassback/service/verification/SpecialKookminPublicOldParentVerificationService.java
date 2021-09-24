@@ -6,7 +6,7 @@ import com.hanium.chungyakpassback.entity.input.User;
 
 import java.time.LocalDate;
 
-public interface SpecialKookminPublicMultiChildVerificationService {
+public interface SpecialKookminPublicOldParentVerificationService {
 
     int calcAmericanAge(LocalDate birthday); //만나이
 
@@ -18,9 +18,9 @@ public interface SpecialKookminPublicMultiChildVerificationService {
 
     boolean meetProperty(User user); //자산기준충족여부
 
-    boolean meetHomelessHouseholdMembers(User user); //전세대원무주택세대구성원충족여부
+    boolean meetOldParentSupportMore3years(User user); //3년이상노부모부양충족여부
 
-    int calcMinorChildren(User user); //미성년자녀수계산(태아 포함)
+    boolean meetHomelessHouseholdMembers(User user); //전세대원무주택세대구성원충족여부
 
     boolean isHouseholder(User user); //세대주여부
 
@@ -31,5 +31,6 @@ public interface SpecialKookminPublicMultiChildVerificationService {
     boolean meetBankbookJoinPeriod(User user, AptInfo aptInfo); //가입기간충족여부확인
 
     boolean meetNumberOfPayments(User user, AptInfo aptInfo); //납입횟수충족여부확인
+
 
 }

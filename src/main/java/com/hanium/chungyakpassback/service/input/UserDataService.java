@@ -15,7 +15,7 @@ public interface UserDataService {
 
 //    HouseDto patchHouse(User user, HouseDto houseDto);
 
-    HouseMemberResponseDto houseMember(User user, HouseMemberDto houseMemberDto);
+    HouseMemberResponseDto houseMember(HouseMemberDto houseMemberDto);
 
     HouseMemberResponseDto updateHouseMember(Long id, HouseMemberDto houseMemberDto);
 

@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class UserDataServiceImpl implements UserDataService{
+public class UserDataServiceImpl implements UserDataService {
     private final HouseRepository houseRepository;
     private final UserRepository userRepository;
     private final HouseMemberRepository houseMemberRepository;
@@ -38,7 +38,7 @@ public class UserDataServiceImpl implements UserDataService{
 
 
     @Transactional(rollbackFor = Exception.class)
-    public UserBankbookResponseDto userBankbook(User user, UserBankbookDto userBankbookDto){
+    public UserBankbookResponseDto userBankbook(User user, UserBankbookDto userBankbookDto) {
         if (userBankbookRepository.findByUser(user).orElse(null) != null)
             throw new CustomException(ErrorCode.DUPLICATE_BANKBOOK);
 
@@ -54,7 +54,7 @@ public class UserDataServiceImpl implements UserDataService{
 
 
     @Transactional(rollbackFor = Exception.class)
-    public HouseResponseDto house(User user, HouseDto houseDto){
+    public HouseResponseDto house(User user, HouseDto houseDto) {
         if ((houseDto.getSpouseHouseYn().equals(Yn.y) && user.getSpouseHouse() != null) || (houseDto.getSpouseHouseYn().equals(Yn.n) && user.getHouse() != null))
             throw new CustomException(ErrorCode.DUPLICATE_HOUSE);
 
@@ -72,7 +72,7 @@ public class UserDataServiceImpl implements UserDataService{
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public HouseResponseDto updateHouse(Long id, User user, HouseDto houseDto){
+    public HouseResponseDto updateHouse(Long id, User user, HouseDto houseDto) {
         House house = houseRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HOUSE));
 
         AddressLevel1 addressLevel1 = addressLevel1Repository.findByAddressLevel1(houseDto.getAddressLevel1()).get();
@@ -81,16 +81,21 @@ public class UserDataServiceImpl implements UserDataService{
         return new HouseResponseDto(houseRepository.save(house));
     }
 
-
-
     @Transactional(rollbackFor = Exception.class)
-    public HouseMemberResponseDto houseMember(User user, HouseMemberDto houseMemberDto){
-        Optional<House> optionalHouse = Optional.ofNullable((houseMemberDto.getSpouseHouseYn().equals(Yn.y)) ? user.getSpouseHouse() : user.getHouse());
-        House house = optionalHouse.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HOUSE));
+    public HouseMemberResponseDto houseMember(HouseMemberDto houseMemberDto) {
+        User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
+        House house = houseRepository.findById(houseMemberDto.getHouseId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HOUSE));
 
-        com.hanium.chungyakpassback.entity.standard.Relation relation = relationRepository.findByRelation(houseMemberDto.getRelation()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL2));
+        com.hanium.chungyakpassback.entity.standard.Relation relation = relationRepository.findByRelation(houseMemberDto.getRelation()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_RELATION));
         if (relation.getOnlyOneYn().equals(Yn.y) && houseMemberRelationRepository.findByUserAndRelation(user, relation).isPresent())
             throw new CustomException(ErrorCode.DUPLICATE_RELATION);
+
+        if (relation.getRelation().equals(Relation.본인) && house.equals(user.getSpouseHouse())) //배우자분리세대에 본인을 등록하려고 한다면
+            throw new CustomException(ErrorCode.BAD_REQUEST_USER_AND_USER_HOUSE);
+
+        if (relation.getRelation().equals(Relation.배우자) && house.equals(user.getHouse()) && user.getSpouseHouse() != null) //본인세대에 배우자를 등록하는데 배우자분리세대가 null 이 아니라면
+            throw new CustomException(ErrorCode.BAD_REQUEST_SPOUSE_AND_SPOUSE_HOUSE);
+
 
         HouseMember houseMember = houseMemberDto.toEntity(house);
         houseMemberRepository.save(houseMember);
@@ -100,15 +105,15 @@ public class UserDataServiceImpl implements UserDataService{
                 .build();
         houseMemberRelationRepository.save(houseMemberRelation);
 
-        if ((relation.getRelation().equals(Relation.본인)) || (relation.getRelation().equals(Relation.배우자))){
-            if (relation.getRelation().equals(Relation.본인))
-                user.setHouseMember(houseMember);
-            else user.setSpouseHouseMember(houseMember);
-            userRepository.save(user);
-        }
+        if (relation.getRelation().equals(Relation.본인))
+            user.setHouseMember(houseMember);
+        else if (relation.getRelation().equals(Relation.배우자))
+            user.setSpouseHouseMember(houseMember);
+        userRepository.save(user);
 
         return new HouseMemberResponseDto(houseMember, houseMemberRelation);
     }
+
 
     @Transactional(rollbackFor = Exception.class)
     public HouseMemberResponseDto updateHouseMember(Long id, HouseMemberDto houseMemberDto) {
@@ -125,7 +130,7 @@ public class UserDataServiceImpl implements UserDataService{
             houseMemberRelation.setRelation(changedRelation);
             houseMemberRelationRepository.save(houseMemberRelation);
 
-            if ((presentRelation.getRelation().equals(Relation.본인)) || (presentRelation.getRelation().equals(Relation.배우자))){
+            if ((presentRelation.getRelation().equals(Relation.본인)) || (presentRelation.getRelation().equals(Relation.배우자))) {
                 if (presentRelation.getRelation().equals(Relation.본인))
                     user.setHouseMember(null);
                 else user.setSpouseHouseMember(null);
@@ -146,7 +151,7 @@ public class UserDataServiceImpl implements UserDataService{
     }
 
 
-    public HouseMemberProperty houseMemberProperty(HouseMemberPropertyDto houseMemberPropertyDto){
+    public HouseMemberProperty houseMemberProperty(HouseMemberPropertyDto houseMemberPropertyDto) {
         HouseMember houseMember = houseMemberRepository.findById(houseMemberPropertyDto.getHouseMemberId()).get();
 
         HouseMemberProperty houseMemberProperty = HouseMemberProperty.builder()
@@ -167,7 +172,7 @@ public class UserDataServiceImpl implements UserDataService{
         return houseMemberProperty;
     }
 
-    public HouseMemberChungyak houseMemberChungyak(HouseMemberChungyakDto houseMemberChungyakDto){
+    public HouseMemberChungyak houseMemberChungyak(HouseMemberChungyakDto houseMemberChungyakDto) {
         HouseMember houseMember = houseMemberRepository.findById(houseMemberChungyakDto.getHouseMemberId()).get();
 
         HouseMemberChungyak houseMemberChungyak = HouseMemberChungyak.builder()
@@ -188,7 +193,7 @@ public class UserDataServiceImpl implements UserDataService{
         return houseMemberChungyak;
     }
 
-    public HouseMemberChungyakRestriction houseMemberChungyakRestriction(HouseMemberChungyakRestrictionDto houseMemberChungyakRestrictionDto){
+    public HouseMemberChungyakRestriction houseMemberChungyakRestriction(HouseMemberChungyakRestrictionDto houseMemberChungyakRestrictionDto) {
         HouseMemberChungyak houseMemberChungyak = houseMemberChungyakRepository.findById(houseMemberChungyakRestrictionDto.getHouseMemberChungyakId()).get();
 
         HouseMemberChungyakRestriction houseMemberChungyakRestriction = HouseMemberChungyakRestriction.builder()
@@ -204,7 +209,7 @@ public class UserDataServiceImpl implements UserDataService{
         return houseMemberChungyakRestriction;
     }
 
-    public HouseHolderDto houseHolder(Long id, HouseHolderDto houseHolderDto){
+    public HouseHolderDto houseHolder(Long id, HouseHolderDto houseHolderDto) {
         House house = houseRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HOUSE));
         HouseMember houseMember = houseMemberRepository.findById(houseHolderDto.getHouseMemberId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER));
 
@@ -214,7 +219,6 @@ public class UserDataServiceImpl implements UserDataService{
         return houseHolderDto;
     }
 }
-
 
 
 //    @Transactional(rollbackFor = Exception.class)
