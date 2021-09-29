@@ -13,6 +13,7 @@ import com.hanium.chungyakpassback.repository.standard.BankbookRepository;
 import com.hanium.chungyakpassback.service.verification.GeneralPrivateVerificationServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -68,7 +69,7 @@ public class PointCalculationServiceImpl implements PointCalculationService {
 
 
 
-    @Override
+   @Transactional(rollbackFor = Exception.class)
     public Integer periodOfHomelessness(User user) {
         int point = 0;
         Integer totalHouseCount = generalPrivateVerificationServiceImpl.getHouseMember(user);
@@ -186,7 +187,7 @@ public class PointCalculationServiceImpl implements PointCalculationService {
 
     }
 
-    @Override
+   @Transactional(rollbackFor = Exception.class)
     public Integer numberOfDependents(User user, GeneralMinyeongPointDto generalMinyeongPointDto) { //부양가족 산출하기
         int numberOfFamily = 0;
         int point = 0;
@@ -248,7 +249,7 @@ public class PointCalculationServiceImpl implements PointCalculationService {
         return period.getYears() * 12 + period.getMonths();
     }
 
-    @Override
+   @Transactional(rollbackFor = Exception.class)
     public Integer bankbookJoinPeriod(User user) {
         int point = 0;
         Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user);
