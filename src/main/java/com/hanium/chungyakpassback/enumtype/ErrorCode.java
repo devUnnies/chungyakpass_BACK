@@ -20,6 +20,7 @@ public enum ErrorCode {
     BAD_REQUEST_BANKBOOK(BAD_REQUEST, "청약가능한 청약통장 유형이 아닙니다."),
     BAD_REQUEST_HOMELESS(BAD_REQUEST, "무주택 세대구성원이 아닙니다."),
     BAD_REQUEST_LACK_BANKBOOK(BAD_REQUEST, "청약통장 납입액이 부족합니다."),
+    BAD_REQUEST_OVER_AREA_BANKBOOK(BAD_REQUEST, "지원 가능한 면적을 초과하였습니다."),
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     RESOURCE_NOT_FOUND(NOT_FOUND, "해당 자원을 찾을 수 없습니다"),
