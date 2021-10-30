@@ -38,7 +38,8 @@ public class GeneralKookminVerificationServiceImpl implements GeneralKookminVeri
     final HouseMemberChungyakRestrictionRepository houseMemberChungyakRestrictionRepository;
 
 
-    public int houseTypeConverter(AptInfoTarget aptInfoTarget) { // . 기준으로 주택형 자른후 면적 비교를 위해서 int 형으로 형변환
+    public int houseTypeConverter(AptInfoTarget aptInfoTarget) { // 주택형 변환 메소드
+        // . 기준으로 주택형 자른후 면적 비교를 위해서 int 형으로 형변환
         String housingTypeChange = aptInfoTarget.getHousingType().substring(0, aptInfoTarget.getHousingType().indexOf("."));
 
         return Integer.parseInt(housingTypeChange);
@@ -46,7 +47,7 @@ public class GeneralKookminVerificationServiceImpl implements GeneralKookminVeri
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int calcAmericanAge(LocalDate birthday) {
+    public int calcAmericanAge(LocalDate birthday) { //만나이계산 메소드
         if (birthday == null) {
             throw new CustomException(ErrorCode.NOT_FOUND_BIRTHDAY); //생일이 입력되지 않은 경우 경고문을 띄워줌.
         }
@@ -62,7 +63,7 @@ public class GeneralKookminVerificationServiceImpl implements GeneralKookminVeri
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean meetLivingInSurroundArea(User user, AptInfo aptInfo) {//아파트 분양정보의 인근지역과 거주지의 인근지역이 같다면
+    public boolean meetLivingInSurroundArea(User user, AptInfo aptInfo) { //인근지역거주조건충족여부 메소드
         if (user.getHouseMember() == null) {
             throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER); // 세대구성원->세대를 통해서 주소를 user의 지역_레벨1을 가져오는 것이기 때문에 user의 세대구성원이 비어있으면 안됨.
         }
@@ -70,7 +71,7 @@ public class GeneralKookminVerificationServiceImpl implements GeneralKookminVeri
         com.hanium.chungyakpassback.entity.standard.AddressLevel1 userAddressLevel1 = Optional.ofNullable(user.getHouseMember().getHouse().getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
         com.hanium.chungyakpassback.entity.standard.AddressLevel1 aptAddressLevel1 = addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
 
-        if (userAddressLevel1.getNearbyArea() == aptAddressLevel1.getNearbyArea()) {
+        if (userAddressLevel1.getNearbyArea() == aptAddressLevel1.getNearbyArea()) { // 아파트 분양정보의 인근지역과 거주지의 인근지역이 같다면 true
             return true;
         }
         return false;
@@ -78,17 +79,17 @@ public class GeneralKookminVerificationServiceImpl implements GeneralKookminVeri
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean meetBankbookType(User user, AptInfo aptInfo, AptInfoTarget aptInfoTarget) {
+    public boolean meetBankbookType(User user, AptInfo aptInfo, AptInfoTarget aptInfoTarget) { // 청약통장유형조건충족여부 메소드
         Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user);
-        if (optUserBankbook.isEmpty()) {
+        if (optUserBankbook.isEmpty()) { // 만약 사용자의 청약통장이 입력되지 않았다면 경고문을 띄워줌
             throw new CustomException(ErrorCode.NOT_FOUND_BANKBOOK);
         } else {
             Optional<com.hanium.chungyakpassback.entity.standard.Bankbook> stdBankbook = bankbookRepository.findByBankbook(optUserBankbook.get().getBankbook());
             int housingTypeChange = houseTypeConverter(aptInfoTarget); // 주택형변환 메소드 호출
-            if (stdBankbook.get().getNationalHousingSupplyPossible().equals(Yn.y)) {
+            if (stdBankbook.get().getNationalHousingSupplyPossible().equals(Yn.y)) { // 사용자의 청약통장이 국민주택을 공급받을 수 있는 통장이라면 true
                 return true;
             } else {
-                throw new CustomException(ErrorCode.BAD_REQUEST_BANKBOOK);
+                throw new CustomException(ErrorCode.BAD_REQUEST_BANKBOOK); // 사용자의 청약통장이 국민주택을 공급받을 수 있는 통장이 아닌 경우(청약예금, 청약부금) 경고문을 띄워줌.
             }
         }
     }
@@ -123,7 +124,7 @@ public class GeneralKookminVerificationServiceImpl implements GeneralKookminVeri
                         } else if (houseMemberProperty.getSaleRightYn().equals(Yn.y) && houseMemberProperty.getAcquisitionDate().isBefore(LocalDate.parse("2018-12-11"))) { // 2018.12.11 이전에 취득한 분양권일 경우 specialCase 증가
                             specialCase++;
                             continue;
-                        } else if (!(houseMemberProperty.getDispositionDate() == null)) {
+                        } else if (!(houseMemberProperty.getDispositionDate() == null)) { // 주택 처분일이 있을 경우
                             specialCase++;
                             continue;
                         } else if (houseMemberProperty.getExceptionHouseYn().equals(Yn.y)) { // 주택예외사항해당여부에 해당하는 경우 specialCase 증가
@@ -175,7 +176,7 @@ public class GeneralKookminVerificationServiceImpl implements GeneralKookminVeri
                         } else if (houseMemberProperty.getExceptionHouseYn().equals(Yn.y)) {
                             specialCase++;
                             continue;
-                        } else if (!(houseMemberProperty.getDispositionDate() == null)) {
+                        } else if (!(houseMemberProperty.getDispositionDate() == null)) { // 주택 처분일이 있을 경우
                             specialCase++;
                             continue;
                         } else {
@@ -215,7 +216,7 @@ public class GeneralKookminVerificationServiceImpl implements GeneralKookminVeri
                         } else if (houseMemberProperty.getSaleRightYn().equals(Yn.y) && houseMemberProperty.getAcquisitionDate().isBefore(LocalDate.parse("2018-12-11"))) { // 2018.12.11 이전에 취득한 분양권일 경우 specialCase 증가
                             specialCase++;
                             continue;
-                        } else if (!(houseMemberProperty.getDispositionDate() == null)) {
+                        } else if (!(houseMemberProperty.getDispositionDate() == null)) { // 주택 처분일이 있을 경우
                             specialCase++;
                             continue;
                         } else if (houseMemberProperty.getExceptionHouseYn().equals(Yn.y)) { // 주택예외사항해당여부에 해당하는 경우 specialCase 증가
@@ -248,10 +249,10 @@ public class GeneralKookminVerificationServiceImpl implements GeneralKookminVeri
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean isHouseholder(User user) {
+    public boolean isHouseholder(User user) { // 세대주여부 메소드
         if (user.getHouse().getHouseHolder() == null) {
             throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_HOLDER); //세대주 지정이 안되어있을 경우 경고를 띄움.
-        } else if (user.getHouse().getHouseHolder().getId().equals(user.getHouseMember().getId())) {
+        } else if (user.getHouse().getHouseHolder().getId().equals(user.getHouseMember().getId())) { // 사용자의 세대의 세대주 id가 사용자의 세대구성원id와 같으면 true
             return true;
         }
         return false;
@@ -259,8 +260,8 @@ public class GeneralKookminVerificationServiceImpl implements GeneralKookminVeri
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean isRestrictedArea(AptInfo aptInfo) { // 규제지역여부
-        if (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y))
+    public boolean isRestrictedArea(AptInfo aptInfo) { // 규제지역여부 메소드
+        if (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y)) // 사용자가 선택한 아파트분양정보가 투기과열지구 또는 청약과열지역에 해당하는 경우 true
             return true;
         return false;
     }
@@ -320,54 +321,53 @@ public class GeneralKookminVerificationServiceImpl implements GeneralKookminVeri
     @Transactional(rollbackFor = Exception.class)
     public boolean meetBankbookJoinPeriod(User user, AptInfo aptInfo) { //가입기간충족여부확인
         Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user);
-        if (optUserBankbook.isEmpty())
-            throw new RuntimeException("등록된 청약통장이 없습니다.");
+        if (optUserBankbook.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_BANKBOOK);
+        }
         UserBankbook userBankbook = optUserBankbook.get();
 
-        LocalDate joinDate = userBankbook.getJoinDate();
+        LocalDate joinDate = userBankbook.getJoinDate(); // 사용자의 청약통장 가입날짜를 가져와서 joinDate라는 변수에 담음
         LocalDate now = LocalDate.now();
         Period period = joinDate.until(now);
         int joinPeriod = period.getYears() * 12 + period.getMonths(); // 가입날짜를 받아와서 현재까지의 개월수를 계산
 
-        List<PriorityJoinPeriod> priorityJoinPeriodList = priorityJoinPeriodRepository.findAll();
+        List<PriorityJoinPeriod> priorityJoinPeriodList = priorityJoinPeriodRepository.findAll(); // 가입기간의 기준정보를 List로 가져옴
 
-        for (PriorityJoinPeriod priorityJoinPeriod : priorityJoinPeriodList) {
+        for (PriorityJoinPeriod priorityJoinPeriod : priorityJoinPeriodList) { // 반복문을 통해 가입기간 기준 정보 List를 돌면서,
             if (userBankbook.getValidYn().equals(Yn.y) && priorityJoinPeriod.getSupply().equals(Supply.일반공급)) { // 청약통장이 유효하면서 공급유형이 일반공급인 경우,
-                if (priorityJoinPeriod.getSpeculationOverheated().equals(aptInfo.getSpeculationOverheated()) && priorityJoinPeriod.getSubscriptionOverheated().equals(aptInfo.getSubscriptionOverheated()) && priorityJoinPeriod.getAtrophyArea().equals(aptInfo.getAtrophyArea()) && priorityJoinPeriod.getMetropolitanAreaYn().equals(addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).get().getMetropolitanAreaYn())) {
-                    if (joinPeriod >= priorityJoinPeriod.getSubscriptionPeriod())
+                if (priorityJoinPeriod.getSpeculationOverheated().equals(aptInfo.getSpeculationOverheated()) && priorityJoinPeriod.getSubscriptionOverheated().equals(aptInfo.getSubscriptionOverheated()) && priorityJoinPeriod.getAtrophyArea().equals(aptInfo.getAtrophyArea()) && priorityJoinPeriod.getMetropolitanAreaYn().equals(addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).get().getMetropolitanAreaYn())) { // 기준 정보의 가입기간에서의 투기과열지구여부와 청약과열지역여부, 위축지역, 수도권여부가 사용자가 선택한 아파트분양정보와 같다면,
+                    if (joinPeriod >= priorityJoinPeriod.getSubscriptionPeriod()) // joinPeriod >= 기준정보의 가입기간일 경우, true
                         return true;
                 }
             }
         }
-
         return false;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean meetNumberOfPayments(User user, AptInfo aptInfo) { //납입횟수충족여부확인
+    public boolean meetNumberOfPayments(User user, AptInfo aptInfo) { //납입횟수충족여부확인 메소드
         Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user);
-        if (optUserBankbook.isEmpty())
+        if (optUserBankbook.isEmpty()) // 만약 사용자의 청약통장이 입력되지 않았다면 경고문을 띄워줌
             throw new RuntimeException("등록된 청약통장이 없습니다.");
         UserBankbook userBankbook = optUserBankbook.get();
 
-        List<PriorityPaymentsCount> priorityPaymentsCountList = priorityPaymentsCountRepository.findAll();
+        List<PriorityPaymentsCount> priorityPaymentsCountList = priorityPaymentsCountRepository.findAll(); //납입횟수의 기준정보를 List로 가져옴
 
-        for (PriorityPaymentsCount priorityPaymentsCount : priorityPaymentsCountList) {
+        for (PriorityPaymentsCount priorityPaymentsCount : priorityPaymentsCountList) { // 반복문을 통해 납입횟수 기준 정보 List를 돌면서,
             if (userBankbook.getValidYn().equals(Yn.y) && priorityPaymentsCount.getSupply().equals(Supply.일반공급)) { // 청약통장이 유효하면서 공급유형이 일반공급인 경우,
-                if (priorityPaymentsCount.getSpeculationOverheated().equals(aptInfo.getSpeculationOverheated()) && priorityPaymentsCount.getSubscriptionOverheated().equals(aptInfo.getSubscriptionOverheated()) && priorityPaymentsCount.getAtrophyArea().equals(aptInfo.getAtrophyArea()) && priorityPaymentsCount.getMetropolitanAreaYn().equals(addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).get().getMetropolitanAreaYn())) {
-                    if (userBankbook.getPaymentsCount() >= priorityPaymentsCount.getCountPayments())
+                if (priorityPaymentsCount.getSpeculationOverheated().equals(aptInfo.getSpeculationOverheated()) && priorityPaymentsCount.getSubscriptionOverheated().equals(aptInfo.getSubscriptionOverheated()) && priorityPaymentsCount.getAtrophyArea().equals(aptInfo.getAtrophyArea()) && priorityPaymentsCount.getMetropolitanAreaYn().equals(addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).get().getMetropolitanAreaYn())) { // 기준 정보의 납입횟수에서의 투기과열지구여부와 청약과열지역여부, 위축지역, 수도권여부가 사용자가 선택한 아파트분양정보와 같다면,
+                    if (userBankbook.getPaymentsCount() >= priorityPaymentsCount.getCountPayments()) // 사용자의 납입횟수 >= 기준정보의 납입횟수일 경우, true
                         return true;
                 }
             }
         }
-
         return false;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean meetAllHouseMemberRewinningRestriction(User user) { //전세대원재당첨제한여부
+    public boolean meetAllHouseMemberRewinningRestriction(User user) { //전세대원재당첨제한여부 메소드
         LocalDate now = LocalDate.now(); //현재 날짜 가져오기
 
         List<HouseMemberChungyak> houseMemberListUser = houseMemberChungyakRepository.findAllByHouseMember(user.getHouseMember());

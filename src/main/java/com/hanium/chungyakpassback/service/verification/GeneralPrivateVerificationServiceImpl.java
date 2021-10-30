@@ -44,7 +44,8 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
     final HouseMemberChungyakRestrictionRepository houseMemberChungyakRestrictionRepository;
 
 
-    public int houseTypeConverter(AptInfoTarget aptInfoTarget) { // . 기준으로 주택형 자른후 면적 비교를 위해서 int 형으로 형변환
+    public int houseTypeConverter(AptInfoTarget aptInfoTarget) { // 주택형 변환 메소드
+        // . 기준으로 주택형 자른후 면적 비교를 위해서 int 형으로 형변환
         String housingTypeChange = aptInfoTarget.getHousingType().substring(0, aptInfoTarget.getHousingType().indexOf("."));
 
         return Integer.parseInt(housingTypeChange);
@@ -52,7 +53,7 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int calcAmericanAge(LocalDate birthday) {
+    public int calcAmericanAge(LocalDate birthday) { //만나이계산 메소드
         if (birthday == null) {
             throw new CustomException(ErrorCode.NOT_FOUND_BIRTHDAY); //생일이 입력되지 않은 경우 경고문을 띄워줌.
         }
@@ -68,16 +69,17 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean meetBankbookType(User user, AptInfo aptInfo, AptInfoTarget aptInfoTarget) {
+    public boolean meetBankbookType(User user, AptInfo aptInfo, AptInfoTarget aptInfoTarget) { // 청약통장유형조건충족여부 메소드
         Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user);
-        if (optUserBankbook.isEmpty()) {
+        if (optUserBankbook.isEmpty()) { // 만약 사용자의 청약통장이 입력되지 않았다면 경고문을 띄워줌
             throw new CustomException(ErrorCode.NOT_FOUND_BANKBOOK);
         } else {
+            // 청약통장 기준 정보 테이블에 담겨 있는 데이터와 사용자의 청약통장 정보랑 일치하는 데이터를 가져옴
             Optional<com.hanium.chungyakpassback.entity.standard.Bankbook> stdBankbook = bankbookRepository.findByBankbook(optUserBankbook.get().getBankbook());
             int housingTypeChange = houseTypeConverter(aptInfoTarget); // 주택형변환 메소드 호출
-            if (stdBankbook.get().getPrivateHousingSupplyIsPossible().equals(Yn.y)) {
-                if (stdBankbook.get().getBankbook().equals(Bankbook.청약부금)) {
-                    if (housingTypeChange <= stdBankbook.get().getRestrictionSaleArea()) {
+            if (stdBankbook.get().getPrivateHousingSupplyIsPossible().equals(Yn.y)) { // 사용자의 청약통장이 민영주택을 공급받을 수 있는 통장이라면,
+                if (stdBankbook.get().getBankbook().equals(Bankbook.청약부금)) { // 사용자의 청약통장 종류가 청약 부금인지 확인하고, (주택청약종합저축, 청약예금은 이 부분 확인 안 함)
+                    if (housingTypeChange <= stdBankbook.get().getRestrictionSaleArea()) { // 사용자가 선택한 아파트의 주택형 <= 분양면적제한 85제곱미터일 경우, true
                         return true;
                     } else if (housingTypeChange > stdBankbook.get().getRestrictionSaleArea()) {
                         throw new CustomException(ErrorCode.BAD_REQUEST_OVER_AREA_BANKBOOK); //청약부금일 경우, 면적이 85제곱미터를 초과할 경우 경고문을 띄워줌.
@@ -86,17 +88,17 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
                 }
                 return true;
             } else {
-                throw new CustomException(ErrorCode.BAD_REQUEST_BANKBOOK);
+                throw new CustomException(ErrorCode.BAD_REQUEST_BANKBOOK); // 사용자의 청약통장이 민영주택을 공급받을 수 있는 통장이 아닌 경우(청약저축) 경고문을 띄워줌.
             }
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean isHouseholder(User user) {
+    public boolean isHouseholder(User user) { // 세대주여부 메소드
         if (user.getHouse().getHouseHolder() == null) {
             throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_HOLDER); //세대주 지정이 안되어있을 경우 경고를 띄움.
-        } else if (user.getHouse().getHouseHolder().getId().equals(user.getHouseMember().getId())) {
+        } else if (user.getHouse().getHouseHolder().getId().equals(user.getHouseMember().getId())) { // 사용자의 세대의 세대주 id가 사용자의 세대구성원id와 같으면 true
             return true;
         }
         return false;
@@ -104,15 +106,15 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean meetLivingInSurroundArea(User user, AptInfo aptInfo) {//아파트 분양정보의 인근지역과 거주지의 인근지역이 같다면
+    public boolean meetLivingInSurroundArea(User user, AptInfo aptInfo) { //인근지역거주조건충족여부 메소드
         if (user.getHouseMember() == null) {
             throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER); // 세대구성원->세대를 통해서 주소를 user의 지역_레벨1을 가져오는 것이기 때문에 user의 세대구성원이 비어있으면 안됨.
         }
 
-        AddressLevel1 userAddressLevel1 = Optional.ofNullable(user.getHouseMember().getHouse().getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
-        AddressLevel1 aptAddressLevel1 = addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
+        com.hanium.chungyakpassback.entity.standard.AddressLevel1 userAddressLevel1 = Optional.ofNullable(user.getHouseMember().getHouse().getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
+        com.hanium.chungyakpassback.entity.standard.AddressLevel1 aptAddressLevel1 = addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ADDRESS_LEVEL1));
 
-        if (userAddressLevel1.getNearbyArea() == aptAddressLevel1.getNearbyArea()) {
+        if (userAddressLevel1.getNearbyArea() == aptAddressLevel1.getNearbyArea()) { // 아파트 분양정보의 인근지역과 거주지의 인근지역이 같다면 true
             return true;
         }
         return false;
@@ -120,8 +122,8 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean isRestrictedArea(AptInfo aptInfo) {
-        if (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y))
+    public boolean isRestrictedArea(AptInfo aptInfo) { // 규제지역여부 메소드
+        if (aptInfo.getSpeculationOverheated().equals(Yn.y) || aptInfo.getSubscriptionOverheated().equals(Yn.y)) // 사용자가 선택한 아파트분양정보가 투기과열지구 또는 청약과열지역에 해당하는 경우 true
             return true;
         return false;
     }
@@ -135,62 +137,58 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
         }
         UserBankbook userBankbook = optUserBankbook.get();
 
-        LocalDate joinDate = userBankbook.getJoinDate();
+        LocalDate joinDate = userBankbook.getJoinDate(); // 사용자의 청약통장 가입날짜를 가져와서 joinDate라는 변수에 담음
         LocalDate now = LocalDate.now();
         Period period = joinDate.until(now);
         int joinPeriod = period.getYears() * 12 + period.getMonths(); // 가입날짜를 받아와서 현재까지의 개월수를 계산
 
-        List<PriorityJoinPeriod> priorityJoinPeriodList = priorityJoinPeriodRepository.findAll();
+        List<PriorityJoinPeriod> priorityJoinPeriodList = priorityJoinPeriodRepository.findAll(); // 가입기간의 기준정보를 List로 가져옴
 
-        for (PriorityJoinPeriod priorityJoinPeriod : priorityJoinPeriodList) {
+        for (PriorityJoinPeriod priorityJoinPeriod : priorityJoinPeriodList) { // 반복문을 통해 가입기간 기준 정보 List를 돌면서,
             if (userBankbook.getValidYn().equals(Yn.y) && priorityJoinPeriod.getSupply().equals(Supply.일반공급)) { // 청약통장이 유효하면서 공급유형이 일반공급인 경우,
-                if (priorityJoinPeriod.getSpeculationOverheated().equals(aptInfo.getSpeculationOverheated()) && priorityJoinPeriod.getSubscriptionOverheated().equals(aptInfo.getSubscriptionOverheated()) && priorityJoinPeriod.getAtrophyArea().equals(aptInfo.getAtrophyArea()) && priorityJoinPeriod.getMetropolitanAreaYn().equals(addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).get().getMetropolitanAreaYn())) {
-                    if (joinPeriod >= priorityJoinPeriod.getSubscriptionPeriod())
+                if (priorityJoinPeriod.getSpeculationOverheated().equals(aptInfo.getSpeculationOverheated()) && priorityJoinPeriod.getSubscriptionOverheated().equals(aptInfo.getSubscriptionOverheated()) && priorityJoinPeriod.getAtrophyArea().equals(aptInfo.getAtrophyArea()) && priorityJoinPeriod.getMetropolitanAreaYn().equals(addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).get().getMetropolitanAreaYn())) { // 기준 정보의 가입기간에서의 투기과열지구여부와 청약과열지역여부, 위축지역, 수도권여부가 사용자가 선택한 아파트분양정보와 같다면,
+                    if (joinPeriod >= priorityJoinPeriod.getSubscriptionPeriod()) // joinPeriod >= 기준정보의 가입기간일 경우, true
                         return true;
                 }
             }
         }
-
         return false;
     }
 
-    // 예치금액충족 여부
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean meetDeposit(User user, AptInfoTarget aptInfoTarget) { // 예치금액충족여부확인
-        Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user);
-        if (optUserBankbook.isEmpty())
+    public boolean meetDeposit(User user, AptInfoTarget aptInfoTarget) { // 예치금액충족여부확인드 메소드
+        Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user); // 사용자의 청약통장정보를 가져옴
+        if (optUserBankbook.isEmpty()) // 만약 사용자의 청약통장이 입력되지 않았다면 경고문을 띄워줌
             throw new RuntimeException("등록된 청약통장이 없습니다.");
         UserBankbook userBankbook = optUserBankbook.get();
 
-        int housingTypeChange = houseTypeConverter(aptInfoTarget);
-        List<PriorityDeposit> priorityDepositList = priorityDepositRepository.findAll();
+        int housingTypeChange = houseTypeConverter(aptInfoTarget); // houseTypeConverter 메소드를 통해 변환한 주택형을 housingTypeChange 변수에 담음
+        List<PriorityDeposit> priorityDepositList = priorityDepositRepository.findAll(); // 납입금의 기준정보를 List로 가져옴
 
-
-        for (PriorityDeposit priorityDeposit : priorityDepositList) {
-            if (priorityDeposit.getDepositArea().equals(user.getHouse().getAddressLevel1().getDepositArea())) {
-                if (priorityDeposit.getAreaOver() < housingTypeChange && priorityDeposit.getAreaLessOrEqual() >= housingTypeChange && userBankbook.getDeposit() >= priorityDeposit.getDeposit()) {
+        for (PriorityDeposit priorityDeposit : priorityDepositList) { // 반복문을 통해 납입금 기준 정보 List를 돌면서,
+            if (priorityDeposit.getDepositArea().equals(user.getHouse().getAddressLevel1().getDepositArea())) { // 기준정보의 예치금액지역구분과 사용자의 지역_레벨1의 지역이 동일하다면,
+                if (priorityDeposit.getAreaOver() < housingTypeChange && priorityDeposit.getAreaLessOrEqual() >= housingTypeChange && userBankbook.getDeposit() >= priorityDeposit.getDeposit()) { // 기준정보의 면적_초과 < housingTypeChange 이고, 기준정보의 면적_이하 >= housingTypeChange 이고, 사용자의 청약통장 예치금액 >= 기준정보의 예치금액 조건들을 충족한다면 true
                     return true;
                 }
             }
         }
-
         return false;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean isPriorityApt(AptInfo aptInfo, AptInfoTarget aptInfoTarget) {
-        if ((houseTypeConverter(aptInfoTarget) > 85 && aptInfo.getPublicRentalHousing().equals(Yn.y)))
+    public boolean isPriorityApt(AptInfo aptInfo, AptInfoTarget aptInfoTarget) { // 주거전용 85 초과 공공건설임대주택, 수도권에 지정된 공공주택에서 공급하는 민영주택에 청약하는지 여부 확인하는 메소드
+        if ((houseTypeConverter(aptInfoTarget) > 85 && aptInfo.getPublicRentalHousing().equals(Yn.y))) // houseTypeConverter 메소드를 호출해서 주택형 > 85제곱미터이고, 공공건설임대주택일 경우 true
             return true;
-        else if (aptInfo.getHousingType().equals(HousingType.민영) && aptInfo.getPublicHosingDistrict().equals(Yn.y) && addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).equals(addressLevel1Repository.findAllByMetropolitanAreaYn(Yn.y)))
+        else if (aptInfo.getHousingType().equals(HousingType.민영) && aptInfo.getPublicHosingDistrict().equals(Yn.y) && addressLevel1Repository.findByAddressLevel1(aptInfo.getAddressLevel1()).equals(addressLevel1Repository.findAllByMetropolitanAreaYn(Yn.y))) // 선택한 아파트가 민영주택이고, 공공주택지구이고, 아파트의 지역이 수도권에 해당하는 경우 true
             return true;
         return false;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean meetHouseHavingLessThan2Apt(User user) {
+    public boolean meetHouseHavingLessThan2Apt(User user) { // 소유주택2개미만세대충족여부 메소드
         List<HouseMember> houseMemberList = houseMemberRepository.findAllByHouse(user.getHouseMember().getHouse());
 
         int houseCount = 0;
