@@ -28,8 +28,6 @@ public interface SpecialPrivateNewlyMarriedVerificationService {
 
     boolean isHouseholder(User user); //세대주여부
 
-    boolean meetAllHouseMemberNotWinningIn5years(User user); //전세대원5년이내미당첨조건충족여부
-
     boolean isRestrictedArea(AptInfo aptInfo); //규제지역여부
 
     boolean meetBankbookJoinPeriod(User user, AptInfo aptInfo); //가입기간충족여부확인

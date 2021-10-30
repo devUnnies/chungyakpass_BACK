@@ -283,7 +283,7 @@ public class SpecialPrivateNewlyMarriedVerificationServiceImpl implements Specia
 
                 for (HouseMemberProperty houseMemberProperty : houseMemberPropertyList) {
                     if (user.getHouseMember().getMarriageDate().isBefore(houseMemberProperty.getDispositionDate())) //혼인신고일 이후에 처분일 이력이 있고,
-                        if (houseMemberProperty.getDispositionDate().isAfter(LocalDate.of(2018, 12, 10))) // 2018년 12월 10일 이후에 처분했을 경우,
+                        if (houseMemberProperty.getDispositionDate().isBefore(LocalDate.of(2018, 12, 10))) // 2018년 12월 10일 이전에 처분했을 경우,
                             return true; // true(2순위 신청만 가능)
                 }
             }
@@ -297,7 +297,7 @@ public class SpecialPrivateNewlyMarriedVerificationServiceImpl implements Specia
 
                 for (HouseMemberProperty houseMemberProperty : houseMemberPropertyList) {
                     if (user.getHouseMember().getMarriageDate().isBefore(houseMemberProperty.getDispositionDate())) //혼인신고일 이후에 처분일 이력이 있고,
-                        if (houseMemberProperty.getDispositionDate().isAfter(LocalDate.of(2018, 12, 10))) // 2018년 12월 10일 이후에 처분했을 경우,
+                        if (houseMemberProperty.getDispositionDate().isBefore(LocalDate.of(2018, 12, 10))) // 2018년 12월 10일 이전에 처분했을 경우,
                             return true; // true(2순위 신청만 가능)
                 }
             }
@@ -307,7 +307,7 @@ public class SpecialPrivateNewlyMarriedVerificationServiceImpl implements Specia
 
                 for (HouseMemberProperty houseMemberProperty : houseMemberPropertyList) {
                     if (user.getHouseMember().getMarriageDate().isBefore(houseMemberProperty.getDispositionDate())) //혼인신고일 이후에 처분일 이력이 있고,
-                        if (houseMemberProperty.getDispositionDate().isAfter(LocalDate.of(2018, 12, 10))) // 2018년 12월 10일 이후에 처분했을 경우,
+                        if (houseMemberProperty.getDispositionDate().isBefore(LocalDate.of(2018, 12, 10))) // 2018년 12월 10일 이전에 처분했을 경우,
                             return true; // true(2순위 신청만 가능)
                 }
             }
@@ -554,56 +554,5 @@ public class SpecialPrivateNewlyMarriedVerificationServiceImpl implements Specia
         }
 
         return false;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public boolean meetAllHouseMemberNotWinningIn5years(User user) { // 과거 5년 이내에 다른 주택에 당첨된 자가 속해 있는 무주택세대구성원
-        LocalDate now = LocalDate.now();
-        int periodYear = 0;
-
-        List<HouseMember> houseMemberListUser = houseMemberRepository.findAllByHouse(user.getHouseMember().getHouse());
-
-        //배우자와 같은 세대이거나, 미혼일 경우
-        if (user.getHouse() == user.getSpouseHouse() || user.getSpouseHouse() == null) {
-            for (HouseMember houseMember : houseMemberListUser) {
-                List<HouseMemberChungyak> houseMemberChungyakList = houseMemberChungyakRepository.findAllByHouseMember(houseMember);
-
-                for (HouseMemberChungyak houseMemberChungyak : houseMemberChungyakList) {
-                    periodYear = now.minusYears(houseMemberChungyak.getWinningDate().getYear()).getYear();
-
-                    if (periodYear <= 5)
-                        return false;
-                }
-                return true;
-            }
-        }
-        //배우자 분리세대일 경우
-        else {
-            List<HouseMember> spouseHouseMemberList = houseMemberRepository.findAllByHouse(user.getSpouseHouseMember().getHouse()); // 신청자의 배우자의 전세대구성원의 자산 정보를 List로 가져옴
-
-            for (HouseMember houseMember : houseMemberListUser) {
-                List<HouseMemberChungyak> houseMemberChungyakList = houseMemberChungyakRepository.findAllByHouseMember(houseMember);
-
-                for (HouseMemberChungyak houseMemberChungyak : houseMemberChungyakList) {
-                    periodYear = now.minusYears(houseMemberChungyak.getWinningDate().getYear()).getYear();
-
-                    if (periodYear <= 5)
-                        return false;
-                }
-            }
-
-            for (HouseMember houseMember : spouseHouseMemberList) {
-                List<HouseMemberChungyak> houseMemberChungyakList = houseMemberChungyakRepository.findAllByHouseMember(houseMember);
-
-                for (HouseMemberChungyak houseMemberChungyak : houseMemberChungyakList) {
-                    periodYear = now.minusYears(houseMemberChungyak.getWinningDate().getYear()).getYear();
-
-                    if (periodYear <= 5)
-                        return false;
-                }
-            }
-        }
-        return true;
     }
 }
