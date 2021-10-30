@@ -72,13 +72,14 @@ public class VerificationController {
         boolean householderTf = generalPrivateVerificationService.isHouseholder(user);
         boolean isRestrictedAreaTf = generalPrivateVerificationService.isRestrictedArea(aptInfo);
         boolean meetAllHouseMemberNotWinningIn5yearsTf = generalPrivateVerificationService.meetAllHouseMemberNotWinningIn5years(user);
+        boolean meetAllHouseMemberRewinningRestrictionTf = generalPrivateVerificationService.meetAllHouseMemberRewinningRestriction(user);
         boolean meetHouseHavingLessThan2AptTf = generalPrivateVerificationService.meetHouseHavingLessThan2Apt(user);
         boolean meetBankbookJoinPeriodTf = generalPrivateVerificationService.meetBankbookJoinPeriod(user, aptInfo);
         boolean meetDepositTf = generalPrivateVerificationService.meetDeposit(user, aptInfoTarget);
         boolean isPriorityApt = generalPrivateVerificationService.isPriorityApt(aptInfo, aptInfoTarget);
 
 
-        return new ResponseEntity<>(new GeneralMinyeongResponseDto(meetLivingInSurroundAreaTf, accountTf, americanAge, householderTf, isRestrictedAreaTf, meetAllHouseMemberNotWinningIn5yearsTf, meetHouseHavingLessThan2AptTf, meetBankbookJoinPeriodTf, meetDepositTf, isPriorityApt), HttpStatus.OK);
+        return new ResponseEntity<>(new GeneralMinyeongResponseDto(meetLivingInSurroundAreaTf, accountTf, americanAge, householderTf, isRestrictedAreaTf, meetAllHouseMemberNotWinningIn5yearsTf, meetAllHouseMemberRewinningRestrictionTf, meetHouseHavingLessThan2AptTf, meetBankbookJoinPeriodTf, meetDepositTf, isPriorityApt), HttpStatus.OK);
     }
 
     @PostMapping("/general/kookmin") //일반국민
@@ -93,13 +94,14 @@ public class VerificationController {
         boolean meetLivingInSurroundAreaTf = specialPrivateMultiChildVerificationService.meetLivingInSurroundArea(user, aptInfo);
         boolean accountTf = generalKookminVerificationService.meetBankbookType(user, aptInfo, aptInfoTarget);
         boolean meetHomelessHouseholdMembersTf = generalKookminVerificationService.meetHomelessHouseholdMembers(user);
+        boolean meetAllHouseMemberRewinningRestrictionTf = generalKookminVerificationService.meetAllHouseMemberRewinningRestriction(user);
         boolean householderTf = generalKookminVerificationService.isHouseholder(user);
         boolean isRestrictedAreaTf = generalKookminVerificationService.isRestrictedArea(aptInfo);
         boolean meetAllHouseMemberNotWinningIn5yearsTf = generalKookminVerificationService.meetAllHouseMemberNotWinningIn5years(user);
         boolean meetBankbookJoinPeriodTf = generalKookminVerificationService.meetBankbookJoinPeriod(user, aptInfo);
         boolean meetNumberOfPaymentsTf = generalKookminVerificationService.meetNumberOfPayments(user, aptInfo);
 
-        return new ResponseEntity<>(new GeneralKookminResponseDto(americanAge, meetLivingInSurroundAreaTf, accountTf, meetHomelessHouseholdMembersTf, householderTf, isRestrictedAreaTf, meetAllHouseMemberNotWinningIn5yearsTf, meetBankbookJoinPeriodTf, meetNumberOfPaymentsTf), HttpStatus.OK);
+        return new ResponseEntity<>(new GeneralKookminResponseDto(americanAge, meetLivingInSurroundAreaTf, accountTf, meetHomelessHouseholdMembersTf, meetAllHouseMemberRewinningRestrictionTf, householderTf, isRestrictedAreaTf, meetAllHouseMemberNotWinningIn5yearsTf, meetBankbookJoinPeriodTf, meetNumberOfPaymentsTf), HttpStatus.OK);
     }
 
     @PostMapping("/special/minyeong/multichild") //특별다자녀민영
@@ -114,16 +116,16 @@ public class VerificationController {
         boolean meetLivingInSurroundAreaTf = specialPrivateMultiChildVerificationService.meetLivingInSurroundArea(user, aptInfo);
         boolean accountTf = specialPrivateMultiChildVerificationService.meetBankbookType(user, aptInfo, aptInfoTarget);
         boolean meetHomelessHouseholdMembersTf = specialPrivateMultiChildVerificationService.meetHomelessHouseholdMembers(user);
+        boolean meetAllHouseMemberRewinningRestrictionTf = specialPrivateMultiChildVerificationService.meetAllHouseMemberRewinningRestriction(user);
         Integer calcMinorChildren = specialPrivateMultiChildVerificationService.calcMinorChildren(user);
         boolean householderTf = specialPrivateMultiChildVerificationService.isHouseholder(user);
-        boolean meetAllHouseMemberNotWinningIn5yearsTf = specialPrivateMultiChildVerificationService.meetAllHouseMemberNotWinningIn5years(user);
         boolean isRestrictedAreaTf = specialPrivateMultiChildVerificationService.isRestrictedArea(aptInfo);
         boolean meetHouseHavingLessThan2Apt = specialPrivateMultiChildVerificationService.meetHouseHavingLessThan2Apt(user);
         boolean isPriorityApt = specialPrivateMultiChildVerificationService.isPriorityApt(aptInfo, aptInfoTarget);
         boolean meetDepositTf = specialPrivateMultiChildVerificationService.meetDeposit(user, aptInfoTarget);
         boolean meetBankbookJoinPeriodTf = specialPrivateMultiChildVerificationService.meetBankbookJoinPeriod(user, aptInfo);
 
-        return new ResponseEntity<>(new SpecialMinyeongMultiChildResponseDto(americanAge, meetLivingInSurroundAreaTf, accountTf, meetHomelessHouseholdMembersTf, calcMinorChildren, householderTf, meetAllHouseMemberNotWinningIn5yearsTf, isRestrictedAreaTf, meetHouseHavingLessThan2Apt, isPriorityApt, meetDepositTf, meetBankbookJoinPeriodTf), HttpStatus.OK);
+        return new ResponseEntity<>(new SpecialMinyeongMultiChildResponseDto(americanAge, meetLivingInSurroundAreaTf, accountTf, meetHomelessHouseholdMembersTf, meetAllHouseMemberRewinningRestrictionTf, calcMinorChildren, householderTf, isRestrictedAreaTf, meetHouseHavingLessThan2Apt, isPriorityApt, meetDepositTf, meetBankbookJoinPeriodTf), HttpStatus.OK);
     }
 
     @PostMapping("/special/kookmin/public/multichild") //특별다자녀국민공공주택
@@ -140,14 +142,14 @@ public class VerificationController {
         boolean meetMonthlyAverageIncomeTf = specialKookminPublicMultiChildVerificationService.meetMonthlyAverageIncome(user);
         boolean meetPropertyTf = specialKookminPublicMultiChildVerificationService.meetProperty(user);
         boolean meetHomelessHouseholdMembersTf = specialKookminPublicMultiChildVerificationService.meetHomelessHouseholdMembers(user);
+        boolean meetAllHouseMemberRewinningRestrictionTf = specialKookminPublicMultiChildVerificationService.meetAllHouseMemberRewinningRestriction(user);
         Integer calcMinorChildren = specialKookminPublicMultiChildVerificationService.calcMinorChildren(user);
         boolean householderTf = specialKookminPublicMultiChildVerificationService.isHouseholder(user);
-        boolean meetAllHouseMemberNotWinningIn5yearsTf = specialKookminPublicMultiChildVerificationService.meetAllHouseMemberNotWinningIn5years(user);
         boolean isRestrictedAreaTf = specialKookminPublicMultiChildVerificationService.isRestrictedArea(aptInfo);
         boolean meetBankbookJoinPeriodTf = specialKookminPublicMultiChildVerificationService.meetBankbookJoinPeriod(user, aptInfo);
         boolean meetNumberOfPaymentsTf = specialKookminPublicMultiChildVerificationService.meetNumberOfPayments(user, aptInfo);
 
-        return new ResponseEntity<>(new SpecialKookminPublicMultiChildResponseDto(americanAge, meetLivingInSurroundAreaTf, accountTf, meetMonthlyAverageIncomeTf, meetPropertyTf, meetHomelessHouseholdMembersTf, calcMinorChildren, householderTf, meetAllHouseMemberNotWinningIn5yearsTf, isRestrictedAreaTf, meetBankbookJoinPeriodTf, meetNumberOfPaymentsTf), HttpStatus.OK);
+        return new ResponseEntity<>(new SpecialKookminPublicMultiChildResponseDto(americanAge, meetLivingInSurroundAreaTf, accountTf, meetMonthlyAverageIncomeTf, meetPropertyTf, meetHomelessHouseholdMembersTf, meetAllHouseMemberRewinningRestrictionTf, calcMinorChildren, householderTf, isRestrictedAreaTf, meetBankbookJoinPeriodTf, meetNumberOfPaymentsTf), HttpStatus.OK);
     }
 
     @PostMapping("/special/minyeong/oldparent") //특별노부모민영
@@ -215,12 +217,13 @@ public class VerificationController {
         boolean hasMinorChildren = specialPrivateNewlyMarriedVerificationService.hasMinorChildren(user);
         boolean is2ndChungyak = specialPrivateNewlyMarriedVerificationService.is2ndChungyak(user);
         boolean meetHomelessHouseholdMembersTf = specialPrivateNewlyMarriedVerificationService.meetHomelessHouseholdMembers(user);
+        boolean meetAllHouseMemberRewinningRestrictionTf = specialPrivateNewlyMarriedVerificationService.meetAllHouseMemberRewinningRestriction(user);
         boolean householderTf = specialPrivateNewlyMarriedVerificationService.isHouseholder(user);
         boolean isRestrictedAreaTf = specialPrivateNewlyMarriedVerificationService.isRestrictedArea(aptInfo);
         boolean meetBankbookJoinPeriodTf = specialPrivateNewlyMarriedVerificationService.meetBankbookJoinPeriod(user, aptInfo);
         boolean meetDepositTf = specialPrivateNewlyMarriedVerificationService.meetDeposit(user, aptInfoTarget);
 
-        return new ResponseEntity<>(new SpecialMinyeongNewlyMarriedResponseDto(americanAge, meetLivingInSurroundAreaTf, accountTf, meetMonthlyAverageIncomePriorityTf, meetMonthlyAverageIncomeGeneralTf, meetMarriagePeriodIn7yearsTf, hasMinorChildren, is2ndChungyak, meetHomelessHouseholdMembersTf, householderTf, isRestrictedAreaTf, meetBankbookJoinPeriodTf, meetDepositTf), HttpStatus.OK);
+        return new ResponseEntity<>(new SpecialMinyeongNewlyMarriedResponseDto(americanAge, meetLivingInSurroundAreaTf, accountTf, meetMonthlyAverageIncomePriorityTf, meetMonthlyAverageIncomeGeneralTf, meetMarriagePeriodIn7yearsTf, hasMinorChildren, is2ndChungyak, meetHomelessHouseholdMembersTf, meetAllHouseMemberRewinningRestrictionTf, householderTf, isRestrictedAreaTf, meetBankbookJoinPeriodTf, meetDepositTf), HttpStatus.OK);
     }
 
     @PostMapping("/special/kookmin/newlymarried") //특별신혼부부국민
@@ -240,12 +243,13 @@ public class VerificationController {
         boolean hasMinorChildren = specialKookminNewlyMarriedVerificationService.hasMinorChildren(user);
         boolean is2ndChungyak = specialKookminNewlyMarriedVerificationService.is2ndChungyak(user);
         boolean meetHomelessHouseholdMembersTf = specialKookminNewlyMarriedVerificationService.meetHomelessHouseholdMembers(user);
+        boolean meetAllHouseMemberRewinningRestrictionTf = specialKookminNewlyMarriedVerificationService.meetAllHouseMemberRewinningRestriction(user);
         boolean householderTf = specialKookminNewlyMarriedVerificationService.isHouseholder(user);
         boolean isRestrictedAreaTf = specialKookminNewlyMarriedVerificationService.isRestrictedArea(aptInfo);
         boolean meetBankbookJoinPeriodTf = specialKookminNewlyMarriedVerificationService.meetBankbookJoinPeriod(user, aptInfo);
         boolean meetNumberOfPaymentsTf = specialKookminNewlyMarriedVerificationService.meetNumberOfPayments(user, aptInfo);
 
-        return new ResponseEntity<>(new SpecialKookminNewlyMarriedResponseDto(americanAge, meetLivingInSurroundAreaTf, accountTf, meetMonthlyAverageIncomePriorityTf, meetMonthlyAverageIncomeGeneralTf, meetMarriagePeriodIn7yearsTf, hasMinorChildren, is2ndChungyak, meetHomelessHouseholdMembersTf, householderTf, isRestrictedAreaTf, meetBankbookJoinPeriodTf, meetNumberOfPaymentsTf), HttpStatus.OK);
+        return new ResponseEntity<>(new SpecialKookminNewlyMarriedResponseDto(americanAge, meetLivingInSurroundAreaTf, accountTf, meetMonthlyAverageIncomePriorityTf, meetMonthlyAverageIncomeGeneralTf, meetMarriagePeriodIn7yearsTf, hasMinorChildren, is2ndChungyak, meetHomelessHouseholdMembersTf, meetAllHouseMemberRewinningRestrictionTf, householderTf, isRestrictedAreaTf, meetBankbookJoinPeriodTf, meetNumberOfPaymentsTf), HttpStatus.OK);
     }
 
     @PostMapping("/special/kookmin/public/newlymarried") //특별신혼부부국민공공주택
@@ -266,12 +270,13 @@ public class VerificationController {
         boolean meetPropertyTf = specialKookminPublicNewlyMarriedVerificationService.meetProperty(user);
         boolean is2ndChungyak = specialKookminPublicNewlyMarriedVerificationService.is2ndChungyak(user);
         boolean meetHomelessHouseholdMembersTf = specialKookminPublicNewlyMarriedVerificationService.meetHomelessHouseholdMembers(user);
+        boolean meetAllHouseMemberRewinningRestrictionTf = specialKookminPublicNewlyMarriedVerificationService.meetAllHouseMemberRewinningRestriction(user);
         boolean householderTf = specialKookminPublicNewlyMarriedVerificationService.isHouseholder(user);
         boolean isRestrictedAreaTf = specialKookminPublicNewlyMarriedVerificationService.isRestrictedArea(aptInfo);
         boolean meetBankbookJoinPeriodTf = specialKookminPublicNewlyMarriedVerificationService.meetBankbookJoinPeriod(user, aptInfo);
         boolean meetNumberOfPaymentsTf = specialKookminPublicNewlyMarriedVerificationService.meetNumberOfPayments(user, aptInfo);
 
-        return new ResponseEntity<>(new SpecialKookminPublicNewlyMarriedResponseDto(americanAge, meetLivingInSurroundAreaTf, accountTf, meetRecipientTf, hasMinorChildren, meetMonthlyAverageIncomePriorityTf, meetMonthlyAverageIncomeGeneralTf, meetPropertyTf, is2ndChungyak, meetHomelessHouseholdMembersTf, householderTf, isRestrictedAreaTf, meetBankbookJoinPeriodTf, meetNumberOfPaymentsTf), HttpStatus.OK);
+        return new ResponseEntity<>(new SpecialKookminPublicNewlyMarriedResponseDto(americanAge, meetLivingInSurroundAreaTf, accountTf, meetRecipientTf, hasMinorChildren, meetMonthlyAverageIncomePriorityTf, meetMonthlyAverageIncomeGeneralTf, meetPropertyTf, is2ndChungyak, meetHomelessHouseholdMembersTf, meetAllHouseMemberRewinningRestrictionTf, householderTf, isRestrictedAreaTf, meetBankbookJoinPeriodTf, meetNumberOfPaymentsTf), HttpStatus.OK);
     }
 
     @PostMapping("/special/private/firstLife")

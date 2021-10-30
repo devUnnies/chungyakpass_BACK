@@ -19,6 +19,8 @@ public interface GeneralPrivateVerificationService {
 
     boolean meetAllHouseMemberNotWinningIn5years(User user); //전세대원5년이내미당첨조건충족여부
 
+    boolean meetAllHouseMemberRewinningRestriction(User user); //전세대원재당첨제한여부
+
     boolean isRestrictedArea(AptInfo aptInfo); //규제지역여부
 
     boolean meetHouseHavingLessThan2Apt(User user); //소유주택2개미만세대충족여부
@@ -28,7 +30,6 @@ public interface GeneralPrivateVerificationService {
     boolean meetDeposit(User user, AptInfoTarget aptInfoTarget); //예치금액충족여부확인
 
     boolean meetBankbookJoinPeriod(User user, AptInfo aptInfo); //가입기간충족여부확인
-
 
 
 }
