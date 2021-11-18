@@ -44,12 +44,12 @@ public class ApiDetailExplorer5 {
     public String GetAptApi(String aptUrl, int pageNo, int manageNo) {
         try {
             StringBuilder urlBuilder = new StringBuilder(aptUrl); /*URL*///주택번호와 url을 받는다.
-            urlBuilder.append("?").append(URLEncoder.encode("ServiceKey", StandardCharsets.UTF_8)).append("=r%2B2HI8hwDijPaCvVzQvg1O6birty3yCNr1QCk30cBuFXESl9etAWiSqbfS8cCStGjXXcfT2yfcfXlEgViCgMmg%3D%3D"); /*Service Key*/
+            urlBuilder.append("?").append(URLEncoder.encode("ServiceKey", StandardCharsets.UTF_8)).append("=BmqDlfkTCepN%2F%2B8XBveSElPppoonFGeljKmlxIZDZV589UGOa%2B3U3sHN5fCNuT2jBnOn1iTVWFQTdDMcRdnohA%3D%3D"); /*Service Key*/
 
             urlBuilder.append("&").append(URLEncoder.encode("pageNo", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(String.valueOf(pageNo), StandardCharsets.UTF_8));
 
             if (manageNo == 0) {
-                urlBuilder.append("&").append(URLEncoder.encode("startmonth", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("202108", StandardCharsets.UTF_8)); /*월 단위 모집공고일 (검색시작월)*/
+                urlBuilder.append("&").append(URLEncoder.encode("startmonth", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(date, StandardCharsets.UTF_8)); /*월 단위 모집공고일 (검색시작월)*/
                 urlBuilder.append("&").append(URLEncoder.encode("endmonth", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(date, StandardCharsets.UTF_8)); /*월 단위 모집공고일 (검색종료월, 최대 12개월)*/
             } else {
                 urlBuilder.append("&").append(URLEncoder.encode("houseManageNo", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(String.valueOf(manageNo), StandardCharsets.UTF_8)); /*주택관리번호*/
@@ -186,37 +186,37 @@ public class ApiDetailExplorer5 {
             }
             if (body.get("items") instanceof JSONObject) {//주택번호와 url은 있는데 값이 안들어온 경우 값이 object형식으로 들어왔나 확인
                 JSONObject items = (JSONObject) body.get("items");
-                JSONObject itemJson = items.getJSONObject("item");//item크기만큼 dto에 저장
-                String detailAddress = itemJson.getString("hssplyadres");
-                String[] areaLevel = detailAddress.split(" ");
+                    JSONObject itemJson = items.getJSONObject("item");//item크기만큼 dto에 저장
+                    String detailAddress = itemJson.getString("hssplyadres");
+                    String[] areaLevel = detailAddress.split(" ");
 
-                AptInfoReceiptDto AptInfoReceiptdto = new AptInfoReceiptDto(itemJson);//item크기만큼 청약접수일정1Dto에 저장
-                aptInfoReceiptDtoList.add(AptInfoReceiptdto);
+                    AptInfoReceiptDto AptInfoReceiptdto = new AptInfoReceiptDto(itemJson);//item크기만큼 청약접수일정1Dto에 저장
+                    aptInfoReceiptDtoList.add(AptInfoReceiptdto);
 
-                AptInfoDto AptInfodto = new AptInfoDto(itemJson);
+                    AptInfoDto AptInfodto = new AptInfoDto(itemJson);
 
-                for (CrawlingAptInfoDto CrawlingAptInfodto : crawlingAptInfoDtoList) {
-                    if (CrawlingAptInfodto.notificationNumber.equals(AptInfodto.getNotificationNumber())) {
-                        AptInfodto.atrophyArea = CrawlingAptInfodto.atrophyArea;
-                        AptInfodto.largeDevelopmentzone = CrawlingAptInfodto.largeDevelopmentzone;
-                        AptInfodto.maintenanceWork = CrawlingAptInfodto.maintenanceWork;
-                        AptInfodto.publicHosingDistrict = CrawlingAptInfodto.publicHosingDistrict;
-                        AptInfodto.publicRentalHousing = CrawlingAptInfodto.publicRentalHousing;
-                        AptInfodto.salePriceLimit = CrawlingAptInfodto.salePriceLimit;
-                        AptInfodto.scheduledOccupancy = CrawlingAptInfodto.scheduledOccupancy;
-                        AptInfodto.subscriptionOverheated = CrawlingAptInfodto.subscriptionOverheated;
-                        AptInfodto.speculationOverheated = CrawlingAptInfodto.speculationOverheated;
-                        AptInfodto.specialActPublicHousing = CrawlingAptInfodto.specialActPublicHousing;
+                    for (CrawlingAptInfoDto CrawlingAptInfodto : crawlingAptInfoDtoList) {
+                        if (CrawlingAptInfodto.notificationNumber.equals(AptInfodto.getNotificationNumber())) {
+                            AptInfodto.atrophyArea = CrawlingAptInfodto.atrophyArea;
+                            AptInfodto.largeDevelopmentzone = CrawlingAptInfodto.largeDevelopmentzone;
+                            AptInfodto.maintenanceWork = CrawlingAptInfodto.maintenanceWork;
+                            AptInfodto.publicHosingDistrict = CrawlingAptInfodto.publicHosingDistrict;
+                            AptInfodto.publicRentalHousing = CrawlingAptInfodto.publicRentalHousing;
+                            AptInfodto.salePriceLimit = CrawlingAptInfodto.salePriceLimit;
+                            AptInfodto.scheduledOccupancy = CrawlingAptInfodto.scheduledOccupancy;
+                            AptInfodto.subscriptionOverheated = CrawlingAptInfodto.subscriptionOverheated;
+                            AptInfodto.speculationOverheated = CrawlingAptInfodto.speculationOverheated;
+                            AptInfodto.specialActPublicHousing = CrawlingAptInfodto.specialActPublicHousing;
+                        }
                     }
-                }
-                for (AptInfo2Dto aptInfo2dto : aptInfo2DtoList) {
-                    if (aptInfo2dto.notificationNumber.equals(AptInfodto.getNotificationNumber())) {
-                        AptInfodto.housingType = aptInfo2dto.housingType;
-                        AptInfodto.constructionCompany = aptInfo2dto.constructionCompany;
-                        AptInfodto.addressLevel1 = aptInfo2dto.addressLevel1;
+                    for (AptInfo2Dto aptInfo2dto : aptInfo2DtoList) {
+                        if (aptInfo2dto.notificationNumber.equals(AptInfodto.getNotificationNumber())) {
+                            AptInfodto.housingType = aptInfo2dto.housingType;
+                            AptInfodto.constructionCompany = aptInfo2dto.constructionCompany;
+                            AptInfodto.addressLevel1 = aptInfo2dto.addressLevel1;
+                        }
                     }
-                }
-                aptInfoDtoList.add(AptInfodto);
+                    aptInfoDtoList.add(AptInfodto);
             }
         }
 
@@ -240,6 +240,7 @@ public class ApiDetailExplorer5 {
                 if (items.get("item") instanceof JSONArray) {//item이 array형식인지 확인
                     JSONArray item = (JSONArray) items.get("item");
 
+                    // AptInfoDtoList에 있는 AptInfoDto를 순서대로 전부 불러온다.
                     // AptInfoDtoList에 있는 AptInfoDto를 순서대로 전부 불러온다.
                     for (int j = 0; j < item.length(); j++) {//item크기만큼 dto에 저장
                         JSONObject itemJson = item.getJSONObject(j);
