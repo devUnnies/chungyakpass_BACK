@@ -2,6 +2,7 @@ package com.hanium.chungyakpassback.entity.input;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hanium.chungyakpassback.entity.authority.Authority;
+import com.hanium.chungyakpassback.entity.base.BaseTime;
 import lombok.*;
 
 import javax.persistence.*;
@@ -14,13 +15,16 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "inp_user")
-public class User {
+public class User extends BaseTime {
 
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+
+    @OneToOne(mappedBy = "user")
+    private UserBankbook userBankbook;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "house_id")

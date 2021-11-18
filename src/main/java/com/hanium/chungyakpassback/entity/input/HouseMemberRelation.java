@@ -1,5 +1,6 @@
 package com.hanium.chungyakpassback.entity.input;
 
+import com.hanium.chungyakpassback.entity.base.BaseTime;
 import com.hanium.chungyakpassback.entity.standard.Relation;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "inp_house_member_relation")
-public class HouseMemberRelation {
+public class HouseMemberRelation extends BaseTime {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "house_member_relation_id")
@@ -28,11 +29,6 @@ public class HouseMemberRelation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "relation_id")
     private com.hanium.chungyakpassback.entity.standard.Relation relation;
-
-//    @Column
-//    @Setter
-//    @Enumerated(EnumType.STRING)
-//    private Relation relation;
 
 
     @Builder

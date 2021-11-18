@@ -2,6 +2,7 @@ package com.hanium.chungyakpassback.entity.input;
 
 
 import com.hanium.chungyakpassback.dto.input.UserBankbookDto;
+import com.hanium.chungyakpassback.entity.base.BaseTime;
 import com.hanium.chungyakpassback.enumtype.Bank;
 import com.hanium.chungyakpassback.enumtype.Bankbook;
 import com.hanium.chungyakpassback.enumtype.Yn;
@@ -15,14 +16,14 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "inp_user_bankbook")
-public class UserBankbook {
+public class UserBankbook extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_bankbook_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -43,20 +44,14 @@ public class UserBankbook {
     @Column
     private int paymentsCount; //납입횟수
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private Yn validYn; //유효여부
-
-
     @Builder
-    public UserBankbook(User user, Bank bank, Bankbook bankbook, LocalDate joinDate, int deposit, int paymentsCount, Yn validYn) {
+    public UserBankbook(User user, Bank bank, Bankbook bankbook, LocalDate joinDate, int deposit, int paymentsCount) {
         this.user = user;
         this.bank = bank;
         this.bankbook = bankbook;
         this.joinDate = joinDate;
         this.deposit = deposit;
         this.paymentsCount = paymentsCount;
-        this.validYn = validYn;
     }
 
     public UserBankbook updateUserBankbook(UserBankbookDto userBankbookDto){
@@ -65,7 +60,32 @@ public class UserBankbook {
         this.joinDate = userBankbookDto.getJoinDate();
         this.deposit = userBankbookDto.getDeposit();
         this.paymentsCount = userBankbookDto.getPaymentsCount();
-        this.validYn = userBankbookDto.getValidYn();
         return this;
     }
+
+//    @Column
+//    @Enumerated(EnumType.STRING)
+//    private Yn validYn; //유효여부
+//
+//
+//    @Builder
+//    public UserBankbook(User user, Bank bank, Bankbook bankbook, LocalDate joinDate, int deposit, int paymentsCount, Yn validYn) {
+//        this.user = user;
+//        this.bank = bank;
+//        this.bankbook = bankbook;
+//        this.joinDate = joinDate;
+//        this.deposit = deposit;
+//        this.paymentsCount = paymentsCount;
+//        this.validYn = validYn;
+//    }
+//
+//    public UserBankbook updateUserBankbook(UserBankbookDto userBankbookDto){
+//        this.bank = userBankbookDto.getBank();
+//        this.bankbook = userBankbookDto.getBankbook();
+//        this.joinDate = userBankbookDto.getJoinDate();
+//        this.deposit = userBankbookDto.getDeposit();
+//        this.paymentsCount = userBankbookDto.getPaymentsCount();
+//        this.validYn = userBankbookDto.getValidYn();
+//        return this;
+//    }
 }
