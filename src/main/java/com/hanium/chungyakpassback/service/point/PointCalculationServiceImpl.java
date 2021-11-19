@@ -1,7 +1,12 @@
 package com.hanium.chungyakpassback.service.point;
 
 import com.hanium.chungyakpassback.dto.point.GeneralMinyeongPointDto;
+import com.hanium.chungyakpassback.dto.point.GeneralMinyeongResponsePointDto;
+import com.hanium.chungyakpassback.dto.point.SpecialMinyeongPointOfOldParentsSupportResponseDto;
+import com.hanium.chungyakpassback.dto.point.SpecialPointOfOldParentsSupportDto;
 import com.hanium.chungyakpassback.entity.input.*;
+import com.hanium.chungyakpassback.entity.recordPoint.RecordGeneralMinyeongPoint;
+import com.hanium.chungyakpassback.entity.recordPoint.RecordSpecialMinyeongPointOfOldParentsSupport;
 import com.hanium.chungyakpassback.entity.standard.Bankbook;
 import com.hanium.chungyakpassback.enumtype.ErrorCode;
 import com.hanium.chungyakpassback.enumtype.Relation;
@@ -9,8 +14,10 @@ import com.hanium.chungyakpassback.enumtype.ResidentialBuilding;
 import com.hanium.chungyakpassback.enumtype.Yn;
 import com.hanium.chungyakpassback.handler.CustomException;
 import com.hanium.chungyakpassback.repository.input.*;
+import com.hanium.chungyakpassback.repository.recordPoint.RecordGeneralMinyeongPointRepository;
 import com.hanium.chungyakpassback.repository.standard.BankbookRepository;
 import com.hanium.chungyakpassback.service.verification.GeneralPrivateVerificationServiceImpl;
+import com.hanium.chungyakpassback.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +39,33 @@ public class PointCalculationServiceImpl implements PointCalculationService {
     final GeneralPrivateVerificationServiceImpl generalPrivateVerificationServiceImpl;
     final HouseMemberPropertyRepository houseMemberPropertyRepository;
     final HouseMemberRelationRepository houseMemberRelationRepository;
+    final UserRepository userRepository;
+    final RecordGeneralMinyeongPointRepository recordGeneralMinyeongPointRepository;
+
+    @Override
+    public GeneralMinyeongResponsePointDto recordPointCalculationService(GeneralMinyeongPointDto generalMinyeongPointDto) {
+        User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
+        Long houseMemberId = generalMinyeongPointDto.getHouseMemberId();
+        Yn parentsDeathYn = generalMinyeongPointDto.getParentsDeathYn();
+        Yn divorceYn = generalMinyeongPointDto.getDivorceYn();
+        Yn sameResidentRegistrationYn = generalMinyeongPointDto.getSameResidentRegistrationYn();
+        Yn stayOverYn = generalMinyeongPointDto.getStayOverYn();
+        Yn nowStayOverYn = generalMinyeongPointDto.getNowStayOverYn();
+        Integer periodOfHomelessness = periodOfHomelessness(user);
+        Integer bankbookJoinPeriod = bankbookJoinPeriod(user);
+        Integer numberOfDependents = numberOfDependents(user, generalMinyeongPointDto);
+        boolean bankBookVaildYn = bankBookVaildYn(user);
+        Integer total = periodOfHomelessness + bankbookJoinPeriod + numberOfDependents;
+
+        RecordGeneralMinyeongPoint recordGeneralMinyeongPoint = new RecordGeneralMinyeongPoint(user, houseMemberId, parentsDeathYn, divorceYn, sameResidentRegistrationYn, stayOverYn, nowStayOverYn, periodOfHomelessness, bankbookJoinPeriod, numberOfDependents, bankBookVaildYn, total);
+        recordGeneralMinyeongPointRepository.save(recordGeneralMinyeongPoint);
+
+        return new GeneralMinyeongResponsePointDto(recordGeneralMinyeongPoint);
+    }
+
+
+
+
 
     //세대구성원별 무주택기간을 구하는 메소드
     public List periodHomeless(HouseMember houseMember, List lateDateList, LocalDate lateDate) {

@@ -1,17 +1,13 @@
 package com.hanium.chungyakpassback.service.point;
 
-import com.hanium.chungyakpassback.dto.apt.AptInfoTargetDto;
-import com.hanium.chungyakpassback.dto.input.UserBankbookDto;
-import com.hanium.chungyakpassback.dto.input.UserBankbookResponseDto;
 import com.hanium.chungyakpassback.dto.point.SpecialMinyeongPointOfNewMarriedDto;
 import com.hanium.chungyakpassback.dto.point.SpecialMinyeongPointOfNewMarriedResponseDto;
 import com.hanium.chungyakpassback.entity.apt.AptInfo;
-import com.hanium.chungyakpassback.entity.apt.AptInfoReceipt;
 import com.hanium.chungyakpassback.entity.input.HouseMember;
 import com.hanium.chungyakpassback.entity.input.HouseMemberRelation;
 import com.hanium.chungyakpassback.entity.input.User;
 import com.hanium.chungyakpassback.entity.input.UserBankbook;
-import com.hanium.chungyakpassback.entity.point.RecordSpecialMinyeongPointOfNewMarried;
+import com.hanium.chungyakpassback.entity.recordPoint.RecordSpecialMinyeongPointOfNewMarried;
 import com.hanium.chungyakpassback.entity.standard.AddressLevel1;
 import com.hanium.chungyakpassback.entity.standard.Income;
 import com.hanium.chungyakpassback.enumtype.ErrorCode;
@@ -21,7 +17,7 @@ import com.hanium.chungyakpassback.enumtype.Yn;
 import com.hanium.chungyakpassback.handler.CustomException;
 import com.hanium.chungyakpassback.repository.apt.AptInfoRepository;
 import com.hanium.chungyakpassback.repository.input.*;
-import com.hanium.chungyakpassback.repository.point.RecordSpecialMinyeongPointOfNewMarriedRepository;
+import com.hanium.chungyakpassback.repository.recordPoint.RecordSpecialMinyeongPointOfNewMarriedRepository;
 import com.hanium.chungyakpassback.repository.standard.AddressLevel1Repository;
 import com.hanium.chungyakpassback.repository.standard.AddressLevel2Repository;
 import com.hanium.chungyakpassback.repository.standard.IncomeRepository;
@@ -29,14 +25,12 @@ import com.hanium.chungyakpassback.service.verification.GeneralPrivateVerificati
 import com.hanium.chungyakpassback.service.verification.GeneralPrivateVerificationServiceImpl;
 import com.hanium.chungyakpassback.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,8 +51,6 @@ public class PointCalculationOfNewMarriedServiceImpl implements PointCalculation
     final RecordSpecialMinyeongPointOfNewMarriedRepository recordSpecialMinyeongPointOfNewMarriedRepository;
     final AptInfoRepository aptInfoRepository;
 
-
-
     @Override
     public SpecialMinyeongPointOfNewMarriedResponseDto recordPointCalculationOfNewMarriedService(SpecialMinyeongPointOfNewMarriedDto specialMinyeongPointOfNewMarriedDto){
         User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
@@ -69,7 +61,6 @@ public class PointCalculationOfNewMarriedServiceImpl implements PointCalculation
         Integer periodOfApplicableAreaResidence =  periodOfApplicableAreaResidence ( user, aptInfo);
         Integer monthOfAverageIncome = monthOfAverageIncome(user);
         Integer total = numberOfMinors+periodOfMarriged+bankbookPaymentsCount+periodOfApplicableAreaResidence+monthOfAverageIncome;
-
         RecordSpecialMinyeongPointOfNewMarried recordSpecialMinyeongPointOfNewMarried = new RecordSpecialMinyeongPointOfNewMarried(user,aptInfo, numberOfMinors,periodOfMarriged,bankbookPaymentsCount,periodOfApplicableAreaResidence,monthOfAverageIncome,total);
         recordSpecialMinyeongPointOfNewMarriedRepository.save(recordSpecialMinyeongPointOfNewMarried);
 

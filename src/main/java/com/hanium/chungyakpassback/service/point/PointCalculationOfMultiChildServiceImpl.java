@@ -1,20 +1,27 @@
 package com.hanium.chungyakpassback.service.point;
 
-import com.hanium.chungyakpassback.dto.point.SpecialPointOfMultiChildDto;
+import com.hanium.chungyakpassback.dto.point.SpecialMinyeongPointOfMultiChildDto;
+import com.hanium.chungyakpassback.dto.point.SpecialMinyeongPointOfMultiChildResponseDto;
+import com.hanium.chungyakpassback.dto.verification.SpecialMinyeongMultiChildResponseDto;
 import com.hanium.chungyakpassback.entity.apt.AptInfo;
 import com.hanium.chungyakpassback.entity.input.HouseMember;
 import com.hanium.chungyakpassback.entity.input.User;
 import com.hanium.chungyakpassback.entity.input.UserBankbook;
+import com.hanium.chungyakpassback.entity.recordPoint.RecordSpecialMinyeongPointOfMultiChild;
 import com.hanium.chungyakpassback.entity.standard.AddressLevel1;
 import com.hanium.chungyakpassback.enumtype.ErrorCode;
 import com.hanium.chungyakpassback.enumtype.MultiChildHouseholdType;
 import com.hanium.chungyakpassback.enumtype.Yn;
 import com.hanium.chungyakpassback.handler.CustomException;
+import com.hanium.chungyakpassback.repository.apt.AptInfoRepository;
 import com.hanium.chungyakpassback.repository.input.HouseMemberRelationRepository;
 import com.hanium.chungyakpassback.repository.input.HouseMemberRepository;
 import com.hanium.chungyakpassback.repository.input.UserBankbookRepository;
+import com.hanium.chungyakpassback.repository.input.UserRepository;
+import com.hanium.chungyakpassback.repository.recordPoint.RecordSpecialMinyeongPointOfMultiChildRepository;
 import com.hanium.chungyakpassback.repository.standard.AddressLevel1Repository;
 import com.hanium.chungyakpassback.service.verification.GeneralPrivateVerificationServiceImpl;
+import com.hanium.chungyakpassback.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +41,28 @@ public class PointCalculationOfMultiChildServiceImpl implements PointCalculation
     final GeneralPrivateVerificationServiceImpl generalPrivateVerificationServiceImpl;
     final PointCalculationOfNewMarriedServiceImpl pointCalculationOfNewMarriedServiceImpl;
     final AddressLevel1Repository addressLevel1Repository;
+    final RecordSpecialMinyeongPointOfMultiChildRepository recordSpecialMinyeongPointOfMultiChildRepository;
+    final UserRepository userRepository;
+    final AptInfoRepository aptInfoRepository;
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public SpecialMinyeongPointOfMultiChildResponseDto recordPointCalculationOfMultiChildService(SpecialMinyeongPointOfMultiChildDto specialMinyeongPointOfMultiChildDto){
+        User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
+        AptInfo aptInfo = aptInfoRepository.findById(specialMinyeongPointOfMultiChildDto.getNotificationNumber()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APT));
+        MultiChildHouseholdType multiChildHouseholdType = specialMinyeongPointOfMultiChildDto.getMultiChildHouseholdType();
+        Integer numberOfChild = numberOfChild(user);
+        Integer numberOfChildUnder6Year = numberOfChildUnder6Year(user);
+        Integer bankbookJoinPeriod = bankbookJoinPeriod(user);
+        Integer periodOfApplicableAreaResidence = periodOfApplicableAreaResidence(user, aptInfo);
+        Integer periodOfHomelessness = periodOfHomelessness(user);
+        Integer generationComposition = generationComposition (specialMinyeongPointOfMultiChildDto);
+        Integer total = numberOfChild+numberOfChildUnder6Year+bankbookJoinPeriod+periodOfApplicableAreaResidence+periodOfHomelessness+generationComposition;
+
+        RecordSpecialMinyeongPointOfMultiChild recordSpecialMinyeongPointOfMultiChild = new RecordSpecialMinyeongPointOfMultiChild(user,aptInfo,multiChildHouseholdType,numberOfChild,numberOfChildUnder6Year,bankbookJoinPeriod,periodOfApplicableAreaResidence,periodOfHomelessness,generationComposition,total);
+        recordSpecialMinyeongPointOfMultiChildRepository.save(recordSpecialMinyeongPointOfMultiChild);
+        return new SpecialMinyeongPointOfMultiChildResponseDto(recordSpecialMinyeongPointOfMultiChild);
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -147,9 +176,12 @@ public class PointCalculationOfMultiChildServiceImpl implements PointCalculation
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Integer generationComposition(SpecialPointOfMultiChildDto specialPointOfMultiChildDto) {
+    public Integer generationComposition(SpecialMinyeongPointOfMultiChildDto specialMinyeongPointOfMultiChildDto) {
         Integer generationCompositionGetPoint = 0;
-        if (specialPointOfMultiChildDto.getMultiChildHouseholdType().equals(MultiChildHouseholdType.한부모가족)||specialPointOfMultiChildDto.getMultiChildHouseholdType().equals(MultiChildHouseholdType.삼세대이상)) {
+        if(specialMinyeongPointOfMultiChildDto.getMultiChildHouseholdType()==null){
+            return generationCompositionGetPoint;
+        }
+        else if (specialMinyeongPointOfMultiChildDto.getMultiChildHouseholdType().equals(MultiChildHouseholdType.한부모가족)|| specialMinyeongPointOfMultiChildDto.getMultiChildHouseholdType().equals(MultiChildHouseholdType.삼세대이상)) {
              generationCompositionGetPoint = 5;
         }
         return generationCompositionGetPoint;

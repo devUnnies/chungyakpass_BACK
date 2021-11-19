@@ -1,5 +1,6 @@
 package com.hanium.chungyakpassback.dto.verification;
 
+import com.hanium.chungyakpassback.entity.recordPoint.RecordSpecialMinyeongPointOfMultiChild;
 import lombok.*;
 
 @Getter
@@ -21,4 +22,5 @@ public class SpecialMinyeongMultiChildResponseDto {
     boolean isPriorityApt;
     boolean meetDepositTf;
     boolean meetBankbookJoinPeriodTf;
+
 }

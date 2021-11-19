@@ -1,13 +1,21 @@
 package com.hanium.chungyakpassback.service.point;
 
+import com.hanium.chungyakpassback.dto.point.SpecialMinyeongPointOfNewMarriedResponseDto;
+import com.hanium.chungyakpassback.dto.point.SpecialMinyeongPointOfSingleParentsDto;
+import com.hanium.chungyakpassback.dto.point.SpecialMinyeongPointOfSingleParentsResponseDto;
 import com.hanium.chungyakpassback.entity.apt.AptInfo;
 import com.hanium.chungyakpassback.entity.input.HouseMemberRelation;
 import com.hanium.chungyakpassback.entity.input.User;
+import com.hanium.chungyakpassback.entity.recordPoint.RecordSpecialMinyeongPointOfSingleParents;
 import com.hanium.chungyakpassback.enumtype.ErrorCode;
 import com.hanium.chungyakpassback.enumtype.Relation;
 import com.hanium.chungyakpassback.handler.CustomException;
+import com.hanium.chungyakpassback.repository.apt.AptInfoRepository;
 import com.hanium.chungyakpassback.repository.input.HouseMemberRelationRepository;
+import com.hanium.chungyakpassback.repository.input.UserRepository;
+import com.hanium.chungyakpassback.repository.recordPoint.RecordSpecialMinyeongPointOfSingleParentsRepository;
 import com.hanium.chungyakpassback.service.verification.GeneralPrivateVerificationServiceImpl;
+import com.hanium.chungyakpassback.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +31,28 @@ public class PointCalculationOfSingleParentsServiceImpl implements PointCalculat
     final PointCalculationOfNewMarriedServiceImpl pointCalculationOfNewMarriedServiceImpl;
     final GeneralPrivateVerificationServiceImpl generalPrivateVerificationServiceImpl;
     final HouseMemberRelationRepository houseMemberRelationRepository;
+    final UserRepository userRepository;
+    final AptInfoRepository aptInfoRepository;
+    final RecordSpecialMinyeongPointOfSingleParentsRepository recordSpecialMinyeongPointOfSingleParentsRepository;
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public SpecialMinyeongPointOfSingleParentsResponseDto recordPointCalculationOfSingleParentsService(SpecialMinyeongPointOfSingleParentsDto specialMinyeongPointOfSingleParentsDto){
+        User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
+        AptInfo aptInfo = aptInfoRepository.findById(specialMinyeongPointOfSingleParentsDto.getNotificationNumber()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APT));
+
+        Integer numberOfMinors = numberOfMinors(user);
+        Integer ageOfMostYoungChild = ageOfMostYoungChild(user);
+        Integer bankbookPaymentsCount = bankbookPaymentsCount(user);
+        Integer periodOfApplicableAreaResidence = periodOfApplicableAreaResidence ( user, aptInfo);
+        Integer monthOfAverageIncome = monthOfAverageIncome(user);
+        Integer total = numberOfMinors+ageOfMostYoungChild+bankbookPaymentsCount+periodOfApplicableAreaResidence+monthOfAverageIncome;
+
+        RecordSpecialMinyeongPointOfSingleParents recordSpecialMinyeongPointOfSingleParents = new RecordSpecialMinyeongPointOfSingleParents(user,aptInfo, numberOfMinors,ageOfMostYoungChild,bankbookPaymentsCount,periodOfApplicableAreaResidence,monthOfAverageIncome,total);
+        recordSpecialMinyeongPointOfSingleParentsRepository.save(recordSpecialMinyeongPointOfSingleParents);
+
+        return new SpecialMinyeongPointOfSingleParentsResponseDto(recordSpecialMinyeongPointOfSingleParents);
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)

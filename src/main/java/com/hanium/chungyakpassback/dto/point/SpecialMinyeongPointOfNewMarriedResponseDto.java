@@ -1,12 +1,9 @@
 package com.hanium.chungyakpassback.dto.point;
 
-import com.hanium.chungyakpassback.entity.apt.AptInfo;
-import com.hanium.chungyakpassback.entity.input.User;
-import com.hanium.chungyakpassback.entity.input.UserBankbook;
-import com.hanium.chungyakpassback.entity.point.RecordSpecialMinyeongPointOfNewMarried;
+import com.hanium.chungyakpassback.entity.recordPoint.RecordSpecialMinyeongPointOfNewMarried;
 import lombok.*;
 
-import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,6 +20,8 @@ public class SpecialMinyeongPointOfNewMarriedResponseDto{
     Integer periodOfApplicableAreaResidence;
     Integer monthOfAverageIncome;
     Integer total;
+    LocalDateTime createdDate;
+    LocalDateTime modifiedDate;
 
     @Builder
     public SpecialMinyeongPointOfNewMarriedResponseDto (RecordSpecialMinyeongPointOfNewMarried recordSpecialMinyeongPointOfNewMarried){
@@ -34,6 +33,8 @@ public class SpecialMinyeongPointOfNewMarriedResponseDto{
         this.periodOfApplicableAreaResidence = recordSpecialMinyeongPointOfNewMarried.getPeriodOfApplicableAreaResidence();
         this.monthOfAverageIncome = recordSpecialMinyeongPointOfNewMarried.getMonthOfAverageIncome();
         this.total = recordSpecialMinyeongPointOfNewMarried.getTotal();
+        this.createdDate =recordSpecialMinyeongPointOfNewMarried.getUser().getCreatedDate();
+        this.modifiedDate = recordSpecialMinyeongPointOfNewMarried.getUser().getModifiedDate();
     }
 
 }
