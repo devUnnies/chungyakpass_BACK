@@ -14,16 +14,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SpecialMinyeongPointOfSingleParentsResponseDto {
-    Long id;
-    Integer aptNotificationNumber;
-    Integer numberOfMinors;
-    Integer ageOfMostYoungChild;
-    Integer bankbookPaymentsCount;
-    Integer periodOfApplicableAreaResidence;
-    Integer monthOfAverageIncome;
-    Integer total;
-    LocalDateTime createdDate;
-    LocalDateTime modifiedDate;
+    private Long id;
+    private Integer aptNotificationNumber;
+    private Integer numberOfMinors;
+    private Integer ageOfMostYoungChild;
+    private Integer bankbookPaymentsCount;
+    private Integer periodOfApplicableAreaResidence;
+    private Integer monthOfAverageIncome;
+    private Integer total;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     @Builder
     public SpecialMinyeongPointOfSingleParentsResponseDto (RecordSpecialMinyeongPointOfSingleParents recordSpecialMinyeongPointOfSingleParents){

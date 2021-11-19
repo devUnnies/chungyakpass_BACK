@@ -13,18 +13,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SpecialMinyeongPointOfMultiChildResponseDto {
-    Long id;
-    Integer aptNotificationNumber;
-    MultiChildHouseholdType multiChildHouseholdType;
-    Integer numberOfChild;
-    Integer numberOfChildUnder6Year;
-    Integer bankbookJoinPeriod;
-    Integer periodOfApplicableAreaResidence;
-    Integer periodOfHomelessness;
-    Integer generationComposition;
-    Integer total;
-    LocalDateTime createdDate;
-    LocalDateTime modifiedDate;
+    private Long id;
+    private Integer aptNotificationNumber;
+    private MultiChildHouseholdType multiChildHouseholdType;
+    private Integer numberOfChild;
+    private Integer numberOfChildUnder6Year;
+    private Integer bankbookJoinPeriod;
+    private Integer periodOfApplicableAreaResidence;
+    private Integer periodOfHomelessness;
+    private Integer generationComposition;
+    private Integer total;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     @Builder
     public SpecialMinyeongPointOfMultiChildResponseDto (RecordSpecialMinyeongPointOfMultiChild recordSpecialMinyeongPointOfMultiChild){

@@ -9,7 +9,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SpecialMinyeongPointOfMultiChildDto {
-    Integer notificationNumber;
-    MultiChildHouseholdType multiChildHouseholdType;
+
+    private Integer notificationNumber;
+    private MultiChildHouseholdType multiChildHouseholdType;
 
 }

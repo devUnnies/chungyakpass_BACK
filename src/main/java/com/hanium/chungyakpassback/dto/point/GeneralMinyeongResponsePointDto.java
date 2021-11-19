@@ -14,20 +14,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GeneralMinyeongResponsePointDto {
-    Long id;
-    Long houseMemberId;
-    Yn parentsDeathYn;
-    Yn divorceYn;
-    Yn sameResidentRegistrationYn;
-    Yn stayOverYn;
-    Yn nowStayOverYn;
-    Integer periodOfHomelessness;
-    Integer bankbookJoinPeriod;
-    Integer numberOfDependents;
-    boolean bankBookVaildTf;
-    Integer total;
-    LocalDateTime createdDate;
-    LocalDateTime modifiedDate;
+    private Long id;
+    private Long houseMemberId;
+    private Yn parentsDeathYn;
+    private Yn divorceYn;
+    private Yn sameResidentRegistrationYn;
+    private Yn stayOverYn;
+    private Yn nowStayOverYn;
+    private Integer periodOfHomelessness;
+    private Integer bankbookJoinPeriod;
+    private Integer numberOfDependents;
+    private boolean bankBookVaildTf;
+    private Integer total;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
     @Builder
     public GeneralMinyeongResponsePointDto(RecordGeneralMinyeongPoint recordGeneralMinyeongPoint){
