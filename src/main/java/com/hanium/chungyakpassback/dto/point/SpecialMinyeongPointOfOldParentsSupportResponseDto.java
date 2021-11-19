@@ -26,7 +26,7 @@ public class SpecialMinyeongPointOfOldParentsSupportResponseDto {
     Integer periodOfHomelessness;
     Integer bankbookJoinPeriod;
     Integer numberOfDependents;
-    boolean bankBookVaildYn;
+    boolean bankBookVaildTf;
     Integer total;
     LocalDateTime createdDate;
     LocalDateTime modifiedDate;
@@ -43,7 +43,7 @@ public class SpecialMinyeongPointOfOldParentsSupportResponseDto {
         this.periodOfHomelessness = recordSpecialMinyeongPointOfOldParentsSupport.getPeriodOfHomelessness();
         this.bankbookJoinPeriod = recordSpecialMinyeongPointOfOldParentsSupport.getBankbookJoinPeriod();
         this.numberOfDependents = recordSpecialMinyeongPointOfOldParentsSupport.getNumberOfDependents();
-        this.bankBookVaildYn = recordSpecialMinyeongPointOfOldParentsSupport.isBankBookVaildYn();
+        this.bankBookVaildTf = recordSpecialMinyeongPointOfOldParentsSupport.isBankBookVaildYn();
         this.total = recordSpecialMinyeongPointOfOldParentsSupport.getTotal();
         this.createdDate = recordSpecialMinyeongPointOfOldParentsSupport.getCreatedDate();
         this.modifiedDate = recordSpecialMinyeongPointOfOldParentsSupport.getModifiedDate();

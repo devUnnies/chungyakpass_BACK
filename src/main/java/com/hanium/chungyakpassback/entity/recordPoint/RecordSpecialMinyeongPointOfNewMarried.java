@@ -1,17 +1,19 @@
-package com.hanium.chungyakpassback.entity.point;
+package com.hanium.chungyakpassback.entity.recordPoint;
 
 
+import com.hanium.chungyakpassback.entity.base.BaseTime;
 import com.hanium.chungyakpassback.entity.input.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "point_newmarried")
-public class RecordSpecialMinyeongPointOfNewMarried {
+public class RecordSpecialMinyeongPointOfNewMarried extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +45,12 @@ public class RecordSpecialMinyeongPointOfNewMarried {
 
     @Column
     private Integer total;
+//
+//    @Column
+//    LocalDateTime createdDate;
+//
+//    @Column
+//    LocalDateTime modifiedDate;
 
     @Builder
     public RecordSpecialMinyeongPointOfNewMarried(User user, com.hanium.chungyakpassback.entity.apt.AptInfo aptInfo, Integer numberOfMinors, Integer periodOfMarriged, Integer bankbookPaymentsCount, Integer periodOfApplicableAreaResidence ,Integer monthOfAverageIncome,Integer total) {
@@ -54,6 +62,9 @@ public class RecordSpecialMinyeongPointOfNewMarried {
         this.periodOfApplicableAreaResidence = periodOfApplicableAreaResidence;
         this.monthOfAverageIncome = monthOfAverageIncome;
         this.total = total;
+//        this.createdDate = createdDate;
+//        this.modifiedDate = modifiedDate;
+
     }
 
 

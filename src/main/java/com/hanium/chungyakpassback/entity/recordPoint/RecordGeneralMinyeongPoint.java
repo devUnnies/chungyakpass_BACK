@@ -50,7 +50,7 @@ public class RecordGeneralMinyeongPoint extends BaseTime {
     Integer numberOfDependents;
 
     @Column
-    boolean bankBookVaildYn;
+    boolean bankBookValidTf;
 
     @Column
     Integer total;
@@ -67,7 +67,7 @@ public class RecordGeneralMinyeongPoint extends BaseTime {
         this.periodOfHomelessness = periodOfHomelessness;
         this.bankbookJoinPeriod = bankbookJoinPeriod;
         this.numberOfDependents = numberOfDependents;
-        this.bankBookVaildYn = bankBookVaildYn;
+        this.bankBookValidTf = bankBookVaildYn;
         this.total = total;
     }
 }

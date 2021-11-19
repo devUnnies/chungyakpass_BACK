@@ -24,7 +24,7 @@ public class GeneralMinyeongResponsePointDto {
     Integer periodOfHomelessness;
     Integer bankbookJoinPeriod;
     Integer numberOfDependents;
-    boolean bankBookVaildYn;
+    boolean bankBookVaildTf;
     Integer total;
     LocalDateTime createdDate;
     LocalDateTime modifiedDate;
@@ -41,7 +41,7 @@ public class GeneralMinyeongResponsePointDto {
         this.periodOfHomelessness = recordGeneralMinyeongPoint.getPeriodOfHomelessness();
         this.bankbookJoinPeriod = recordGeneralMinyeongPoint.getBankbookJoinPeriod();
         this.numberOfDependents = recordGeneralMinyeongPoint.getNumberOfDependents();
-        this.bankBookVaildYn = recordGeneralMinyeongPoint.isBankBookVaildYn();
+        this.bankBookVaildTf = recordGeneralMinyeongPoint.isBankBookValidTf();
         this.total = recordGeneralMinyeongPoint.getTotal();
         this.createdDate = recordGeneralMinyeongPoint.getCreatedDate();
         this.modifiedDate = recordGeneralMinyeongPoint.getModifiedDate();
