@@ -2,15 +2,13 @@ package com.hanium.chungyakpassback.controller;
 
 import com.hanium.chungyakpassback.dto.record.UserVerificationRecordDto;
 import com.hanium.chungyakpassback.dto.verification.*;
-import com.hanium.chungyakpassback.repository.apt.AptInfoRepository;
-import com.hanium.chungyakpassback.repository.apt.AptInfoTargetRepository;
-import com.hanium.chungyakpassback.repository.input.UserRepository;
-import com.hanium.chungyakpassback.repository.record.*;
 import com.hanium.chungyakpassback.service.verification.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @CrossOrigin(origins = "*")
@@ -54,14 +52,20 @@ public class VerificationController {
 
     @GetMapping("/general/minyeong") //일반민영조회
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<UserVerificationRecordDto> readGeneralMinyeongVerification() {
-        return new ResponseEntity(verificationRecordService.recordGeneralMinyeongResponseVerification(), HttpStatus.OK);
+    public ResponseEntity<List<GeneralMinyeongResponseDto>> readGeneralMinyeongVerifications() {
+        return new ResponseEntity(generalPrivateVerificationService.readGeneralMinyeongVerifications(), HttpStatus.OK);
     }
 
     @PostMapping("/general/minyeong") //일반민영저장
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<GeneralMinyeongResponseDto> generalMinyeong(@RequestBody GeneralMinyeongDto generalMinyeongDto) {
-        return new ResponseEntity<>(generalPrivateVerificationService.generalMinyeongService(generalMinyeongDto), HttpStatus.OK);
+    public ResponseEntity<GeneralMinyeongResponseDto> createGeneralMinyeongVerification(@RequestBody GeneralMinyeongDto generalMinyeongDto) {
+        return new ResponseEntity<>(generalPrivateVerificationService.createGeneralMinyeongVerification(generalMinyeongDto), HttpStatus.OK);
+    }
+
+    @PatchMapping("/general/minyeong") //일반민영업데이트
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<GeneralMinyeongResponseDto> updateGeneralMinyeongVerification(@RequestBody GeneralMinyeongUpdateDto generalMinyeongUpdateDto) {
+        return new ResponseEntity<>(generalPrivateVerificationService.updateGeneralMinyeongVerification(generalMinyeongUpdateDto), HttpStatus.OK);
     }
 
     @GetMapping("/general/kookmin") //일반국민조회

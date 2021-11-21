@@ -9,7 +9,7 @@ public interface VerificationRecordService {
 
     UserVerificationRecordDto readAllUserVerificationRecord();
 
-    List<GeneralMinyeongResponseDto> recordGeneralMinyeongResponseVerification();
+//    List<GeneralMinyeongResponseDto> recordGeneralMinyeongResponseVerification();
 
     List<GeneralKookminResponseDto> recordGeneralKookminResponseVerification();
 

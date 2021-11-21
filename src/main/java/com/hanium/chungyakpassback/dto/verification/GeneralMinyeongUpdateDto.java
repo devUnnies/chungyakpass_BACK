@@ -12,12 +12,15 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GeneralMinyeongDto {
+public class GeneralMinyeongUpdateDto {
 
     @NotBlank
-    public Integer notificationNumber;
+    public Long verificationGeneralMinyeongId;
 
     @NotBlank
-    public String housingType;
+    public Yn sibilingSupportYn; //형제자매부양여부
+
+    @NotBlank
+    public Ranking ranking; //순위
 
 }

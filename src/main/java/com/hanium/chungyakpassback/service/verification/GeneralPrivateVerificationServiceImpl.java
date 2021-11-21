@@ -2,10 +2,11 @@ package com.hanium.chungyakpassback.service.verification;
 
 import com.hanium.chungyakpassback.dto.verification.GeneralMinyeongDto;
 import com.hanium.chungyakpassback.dto.verification.GeneralMinyeongResponseDto;
+import com.hanium.chungyakpassback.dto.verification.GeneralMinyeongUpdateDto;
 import com.hanium.chungyakpassback.entity.apt.AptInfo;
 import com.hanium.chungyakpassback.entity.apt.AptInfoTarget;
 import com.hanium.chungyakpassback.entity.input.*;
-import com.hanium.chungyakpassback.entity.record.VerificationRecordGeneralMinyeong;
+import com.hanium.chungyakpassback.entity.record.GeneralMinyeongVerification;
 import com.hanium.chungyakpassback.entity.standard.AddressLevel1;
 import com.hanium.chungyakpassback.entity.standard.PriorityDeposit;
 import com.hanium.chungyakpassback.entity.standard.PriorityJoinPeriod;
@@ -18,8 +19,6 @@ import com.hanium.chungyakpassback.repository.record.VerificationRecordGeneralMi
 import com.hanium.chungyakpassback.repository.standard.*;
 import com.hanium.chungyakpassback.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,9 +50,21 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
     final HouseMemberChungyakRestrictionRepository houseMemberChungyakRestrictionRepository;
     final VerificationRecordGeneralMinyeongRepository verificationRecordGeneralMinyeongRepository;
 
+    @Override //일반민영조회
+    @Transactional(rollbackFor = Exception.class)
+    public List<GeneralMinyeongResponseDto> readGeneralMinyeongVerifications() {
+        User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
+        List<GeneralMinyeongResponseDto> generalMinyeongResponseDtos = new ArrayList<>();
+        for (GeneralMinyeongVerification generalMinyeongVerification : verificationRecordGeneralMinyeongRepository.findAllByUser(user)) {
+            GeneralMinyeongResponseDto generalMinyeongResponseDto = new GeneralMinyeongResponseDto(generalMinyeongVerification);
+            generalMinyeongResponseDtos.add(generalMinyeongResponseDto);
+        }
+        return generalMinyeongResponseDtos;
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public GeneralMinyeongResponseDto generalMinyeongService(GeneralMinyeongDto generalMinyeongDto) {
+    public GeneralMinyeongResponseDto createGeneralMinyeongVerification(GeneralMinyeongDto generalMinyeongDto) {
         User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
         HouseMember houseMember = user.getHouseMember();
         AptInfo aptInfo = aptInfoRepository.findById(generalMinyeongDto.getNotificationNumber()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APT));
@@ -71,11 +82,19 @@ public class GeneralPrivateVerificationServiceImpl implements GeneralPrivateVeri
         boolean meetDepositTf = meetDeposit(user, aptInfoTarget);
         boolean isPriorityApt = isPriorityApt(aptInfo, aptInfoTarget);
 
-        VerificationRecordGeneralMinyeong verificationRecordGeneralMinyeong = new VerificationRecordGeneralMinyeong(user, americanAge, meetLivingInSurroundAreaTf, accountTf, householderTf, meetAllHouseMemberNotWinningIn5yearsTf, meetAllHouseMemberRewinningRestrictionTf, meetHouseHavingLessThan2AptTf, meetBankbookJoinPeriodTf, meetDepositTf, isRestrictedAreaTf, isPriorityApt, aptInfo, aptInfoTarget);
-        verificationRecordGeneralMinyeong.setRanking(generalMinyeongDto.getRanking());
-        verificationRecordGeneralMinyeong.setSibilingSupportYn(generalMinyeongDto.getSibilingSupportYn());
-        verificationRecordGeneralMinyeongRepository.save(verificationRecordGeneralMinyeong);
-        return new GeneralMinyeongResponseDto(verificationRecordGeneralMinyeong);
+        GeneralMinyeongVerification generalMinyeongVerification = new GeneralMinyeongVerification(user, americanAge, meetLivingInSurroundAreaTf, accountTf, householderTf, meetAllHouseMemberNotWinningIn5yearsTf, meetAllHouseMemberRewinningRestrictionTf, meetHouseHavingLessThan2AptTf, meetBankbookJoinPeriodTf, meetDepositTf, isRestrictedAreaTf, isPriorityApt, aptInfo, aptInfoTarget);
+        verificationRecordGeneralMinyeongRepository.save(generalMinyeongVerification);
+        return new GeneralMinyeongResponseDto(generalMinyeongVerification);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public GeneralMinyeongResponseDto updateGeneralMinyeongVerification(GeneralMinyeongUpdateDto generalMinyeongUpdateDto){
+        GeneralMinyeongVerification generalMinyeongVerification = verificationRecordGeneralMinyeongRepository.findById(generalMinyeongUpdateDto.getVerificationGeneralMinyeongId()).get();
+        generalMinyeongVerification.setSibilingSupportYn(generalMinyeongUpdateDto.getSibilingSupportYn());
+        generalMinyeongVerification.setRanking(generalMinyeongUpdateDto.getRanking());
+        verificationRecordGeneralMinyeongRepository.save(generalMinyeongVerification);
+        return new GeneralMinyeongResponseDto(generalMinyeongVerification);
     }
 
 

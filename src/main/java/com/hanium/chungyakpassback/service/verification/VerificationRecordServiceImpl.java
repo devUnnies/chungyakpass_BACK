@@ -1,8 +1,5 @@
 package com.hanium.chungyakpassback.service.verification;
 
-import com.hanium.chungyakpassback.dto.point.GeneralMinyeongResponsePointDto;
-import com.hanium.chungyakpassback.dto.point.SpecialMinyeongPointOfNewMarriedResponseDto;
-import com.hanium.chungyakpassback.dto.point.SpecialMinyeongPointOfSingleParentsResponseDto;
 import com.hanium.chungyakpassback.dto.record.UserVerificationRecordDto;
 import com.hanium.chungyakpassback.dto.verification.*;
 import com.hanium.chungyakpassback.entity.input.User;
@@ -37,8 +34,8 @@ public class VerificationRecordServiceImpl implements VerificationRecordService 
         User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
 
         List<GeneralMinyeongResponseDto> generalMinyeongResponseDtos = new ArrayList<>();
-        for (VerificationRecordGeneralMinyeong verificationRecordGeneralMinyeong : verificationRecordGeneralMinyeongRepository.findAllByUser(user)) {
-            GeneralMinyeongResponseDto generalMinyeongResponseDto = new GeneralMinyeongResponseDto(verificationRecordGeneralMinyeong);
+        for (GeneralMinyeongVerification generalMinyeongVerification : verificationRecordGeneralMinyeongRepository.findAllByUser(user)) {
+            GeneralMinyeongResponseDto generalMinyeongResponseDto = new GeneralMinyeongResponseDto(generalMinyeongVerification);
             generalMinyeongResponseDtos.add(generalMinyeongResponseDto);
         }
 
@@ -112,18 +109,18 @@ public class VerificationRecordServiceImpl implements VerificationRecordService 
         return userVerificationRecordDto;
     }
 
-    @Override //일반민영조회
-    public List<GeneralMinyeongResponseDto> recordGeneralMinyeongResponseVerification() {
-        User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
-
-        List<GeneralMinyeongResponseDto> generalMinyeongResponseDtos = new ArrayList<>();
-        for (VerificationRecordGeneralMinyeong verificationRecordGeneralMinyeong : verificationRecordGeneralMinyeongRepository.findAllByUser(user)) {
-            GeneralMinyeongResponseDto generalMinyeongResponseDto = new GeneralMinyeongResponseDto(verificationRecordGeneralMinyeong);
-            generalMinyeongResponseDtos.add(generalMinyeongResponseDto);
-        }
-
-        return generalMinyeongResponseDtos;
-    }
+//    @Override //일반민영조회
+//    public List<GeneralMinyeongResponseDto> recordGeneralMinyeongResponseVerification() {
+//        User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
+//
+//        List<GeneralMinyeongResponseDto> generalMinyeongResponseDtos = new ArrayList<>();
+//        for (GeneralMinyeongVerification generalMinyeongVerification : verificationRecordGeneralMinyeongRepository.findAllByUser(user)) {
+//            GeneralMinyeongResponseDto generalMinyeongResponseDto = new GeneralMinyeongResponseDto(generalMinyeongVerification);
+//            generalMinyeongResponseDtos.add(generalMinyeongResponseDto);
+//        }
+//
+//        return generalMinyeongResponseDtos;
+//    }
 
     @Override //일반국민조회
     public List<GeneralKookminResponseDto> recordGeneralKookminResponseVerification() {

@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "inp_verification_record_general_minyeong")
-public class VerificationRecordGeneralMinyeong extends BaseTime {
+public class GeneralMinyeongVerification extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,7 +84,7 @@ public class VerificationRecordGeneralMinyeong extends BaseTime {
     public Ranking ranking; //순위
 
     @Builder
-    public VerificationRecordGeneralMinyeong(User user, Integer americanAge, boolean meetLivingInSurroundAreaTf, boolean accountTf, boolean householderTf, boolean meetAllHouseMemberNotWinningIn5yearsTf, boolean meetAllHouseMemberRewinningRestrictionTf, boolean meetHouseHavingLessThan2AptTf, boolean meetBankbookJoinPeriodTf, boolean meetDepositTf, boolean restrictedAreaTf, boolean priorityApt, AptInfo aptInfo, AptInfoTarget aptInfoTarget) {
+    public GeneralMinyeongVerification(User user, Integer americanAge, boolean meetLivingInSurroundAreaTf, boolean accountTf, boolean householderTf, boolean meetAllHouseMemberNotWinningIn5yearsTf, boolean meetAllHouseMemberRewinningRestrictionTf, boolean meetHouseHavingLessThan2AptTf, boolean meetBankbookJoinPeriodTf, boolean meetDepositTf, boolean restrictedAreaTf, boolean priorityApt, AptInfo aptInfo, AptInfoTarget aptInfoTarget) {
         this.user = user;
         this.americanAge = americanAge;
         this.meetLivingInSurroundAreaTf = meetLivingInSurroundAreaTf;
