@@ -5,7 +5,7 @@ import com.hanium.chungyakpassback.dto.verification.*;
 import com.hanium.chungyakpassback.entity.input.User;
 import com.hanium.chungyakpassback.entity.verification.*;
 import com.hanium.chungyakpassback.repository.input.UserRepository;
-import com.hanium.chungyakpassback.repository.record.*;
+import com.hanium.chungyakpassback.repository.verification.*;
 import com.hanium.chungyakpassback.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

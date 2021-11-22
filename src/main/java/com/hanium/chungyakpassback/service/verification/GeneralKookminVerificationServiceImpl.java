@@ -12,7 +12,7 @@ import com.hanium.chungyakpassback.handler.CustomException;
 import com.hanium.chungyakpassback.repository.apt.AptInfoRepository;
 import com.hanium.chungyakpassback.repository.apt.AptInfoTargetRepository;
 import com.hanium.chungyakpassback.repository.input.*;
-import com.hanium.chungyakpassback.repository.record.VerificationRecordGeneralKookminRepository;
+import com.hanium.chungyakpassback.repository.verification.VerificationRecordGeneralKookminRepository;
 import com.hanium.chungyakpassback.repository.standard.AddressLevel1Repository;
 import com.hanium.chungyakpassback.repository.standard.BankbookRepository;
 import com.hanium.chungyakpassback.repository.standard.PriorityPaymentsCountRepository;

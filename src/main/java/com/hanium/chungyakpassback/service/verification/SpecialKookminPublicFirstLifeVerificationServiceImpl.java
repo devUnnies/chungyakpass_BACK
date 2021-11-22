@@ -14,7 +14,7 @@ import com.hanium.chungyakpassback.handler.CustomException;
 import com.hanium.chungyakpassback.repository.apt.AptInfoRepository;
 import com.hanium.chungyakpassback.repository.apt.AptInfoTargetRepository;
 import com.hanium.chungyakpassback.repository.input.*;
-import com.hanium.chungyakpassback.repository.record.VerificationRecordSpecialKookminFirstLifeRepository;
+import com.hanium.chungyakpassback.repository.verification.VerificationRecordSpecialKookminFirstLifeRepository;
 import com.hanium.chungyakpassback.repository.standard.*;
 import com.hanium.chungyakpassback.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
