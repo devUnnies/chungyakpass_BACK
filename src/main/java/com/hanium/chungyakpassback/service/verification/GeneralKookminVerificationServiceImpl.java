@@ -4,7 +4,7 @@ import com.hanium.chungyakpassback.dto.verification.*;
 import com.hanium.chungyakpassback.entity.apt.AptInfo;
 import com.hanium.chungyakpassback.entity.apt.AptInfoTarget;
 import com.hanium.chungyakpassback.entity.input.*;
-import com.hanium.chungyakpassback.entity.record.VerificationRecordGeneralKookmin;
+import com.hanium.chungyakpassback.entity.verification.VerificationRecordGeneralKookmin;
 import com.hanium.chungyakpassback.entity.standard.PriorityJoinPeriod;
 import com.hanium.chungyakpassback.entity.standard.PriorityPaymentsCount;
 import com.hanium.chungyakpassback.enumtype.*;

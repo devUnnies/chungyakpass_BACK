@@ -5,8 +5,7 @@ import com.hanium.chungyakpassback.dto.verification.*;
 import com.hanium.chungyakpassback.entity.apt.AptInfo;
 import com.hanium.chungyakpassback.entity.apt.AptInfoTarget;
 import com.hanium.chungyakpassback.entity.input.*;
-import com.hanium.chungyakpassback.entity.record.VerificationRecordSpecialKookminFirstLife;
-import com.hanium.chungyakpassback.entity.record.VerificationRecordSpecialKookminNewlyMarried;
+import com.hanium.chungyakpassback.entity.verification.VerificationRecordSpecialKookminFirstLife;
 import com.hanium.chungyakpassback.entity.standard.Income;
 import com.hanium.chungyakpassback.entity.standard.PriorityJoinPeriod;
 import com.hanium.chungyakpassback.entity.standard.PriorityPaymentsCount;
@@ -19,8 +18,6 @@ import com.hanium.chungyakpassback.repository.record.VerificationRecordSpecialKo
 import com.hanium.chungyakpassback.repository.standard.*;
 import com.hanium.chungyakpassback.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

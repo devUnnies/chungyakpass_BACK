@@ -6,7 +6,7 @@ import com.hanium.chungyakpassback.dto.verification.GeneralMinyeongUpdateDto;
 import com.hanium.chungyakpassback.entity.apt.AptInfo;
 import com.hanium.chungyakpassback.entity.apt.AptInfoTarget;
 import com.hanium.chungyakpassback.entity.input.*;
-import com.hanium.chungyakpassback.entity.record.VerificationRecordGeneralMinyeong;
+import com.hanium.chungyakpassback.entity.verification.VerificationRecordGeneralMinyeong;
 import com.hanium.chungyakpassback.entity.standard.AddressLevel1;
 import com.hanium.chungyakpassback.entity.standard.PriorityDeposit;
 import com.hanium.chungyakpassback.entity.standard.PriorityJoinPeriod;
