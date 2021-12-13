@@ -328,32 +328,44 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
             HouseMember houseMember = houseMemberRelation.getOpponent();
             HouseMemberAdditionalInfo houseMemberAdditionalInfo = houseMemberAdditionalInfoRepository.findByHouseMember(houseMember);
 
-            if (user.getHouse() == user.getSpouseHouse() || user.getSpouseHouse() == null) { //배우자와 같은 세대이거나, 미혼일 경우
-                if (user.getHouse().getHouseHolder().getId().equals(user.getHouseMember().getId())) //본인이 세대주일 때 무주택직계존속 포함
-                {
-                    numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList);
+            if (houseMemberAdditionalInfo==null) //청약통장이 null이면 에러 발생
+                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO);
 
-                    if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
-                        if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 자녀
-                            if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) {
-                                if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) {
-                                    if (!(houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.y) && houseMemberAdditionalInfo.getStayOverYn().equals(Yn.y))) {//현재 체류여부
-                                        numberOfFamily++;
-                                    }
-                                } else {
-                                    if (houseMemberAdditionalInfo.getStayOverYn().equals(Yn.n)) {// 체류여부
-                                        if (houseMemberAdditionalInfo.getSameResidentRegistrationYn().equals(Yn.y)) {
+            if (user.getHouse() == user.getSpouseHouse() || user.getSpouseHouse() == null) { //배우자와 같은 세대이거나, 미혼일 경우
+                if (user.getHouse().getHouseHolder() == null){
+                    throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_HOLDER);
+                }
+                else {
+                    if (user.getHouse().getHouseHolder().getId().equals(user.getHouseMember().getId())) //본인이 세대주일 때 무주택직계존속 포함
+                    {
+                        numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList);
+
+                        if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
+                            if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 자녀
+                                if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) {
+                                    if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) {
+                                        if (!(houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.y) && houseMemberAdditionalInfo.getStayOverYn().equals(Yn.y))) {//현재 체류여부
                                             numberOfFamily++;
                                         }
+                                    } else {
+                                        if (houseMemberAdditionalInfo.getStayOverYn().equals(Yn.n)) {// 체류여부
+                                            if (houseMemberAdditionalInfo.getSameResidentRegistrationYn().equals(Yn.y)) {
+                                                numberOfFamily++;
+                                            }
+                                        }
+
                                     }
-
                                 }
-                            }
 
+                            }
                         }
                     }
                 }
             } else if (user.getHouse() != user.getSpouseHouse()) {
+                if (user.getSpouseHouse().getHouseHolder() == null) {
+                    throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_HOLDER);
+                }
+                else{
                 if (user.getSpouseHouse().getHouseHolder().getId().equals(user.getSpouseHouseMember().getId())) { //배우자가 세대주일 때 무주택직계존속 포함
                     numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList);
 
@@ -377,6 +389,7 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
                         }
                     }
                 }
+            }
             }
 
         }

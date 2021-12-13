@@ -106,8 +106,15 @@ public class PointOfGeneralMinyeongServiceImpl implements PointOfGeneralMinyeong
     public Integer periodOfHomelessness(User user) {
         int point = 0;
         LocalDate lateDate = null;
+
+        if(user.getHouseMember()==null)
+            throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER);
+
         List<LocalDate> lateDateList = new ArrayList<>();//배우자와 본인중 무주택시점이 늦은날을 저장하는 리스트
         List<HouseMember> houseMemberList = houseMemberRepository.findAllByHouse(user.getHouseMember().getHouse());
+
+
+
 
         int houseCount = 0;
         Integer totalHouseCount = generalPrivateVerificationServiceImpl.countHouseHaving(user, houseMemberList, houseCount);
@@ -256,51 +263,64 @@ public class PointOfGeneralMinyeongServiceImpl implements PointOfGeneralMinyeong
             HouseMember houseMember = houseMemberRelation.getOpponent();
             HouseMemberAdditionalInfo houseMemberAdditionalInfo = houseMemberAdditionalInfoRepository.findByHouseMember(houseMember);
 
-            if (user.getSpouseHouse() == null) { //배우자와 같은 세대이거나, 미혼일 경우
-                if (user.getHouse().getHouseHolder().getId().equals(user.getHouseMember().getId())) //본인이 세대주일 때 무주택직계존속 포함
-                {
-                    numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList);
+            if (houseMemberAdditionalInfo==null) //청약통장이 null이면 에러 발생
+                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO);
 
-                    if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
-                        if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 직계비속이
-                            if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) { //이혼하지 않았고
-                                if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) { //만 30세 미만일 경우
-                                    if (!(houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.y) && houseMemberAdditionalInfo.getStayOverYn().equals(Yn.y))) {//현재 해외체류여부, 과거해외체류여부가 없으면 부양가족으로 포함
-                                        numberOfFamily++;
-                                    }
-                                } else { //만 30세 이상일 경우
-                                    if (houseMemberAdditionalInfo.getStayOverYn().equals(Yn.n)) {// 과거 해외체류여부가 없고
-                                        if (houseMemberAdditionalInfo.getSameResidentRegistrationYn().equals(Yn.y)) { //같은 거주지에 일정기간 거주중인 경우 부양가족 포함
+            if (user.getSpouseHouse() == null) { //배우자와 같은 세대이거나, 미혼일 경우
+                if (user.getHouse().getHouseHolder() == null){
+                    throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_HOLDER);
+                }
+                else {
+                    if (user.getHouse().getHouseHolder().getId().equals(user.getHouseMember().getId())) //본인이 세대주일 때 무주택직계존속 포함
+                    {
+                        numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList);
+
+                        if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
+                            if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 직계비속이
+                                if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) { //이혼하지 않았고
+                                    if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) { //만 30세 미만일 경우
+                                        if (!(houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.y) && houseMemberAdditionalInfo.getStayOverYn().equals(Yn.y))) {//현재 해외체류여부, 과거해외체류여부가 없으면 부양가족으로 포함
                                             numberOfFamily++;
+                                        }
+                                    } else { //만 30세 이상일 경우
+                                        if (houseMemberAdditionalInfo.getStayOverYn().equals(Yn.n)) {// 과거 해외체류여부가 없고
+                                            if (houseMemberAdditionalInfo.getSameResidentRegistrationYn().equals(Yn.y)) { //같은 거주지에 일정기간 거주중인 경우 부양가족 포함
+                                                numberOfFamily++;
+                                            }
                                         }
                                     }
                                 }
-                            }
 
+                            }
                         }
                     }
                 }
             } else {
-                if (user.getSpouseHouse().getHouseHolder().getId().equals(user.getSpouseHouseMember().getId())) { //배우자가 세대주일 때 무주택직계존속 포함
-                    numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList);
+                if (user.getSpouseHouse().getHouseHolder()== null) {
+                    throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_HOLDER);
+                }
+                else {
+                    if (user.getSpouseHouse().getHouseHolder().getId().equals(user.getSpouseHouseMember().getId())) { //배우자가 세대주일 때 무주택직계존속 포함
+                        numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList);
 
-                    if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
-                        if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 직계비속이
-                            if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) {//이혼하지 않았고
-                                if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) {//30세 미만일 경우
-                                    if (!(houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.y) && houseMemberAdditionalInfo.getStayOverYn().equals(Yn.y))) {//현재 체류여부, 과거체류여부이력이 없을경우 부양가족으로 산정
-                                        numberOfFamily++;
-                                    }
-                                } else {//30세 이상일경우
-                                    if (houseMemberAdditionalInfo.getStayOverYn().equals(Yn.n)) {// 과거체류여부가 없을때
-                                        if (houseMemberAdditionalInfo.getSameResidentRegistrationYn().equals(Yn.y)) { //같은거주지에 일정기간 거주한다면 부양가족수를 추가한다.
+                        if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
+                            if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 직계비속이
+                                if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) {//이혼하지 않았고
+                                    if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) {//30세 미만일 경우
+                                        if (!(houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.y) && houseMemberAdditionalInfo.getStayOverYn().equals(Yn.y))) {//현재 체류여부, 과거체류여부이력이 없을경우 부양가족으로 산정
                                             numberOfFamily++;
                                         }
+                                    } else {//30세 이상일경우
+                                        if (houseMemberAdditionalInfo.getStayOverYn().equals(Yn.n)) {// 과거체류여부가 없을때
+                                            if (houseMemberAdditionalInfo.getSameResidentRegistrationYn().equals(Yn.y)) { //같은거주지에 일정기간 거주한다면 부양가족수를 추가한다.
+                                                numberOfFamily++;
+                                            }
+                                        }
+
                                     }
-
                                 }
-                            }
 
+                            }
                         }
                     }
                 }
