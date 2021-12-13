@@ -192,7 +192,8 @@ public class PointOfSpecialMinyeongMultiChildServiceImpl implements PointOfSpeci
     @Transactional(rollbackFor = Exception.class)//세대구성 가점
     public Integer generationComposition(PointOfSpecialMinyeongMultiChildDto pointOfSpecialMinyeongMultiChildDto) {
         Integer generationCompositionGetPoint = 0;
-        if (pointOfSpecialMinyeongMultiChildDto.getMultiChildHouseholdType() == null) {
+
+        if (pointOfSpecialMinyeongMultiChildDto.getMultiChildHouseholdType().equals(MultiChildHouseholdType.해당없음)) {
             return generationCompositionGetPoint;
         } else if (pointOfSpecialMinyeongMultiChildDto.getMultiChildHouseholdType().equals(MultiChildHouseholdType.한부모가족) || pointOfSpecialMinyeongMultiChildDto.getMultiChildHouseholdType().equals(MultiChildHouseholdType.삼세대이상)) {
             generationCompositionGetPoint = 5;
