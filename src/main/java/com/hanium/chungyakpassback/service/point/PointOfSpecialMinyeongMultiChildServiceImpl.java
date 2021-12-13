@@ -130,15 +130,16 @@ public class PointOfSpecialMinyeongMultiChildServiceImpl implements PointOfSpeci
     public List periodOfApplicableAreaResidenceGetPoint(User user, Integer periodOfResidenceGetPoint, LocalDate lateDate, List lateDateList) {
 
         LocalDate birthDayAfter19Year = user.getHouseMember().getBirthDay().plusYears(19);
-        if (birthDayAfter19Year.isAfter(user.getHouseMember().getMarriageDate())) {
-            if (user.getHouseMember().getMarriageDate().isAfter(user.getHouseMember().getTransferDate())) {
-                lateDate = user.getHouseMember().getMarriageDate();
+        if (user.getHouseMember().getMarriageDate() == null || birthDayAfter19Year.isBefore(user.getHouseMember().getMarriageDate())) {//만 19세 이상 결혼 시 19세 생일 년도와 무주택 기간중 늦은 날
+            if (birthDayAfter19Year.isAfter(user.getHouseMember().getTransferDate())) {
+                lateDate = birthDayAfter19Year;
             } else {
                 lateDate = user.getHouseMember().getTransferDate();
             }
-        } else if (user.getHouseMember().getMarriageDate() == null || birthDayAfter19Year.isBefore(user.getHouseMember().getMarriageDate())) {//만 19세 이상 결혼 시 19세 생일 년도와 무주택 기간중 늦은 날
-            if (birthDayAfter19Year.isAfter(user.getHouseMember().getTransferDate())) {
-                lateDate = birthDayAfter19Year;
+        }
+        else if (birthDayAfter19Year.isAfter(user.getHouseMember().getMarriageDate())) {
+            if (user.getHouseMember().getMarriageDate().isAfter(user.getHouseMember().getTransferDate())) {
+                lateDate = user.getHouseMember().getMarriageDate();
             } else {
                 lateDate = user.getHouseMember().getTransferDate();
             }
