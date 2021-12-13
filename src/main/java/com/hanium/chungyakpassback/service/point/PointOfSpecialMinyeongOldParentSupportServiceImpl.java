@@ -103,6 +103,8 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer periodOfHomelessness(User user) {
+        if(user.getHouseMember()==null)
+            throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER);
         int periodOfHomelessnessGetPoint = 0;
         int houseCount = 0;
         LocalDate lateDate = null;//무주택기간

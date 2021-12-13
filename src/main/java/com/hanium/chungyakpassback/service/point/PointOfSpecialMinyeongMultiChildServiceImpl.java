@@ -156,6 +156,9 @@ public class PointOfSpecialMinyeongMultiChildServiceImpl implements PointOfSpeci
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer periodOfApplicableAreaResidence(User user, AptInfo aptInfo) {
+        if(user.getHouseMember()==null)
+            throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER);
+
         Integer periodOfResidenceGetPoint = 0;
         LocalDate lateDate = null;
         List<LocalDate> lateDateList = new ArrayList<>();//배우자와 본인중 무주택시점이 늦은날을 저장하는 리스트

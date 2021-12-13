@@ -127,6 +127,8 @@ public class PointOfSpecialMinyeongNewlyMarriedServiceImpl implements PointOfSpe
     @Override//혼인기간 가점
     @Transactional(rollbackFor = Exception.class)
     public Integer periodOfMarriged(User user) {
+        if(user.getHouseMember()==null)
+            throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER);
         Integer periodOfMarrigedGetPoint = 0;
         int periodOfUserMarrigedYear = yearOfMerriged(user.getHouseMember().getMarriageDate());
         for (int u = 0; u <= 2; u++) {
