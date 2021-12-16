@@ -2,6 +2,7 @@ package com.hanium.chungyakpassback.controller;
 
 import com.hanium.chungyakpassback.dto.point.*;
 import com.hanium.chungyakpassback.dto.point.ReadAllUserPointDto;
+import com.hanium.chungyakpassback.entity.point.PointOfSpecialMinyeongOldParentsSupport;
 import com.hanium.chungyakpassback.service.point.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -93,8 +94,8 @@ public class PointController {
 
     @PostMapping("/special/old-parents-support") //노부모저장
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public ResponseEntity<PointOfSpecialMinyeongOldParentsSupportResponseDto> createOldParentsSupportPointCalculation() {
-        return new ResponseEntity<>(pointOfSpecialMinyeongOldParentSupportService.createOldParentsSupportPointCalculation(), HttpStatus.OK);
+    public ResponseEntity<PointOfSpecialMinyeongOldParentsSupportResponseDto> createOldParentsSupportPointCalculation(@RequestBody PointOfSpecialMinyeongOldParentsSupportDto pointOfSpecialMinyeongOldParentsSupportDto) {
+        return new ResponseEntity<>(pointOfSpecialMinyeongOldParentSupportService.createOldParentsSupportPointCalculation(pointOfSpecialMinyeongOldParentsSupportDto), HttpStatus.OK);
     }
 
 

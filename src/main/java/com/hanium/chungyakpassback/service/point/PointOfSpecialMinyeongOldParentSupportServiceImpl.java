@@ -1,7 +1,9 @@
 package com.hanium.chungyakpassback.service.point;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
+import com.hanium.chungyakpassback.dto.point.PointOfSpecialMinyeongOldParentsSupportDto;
 import com.hanium.chungyakpassback.dto.point.PointOfSpecialMinyeongOldParentsSupportResponseDto;
+import com.hanium.chungyakpassback.entity.apt.AptInfo;
 import com.hanium.chungyakpassback.entity.input.*;
 import com.hanium.chungyakpassback.entity.point.PointOfSpecialMinyeongOldParentsSupport;
 import com.hanium.chungyakpassback.entity.standard.Bankbook;
@@ -10,6 +12,7 @@ import com.hanium.chungyakpassback.enumtype.Relation;
 import com.hanium.chungyakpassback.enumtype.ResidentialBuilding;
 import com.hanium.chungyakpassback.enumtype.Yn;
 import com.hanium.chungyakpassback.handler.CustomException;
+import com.hanium.chungyakpassback.repository.apt.AptInfoRepository;
 import com.hanium.chungyakpassback.repository.input.*;
 import com.hanium.chungyakpassback.repository.point.PointOfSpecialMinyeongOldParentsSupportRepository;
 import com.hanium.chungyakpassback.repository.standard.BankbookRepository;
@@ -41,6 +44,7 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
     final PointOfSpecialMinyeongOldParentsSupportRepository pointOfSpecialMinyeongOldParentsSupportRepository;
     final UserRepository userRepository;
     final HouseMemberAdditionalInfoRepository houseMemberAdditionalInfoRepository;
+    final AptInfoRepository aptInfoRepository;
 
     @Override
     public List<PointOfSpecialMinyeongOldParentsSupportResponseDto> readOldParentsSupportPointCalculations() {
@@ -55,17 +59,17 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
     }
 
     @Override
-    public PointOfSpecialMinyeongOldParentsSupportResponseDto createOldParentsSupportPointCalculation() {
+    public PointOfSpecialMinyeongOldParentsSupportResponseDto createOldParentsSupportPointCalculation(PointOfSpecialMinyeongOldParentsSupportDto pointOfSpecialMinyeongOldParentsSupportDto) {
         User user = userRepository.findOneWithAuthoritiesByEmail(SecurityUtil.getCurrentEmail().get()).get();
-
+        AptInfo aptInfo = aptInfoRepository.findById(pointOfSpecialMinyeongOldParentsSupportDto.getNotificationNumber()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APT));
 
         Integer periodOfHomelessness = periodOfHomelessness(user);
         Integer bankbookJoinPeriod = bankbookJoinPeriod(user);
-        Integer numberOfDependents = numberOfDependents(user);
+        Integer numberOfDependents = numberOfDependents(user, aptInfo);
         boolean bankBookVaildYn = bankBookVaildYn(user);
         Integer total = periodOfHomelessness + bankbookJoinPeriod + numberOfDependents;
 
-        PointOfSpecialMinyeongOldParentsSupport pointOfSpecialMinyeongOldParentsSupport = new PointOfSpecialMinyeongOldParentsSupport(user, periodOfHomelessness, bankbookJoinPeriod, numberOfDependents, bankBookVaildYn, total);
+        PointOfSpecialMinyeongOldParentsSupport pointOfSpecialMinyeongOldParentsSupport = new PointOfSpecialMinyeongOldParentsSupport(user, aptInfo, periodOfHomelessness, bankbookJoinPeriod, numberOfDependents, bankBookVaildYn, total);
         pointOfSpecialMinyeongOldParentsSupportRepository.save(pointOfSpecialMinyeongOldParentsSupport);
 
         return new PointOfSpecialMinyeongOldParentsSupportResponseDto(pointOfSpecialMinyeongOldParentsSupport);
@@ -106,7 +110,7 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer periodOfHomelessness(User user) {
-        if(user.getHouseMember()==null)
+        if (user.getHouseMember() == null)
             throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER);
         int periodOfHomelessnessGetPoint = 0;
         int houseCount = 0;
@@ -292,8 +296,8 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
         return numberOfFamily;
     }
 
-    public Integer numberOfFamily(User user, HouseMemberRelation houseMemberRelation,HouseMemberAdditionalInfo houseMemberAdditionalInfo, int numberOfFamily, int parents, List bothParentsIsHomelessYnList) {
-        if (periodOfStayOver(3,houseMemberAdditionalInfo.getStartDateOfStayOver(),houseMemberAdditionalInfo.getEndDateOfStayOver())<=90 && periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 3 && houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n)) {
+    public Integer numberOfFamily(User user, HouseMemberRelation houseMemberRelation, HouseMemberAdditionalInfo houseMemberAdditionalInfo, int numberOfFamily, int parents, List bothParentsIsHomelessYnList, AptInfo aptInfo) {
+        if (periodOfStayOver(3, houseMemberAdditionalInfo.getStartDateOfStayOver(), houseMemberAdditionalInfo.getEndDateOfStayOver(), aptInfo) <= 90 && periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 3 && houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n)) {
             if ((houseMemberRelation.getRelation().getRelation().equals(Relation.부) || houseMemberRelation.getRelation().getRelation().equals(Relation.모)) && houseMemberRelation.getUser().equals(user)) {
                 numberOfFamily = numberOfFamily + countOfDependents(houseMemberRelation, parents, bothParentsIsHomelessYnList);
             }
@@ -314,7 +318,7 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Integer numberOfDependents(User user) { //부양가족 산출하기
+    public Integer numberOfDependents(User user, AptInfo aptInfo) { //부양가족 산출하기
         int numberOfDependentsGetPoint = 0;
         int parents = 0;
         int numberOfFamily = 0;
@@ -322,46 +326,47 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
 
 
         List<HouseMemberRelation> houseMemberRelations = houseMemberRelationRepository.findAllByUser(user);
-        for(int i=0; i<houseMemberRelations.size(); i++){
+        for (int i = 0; i < houseMemberRelations.size(); i++) {
             HouseMemberRelation houseMemberRelation = houseMemberRelations.get(i);
-            if(houseMemberRelation.getRelation().getRelation().equals(Relation.본인))
+            if (houseMemberRelation.getRelation().getRelation().equals(Relation.본인))
                 continue;
-            if(houseMemberRelation.getRelation().getRelation().equals(Relation.배우자)){
+            if (houseMemberRelation.getRelation().getRelation().equals(Relation.배우자)) {
                 numberOfFamily++;
                 continue;
             }
             HouseMember houseMember = houseMemberRelation.getOpponent();
             HouseMemberAdditionalInfo houseMemberAdditionalInfo = houseMemberAdditionalInfoRepository.findByHouseMember(houseMember);
 
-            if (houseMemberAdditionalInfo==null) //청약통장이 null이면 에러 발생
+            if (houseMemberAdditionalInfo == null) //청약통장이 null이면 에러 발생
                 throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO);
 
             if (user.getHouse() == user.getSpouseHouse() || user.getSpouseHouse() == null) { //배우자와 같은 세대이거나, 미혼일 경우
-                if (user.getHouse().getHouseHolder() == null){
+                if (user.getHouse().getHouseHolder() == null) {
                     throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_HOLDER);
-                }
-                else {
+                } else {
                     if (user.getHouse().getHouseHolder().getId().equals(user.getHouseMember().getId())) //본인이 세대주일 때 무주택직계존속 포함
                     {
-                        numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList);
-
-                        if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
-                            if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 자녀
-                                if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) {
-                                    if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) {
-                                        if (houseMemberAdditionalInfo.getEndDateOfStayOver().equals(LocalDate.now()) && nowPeriodOfStayOver(houseMemberAdditionalInfo.getStartDateOfStayOver())<=90) {//현재 체류여부
-                                            numberOfFamily++;
-                                        }
-                                    } else {
-                                        if (periodOfStayOver(1,houseMemberAdditionalInfo.getStartDateOfStayOver(),houseMemberAdditionalInfo.getEndDateOfStayOver())<=90) {// 체류여부
-                                            if (periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 1) {
+                        if (houseMemberRelation.getRelation().getRelation().equals(Relation.부) || houseMemberRelation.getRelation().getRelation().equals(Relation.모) || houseMemberRelation.getRelation().getRelation().equals(Relation.조모) || houseMemberRelation.getRelation().getRelation().equals(Relation.조부) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의부) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의조모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의조부)) {
+                            numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList, aptInfo);
+                        } else {
+                            if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
+                                if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 자녀
+                                    if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) {
+                                        if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) {
+                                            if (!(houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.y) && nowPeriodOfStayOver(houseMemberAdditionalInfo.getStartDateOfStayOver(), aptInfo) > 90)) {//현재 체류여부
                                                 numberOfFamily++;
                                             }
+                                        } else {
+                                            if (!(periodOfStayOver(1, houseMemberAdditionalInfo.getStartDateOfStayOver(), houseMemberAdditionalInfo.getEndDateOfStayOver(), aptInfo) > 90) ){// 체류여부
+                                                if (periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 1) {
+                                                    numberOfFamily++;
+                                                }
+                                            }
+
                                         }
-
                                     }
-                                }
 
+                                }
                             }
                         }
                     }
@@ -369,32 +374,33 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
             } else if (user.getHouse() != user.getSpouseHouse()) {
                 if (user.getSpouseHouse().getHouseHolder() == null) {
                     throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_HOLDER);
-                }
-                else{
-                if (user.getSpouseHouse().getHouseHolder().getId().equals(user.getSpouseHouseMember().getId())) { //배우자가 세대주일 때 무주택직계존속 포함
-                    numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList);
+                } else {
+                    if (user.getSpouseHouse().getHouseHolder().getId().equals(user.getSpouseHouseMember().getId())) { //배우자가 세대주일 때 무주택직계존속 포함
+                        if (houseMemberRelation.getRelation().getRelation().equals(Relation.부) || houseMemberRelation.getRelation().getRelation().equals(Relation.모) || houseMemberRelation.getRelation().getRelation().equals(Relation.조모) || houseMemberRelation.getRelation().getRelation().equals(Relation.조부) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의부) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의조모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의조부)) {
+                            numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList, aptInfo);
+                        } else {
+                            if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
+                                if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 자녀
+                                    if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) {
+                                        if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) {
+                                            if (!(houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.y) && nowPeriodOfStayOver(houseMemberAdditionalInfo.getStartDateOfStayOver(), aptInfo) > 90)) {//현재 체류여부
+                                                numberOfFamily++;
+                                            }
+                                        } else {
+                                            if (!(periodOfStayOver(1, houseMemberAdditionalInfo.getStartDateOfStayOver(), houseMemberAdditionalInfo.getEndDateOfStayOver(), aptInfo) > 90) ){// 체류여부
+                                                if (periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 1) {
+                                                    numberOfFamily++;
+                                                }
+                                            }
 
-                    if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
-                        if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 자녀
-                            if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) {
-                                if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) {
-                                    if (houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.n) && nowPeriodOfStayOver(houseMemberAdditionalInfo.getStartDateOfStayOver())<=90) {//현재 체류여부
-                                        numberOfFamily++;
-                                    }
-                                } else {
-                                    if (periodOfStayOver(1,houseMemberAdditionalInfo.getStartDateOfStayOver(),houseMemberAdditionalInfo.getEndDateOfStayOver())<=90) {// 체류여부
-                                        if (periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 1) {
-                                            numberOfFamily++;
                                         }
                                     }
 
                                 }
                             }
-
                         }
                     }
                 }
-            }
             }
 
         }
@@ -407,24 +413,21 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
         return numberOfDependentsGetPoint;
     }
 
-    public long nowPeriodOfStayOver(LocalDate startDateOfStayOver ){
-        LocalDate now = LocalDate.now();
-
-        long periodOfStayOver = ChronoUnit.DAYS.between(startDateOfStayOver,now);
-        return periodOfStayOver;
-    }
-
-
-
-
-    public long periodOfStayOver(int standardYear,LocalDate startDateOfStayOver, LocalDate endDateOfStayOver ){
-        LocalDate now = LocalDate.now();
-        LocalDate standardStartDateOfStayOver = now.minusYears(standardYear);
-        if(standardYear !=0 && standardStartDateOfStayOver.isAfter(startDateOfStayOver)){
+    public long periodOfStayOver(int standardYear, LocalDate startDateOfStayOver, LocalDate endDateOfStayOver, AptInfo aptInfo) {
+        LocalDate announcementDate = aptInfo.getAnnouncementDate();
+        LocalDate standardStartDateOfStayOver = announcementDate.minusYears(standardYear);
+        if (standardStartDateOfStayOver.isAfter(startDateOfStayOver)) {
             startDateOfStayOver = standardStartDateOfStayOver;
         }
 
         long periodOfStayOver = ChronoUnit.DAYS.between(startDateOfStayOver, endDateOfStayOver);
+        return periodOfStayOver;
+    }
+
+    public long nowPeriodOfStayOver(LocalDate startDateOfStayOver, AptInfo aptInfo) {
+        LocalDate announcementDate = aptInfo.getAnnouncementDate();
+
+        long periodOfStayOver = ChronoUnit.DAYS.between(startDateOfStayOver, announcementDate);
         return periodOfStayOver;
     }
 

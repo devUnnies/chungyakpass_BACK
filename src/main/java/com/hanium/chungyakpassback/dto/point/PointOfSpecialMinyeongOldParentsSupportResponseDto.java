@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class PointOfSpecialMinyeongOldParentsSupportResponseDto {
 
     private Long id; //특별노부부부양 가점id
+    private Integer aptNotificationNumber; //아파트공고번호
     private Integer periodOfHomelessness;//무주택기간 가점
     private Integer bankbookJoinPeriod;//청약통장 가입기간 가점
     private Integer numberOfDependents; //부양가족수 가점
@@ -26,6 +27,7 @@ public class PointOfSpecialMinyeongOldParentsSupportResponseDto {
     @Builder
     public PointOfSpecialMinyeongOldParentsSupportResponseDto(PointOfSpecialMinyeongOldParentsSupport pointOfSpecialMinyeongOldParentsSupport){
         this.id = pointOfSpecialMinyeongOldParentsSupport.getId();
+        this.aptNotificationNumber = pointOfSpecialMinyeongOldParentsSupport.getAptInfo().getNotificationNumber();
         this.periodOfHomelessness = pointOfSpecialMinyeongOldParentsSupport.getPeriodOfHomelessness();
         this.bankbookJoinPeriod = pointOfSpecialMinyeongOldParentsSupport.getBankbookJoinPeriod();
         this.numberOfDependents = pointOfSpecialMinyeongOldParentsSupport.getNumberOfDependents();
