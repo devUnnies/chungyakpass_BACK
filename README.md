@@ -4,41 +4,41 @@
 
 - 400 BAD_REQUEST
 
-    - BAD_REQUEST_RESOURCE(BAD_REQUEST, "잘못된 요청입니다"),
-    - BAD_REQUEST_USER_AND_USER_HOUSE(BAD_REQUEST, "회원은 회원 본인의 세대에 속해야 합니다"),
-    - BAD_REQUEST_SPOUSE_AND_SPOUSE_HOUSE(BAD_REQUEST, "배우자 분리세대 생성 시 배우자는 배우자 분리세대에 속해야 합니다"),
-    - BAD_REQUEST_BANKBOOK(BAD_REQUEST, "청약가능한 청약통장 유형이 아닙니다."),
-    - BAD_REQUEST_HOMELESS(BAD_REQUEST, "무주택 세대구성원이 아닙니다."),
-    - BAD_REQUEST_LACK_BANKBOOK(BAD_REQUEST, "청약통장 납입액이 부족합니다."),
-    - BAD_REQUEST_OVER_AREA_BANKBOOK(BAD_REQUEST, "지원 가능한 면적을 초과하였습니다."),
+  - BAD_REQUEST_RESOURCE(BAD_REQUEST, "잘못된 요청입니다"),
+  - BAD_REQUEST_USER_AND_USER_HOUSE(BAD_REQUEST, "회원은 회원 본인의 세대에 속해야 합니다"),
+  - BAD_REQUEST_SPOUSE_AND_SPOUSE_HOUSE(BAD_REQUEST, "배우자 분리세대 생성 시 배우자는 배우자 분리세대에 속해야 합니다"),
+  - BAD_REQUEST_BANKBOOK(BAD_REQUEST, "청약가능한 청약통장 유형이 아닙니다."),
+  - BAD_REQUEST_HOMELESS(BAD_REQUEST, "무주택 세대구성원이 아닙니다."),
+  - BAD_REQUEST_LACK_BANKBOOK(BAD_REQUEST, "청약통장 납입액이 부족합니다."),
+  - BAD_REQUEST_OVER_AREA_BANKBOOK(BAD_REQUEST, "지원 가능한 면적을 초과하였습니다."),
 
 - 404 NOT_FOUND
 
-    - RESOURCE_NOT_FOUND(NOT_FOUND, "해당 자원을 찾을 수 없습니다"),
-    - NOT_FOUND_BANKBOOK(NOT_FOUND, "해당 청약통장을 찾을 수 없습니다"),
-    - NOT_FOUND_HOUSE(NOT_FOUND, "해당 세대를 찾을 수 없습니다"),
-    - NOT_FOUND_HOUSE_HOLDER(NOT_FOUND, "해당 세대주를 찾을 수 없습니다"),
-    - NOT_FOUND_HOUSE_MEMBER(NOT_FOUND, "해당 세대구성원을 찾을 수 없습니다"),
-    - NOT_FOUND_HOUSE_MEMBER_PROPERTY(NOT_FOUND, "해당 세대구성원자산을 찾을 수 없습니다"),
-    - NOT_FOUND_HOUSE_MEMBER_CHUNGYAK(NOT_FOUND, "해당 세대구성원청약이력을 찾을 수 없습니다"),
-    - NOT_FOUND_HOUSE_MEMBER_CHUNGYAK_RESTRICTION(NOT_FOUND, "해당 세대구성원청약제한사항을 찾을 수 없습니다"),
-    - NOT_FOUND_ADDRESS_LEVEL1(NOT_FOUND, "지역레벨1을 찾을 수 없습니다"),
-    - NOT_FOUND_ADDRESS_LEVEL2(NOT_FOUND, "지역레벨2를 찾을 수 없습니다"),
-    - NOT_FOUND_RELATION(NOT_FOUND, "관계를 찾을 수 없습니다"),
-    - NOT_FOUND_BIRTHDAY(NOT_FOUND, "회원의 생년월일을 찾을 수 없습니다"),
-    - NOT_FOUND_APT(NOT_FOUND, "주택 정보를 찾을 수 없습니다"),
-    - NOT_FOUND_MARRIAGES(NOT_FOUND, "혼인신고일을 찾을 수 없습니다"),
-    - NOT_FOUND_HOUSEHOLDER(NOT_FOUND, "세대주를 찾을 수 없습니다."),
-    - NOT_FOUND_Child(NOT_FOUND, "자녀를 찾을 수 없습니다."),
-    - NOT_FOUND_INCOME(NOT_FOUND, "월평균소득을 찾을 수 없습니다"),
-    - NOT_FOUND_SPOUSE(NOT_FOUND, "배우자를 찾을 수 없습니다"),
+  - RESOURCE_NOT_FOUND(NOT_FOUND, "해당 자원을 찾을 수 없습니다"),
+  - NOT_FOUND_BANKBOOK(NOT_FOUND, "해당 청약통장을 찾을 수 없습니다"),
+  - NOT_FOUND_HOUSE(NOT_FOUND, "해당 세대를 찾을 수 없습니다"),
+  - NOT_FOUND_HOUSE_HOLDER(NOT_FOUND, "해당 세대주를 찾을 수 없습니다"),
+  - NOT_FOUND_HOUSE_MEMBER(NOT_FOUND, "해당 세대구성원을 찾을 수 없습니다"),
+  - NOT_FOUND_HOUSE_MEMBER_PROPERTY(NOT_FOUND, "해당 세대구성원자산을 찾을 수 없습니다"),
+  - NOT_FOUND_HOUSE_MEMBER_CHUNGYAK(NOT_FOUND, "해당 세대구성원청약이력을 찾을 수 없습니다"),
+  - NOT_FOUND_HOUSE_MEMBER_CHUNGYAK_RESTRICTION(NOT_FOUND, "해당 세대구성원청약제한사항을 찾을 수 없습니다"),
+  - NOT_FOUND_ADDRESS_LEVEL1(NOT_FOUND, "지역레벨1을 찾을 수 없습니다"),
+  - NOT_FOUND_ADDRESS_LEVEL2(NOT_FOUND, "지역레벨2를 찾을 수 없습니다"),
+  - NOT_FOUND_RELATION(NOT_FOUND, "관계를 찾을 수 없습니다"),
+  - NOT_FOUND_BIRTHDAY(NOT_FOUND, "회원의 생년월일을 찾을 수 없습니다"),
+  - NOT_FOUND_APT(NOT_FOUND, "주택 정보를 찾을 수 없습니다"),
+  - NOT_FOUND_MARRIAGES(NOT_FOUND, "혼인신고일을 찾을 수 없습니다"),
+  - NOT_FOUND_HOUSEHOLDER(NOT_FOUND, "세대주를 찾을 수 없습니다."),
+  - NOT_FOUND_Child(NOT_FOUND, "자녀를 찾을 수 없습니다."),
+  - NOT_FOUND_INCOME(NOT_FOUND, "월평균소득을 찾을 수 없습니다"),
+  - NOT_FOUND_SPOUSE(NOT_FOUND, "배우자를 찾을 수 없습니다"),
 
 - 409 CONFLICT
-    - DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
-    - DUPLICATE_EMAIL(CONFLICT, "이미 가입되어 있는 이메일입니다"),
-    - DUPLICATE_BANKBOOK(CONFLICT, "청약통장이 이미 등록되어 있습니다"),
-    - DUPLICATE_HOUSE(CONFLICT, "해당 세대가 이미 등록되어 있습니다"),
-    - DUPLICATE_RELATION(CONFLICT, "해당 관계의 세대구성원이 이미 등록되어 있습니다");
+  - DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
+  - DUPLICATE_EMAIL(CONFLICT, "이미 가입되어 있는 이메일입니다"),
+  - DUPLICATE_BANKBOOK(CONFLICT, "청약통장이 이미 등록되어 있습니다"),
+  - DUPLICATE_HOUSE(CONFLICT, "해당 세대가 이미 등록되어 있습니다"),
+  - DUPLICATE_RELATION(CONFLICT, "해당 관계의 세대구성원이 이미 등록되어 있습니다");
 
 <br>
 <br>
@@ -533,14 +533,15 @@ http://3.37.99.145:8080/user/house/member/homeless-start-date/{houseMemberId}
 
 http://3.37.99.145:8080/user/house/member/additional-info
 
-| Name                       | Type           | Description                     | Null     |
-| -------------------------- | -------------- | ------------------------------- | -------- |
-| houseMemberId              | Long           | 세대구성원id                    | not null |
-| parentsDeathYn             | enum('y', 'n') | 부모 사망 여부                  | not null |
-| divorceYn                  | enum('y', 'n') | 이혼 여부                       | not null |
-| sameResidentRegistrationYn | enum('y', 'n') | 회원 세대 거주 여부             | not null |
-| stayOverYn                 | enum('y', 'n') | 해외 or 요양시설 체류 여부      | not null |
-| nowStayOverYn              | enum('y', 'n') | 현재 해외 or 요양시설 체류 여부 | not null |
+| Name                    | Type           | Description                     | Null     |
+| ----------------------- | -------------- | ------------------------------- | -------- |
+| houseMemberId           | Long           | 세대구성원id                    | not null |
+| parentsDeathYn          | enum('y', 'n') | 부모 사망 여부                  | null     |
+| divorceYn               | enum('y', 'n') | 이혼 여부                       | null     |
+| startDateOfSameResident | Date           | 회원과 같은 세대거주 시작일     | not null |
+| startDateOfStayOver     | Date           | 해외 or 요양시설 체류 시작일    | null     |
+| endDateOfStayOver       | Date           | 해외 or 요양시설 체류 종료일    | null     |
+| nowStayOverYn           | enum('y', 'n') | 현재 해외 or 요양시설 체류 여부 | null     |
 
 ## _RESPONSE_
 
@@ -548,14 +549,18 @@ http://3.37.99.145:8080/user/house/member/additional-info
 | --------------------------- | -------------- | ------------------------------- | -------- |
 | houseMemberAdditionalInfoId | Long           | 세대구성원추가정보id            | not null |
 | houseMemberId               | Long           | 세대구성원id                    | not null |
-| parentsDeathYn              | enum('y', 'n') | 부모 사망 여부                  | not null |
-| divorceYn                   | enum('y', 'n') | 이혼 여부                       | not null |
-| sameResidentRegistrationYn  | enum('y', 'n') | 회원 세대 거주 여부             | not null |
-| stayOverYn                  | enum('y', 'n') | 해외 or 요양시설 체류 여부      | not null |
-| nowStayOverYn               | enum('y', 'n') | 현재 해외 or 요양시설 체류 여부 | not null |
+| parentsDeathYn              | enum('y', 'n') | 부모 사망 여부                  | null     |
+| divorceYn                   | enum('y', 'n') | 이혼 여부                       | null     |
+| startDateOfSameResident     | Date           | 회원과 같은 세대거주 시작일     | not null |
+| startDateOfStayOver         | Date           | 해외 or 요양시설 체류 시작일    | null     |
+| endDateOfStayOver           | Date           | 해외 or 요양시설 체류 종료일    | null     |
+| nowStayOverYn               | enum('y', 'n') | 현재 해외 or 요양시설 체류 여부 | null     |
 
-<br>
-<br>
+**_caution_**
+
+- nowStayOverYn가 y인 경우 endDateOfStayOver 안받아도댐
+  <br>
+  <br>
 
 # 세대구성원 추가정보 수정
 
@@ -565,14 +570,15 @@ http://3.37.99.145:8080/user/house/member/additional-info
 
 http://3.37.99.145:8080/user/house/member/additional-info/{houseMemberAdditionalInfoId}
 
-| Name                       | Type           | Description                     | Null     |
-| -------------------------- | -------------- | ------------------------------- | -------- |
-| houseMemberId              | Long           | 세대구성원id                    | not null |
-| parentsDeathYn             | enum('y', 'n') | 부모 사망 여부                  | not null |
-| divorceYn                  | enum('y', 'n') | 이혼 여부                       | not null |
-| sameResidentRegistrationYn | enum('y', 'n') | 회원 세대 거주 여부             | not null |
-| stayOverYn                 | enum('y', 'n') | 해외 or 요양시설 체류 여부      | not null |
-| nowStayOverYn              | enum('y', 'n') | 현재 해외 or 요양시설 체류 여부 | not null |
+| Name                    | Type           | Description                     | Null     |
+| ----------------------- | -------------- | ------------------------------- | -------- |
+| houseMemberId           | Long           | 세대구성원id                    | not null |
+| parentsDeathYn          | enum('y', 'n') | 부모 사망 여부                  | null     |
+| divorceYn               | enum('y', 'n') | 이혼 여부                       | null     |
+| startDateOfSameResident | Date           | 회원과 같은 세대거주 시작일     | not null |
+| startDateOfStayOver     | Date           | 해외 or 요양시설 체류 시작일    | null     |
+| endDateOfStayOver       | Date           | 해외 or 요양시설 체류 종료일    | null     |
+| nowStayOverYn           | enum('y', 'n') | 현재 해외 or 요양시설 체류 여부 | null     |
 
 ## _RESPONSE_
 
@@ -580,11 +586,16 @@ http://3.37.99.145:8080/user/house/member/additional-info/{houseMemberAdditional
 | --------------------------- | -------------- | ------------------------------- | -------- |
 | houseMemberAdditionalInfoId | Long           | 세대구성원추가정보id            | not null |
 | houseMemberId               | Long           | 세대구성원id                    | not null |
-| parentsDeathYn              | enum('y', 'n') | 부모 사망 여부                  | not null |
-| divorceYn                   | enum('y', 'n') | 이혼 여부                       | not null |
-| sameResidentRegistrationYn  | enum('y', 'n') | 회원 세대 거주 여부             | not null |
-| stayOverYn                  | enum('y', 'n') | 해외 or 요양시설 체류 여부      | not null |
-| nowStayOverYn               | enum('y', 'n') | 현재 해외 or 요양시설 체류 여부 | not null |
+| parentsDeathYn              | enum('y', 'n') | 부모 사망 여부                  | null     |
+| divorceYn                   | enum('y', 'n') | 이혼 여부                       | null     |
+| startDateOfSameResident     | Date           | 회원과 같은 세대거주 시작일     | not null |
+| startDateOfStayOver         | Date           | 해외 or 요양시설 체류 시작일    | null     |
+| endDateOfStayOver           | Date           | 해외 or 요양시설 체류 종료일    | null     |
+| nowStayOverYn               | enum('y', 'n') | 현재 해외 or 요양시설 체류 여부 | null     |
+
+**_caution_**
+
+- nowStayOverYn가 y인 경우 endDateOfStayOver 안받아도댐
 
 <br>
 <br>
@@ -767,7 +778,7 @@ http://3.37.99.145:8080/user/house/member/chungyak/{houseMemberId}
 | houseName                             | String                                           | 주택명                   | not null |
 | supply                                | enum(일반공급, 특별공급, 특별공급가점)           | 공급 유형                | not null |
 | specialSupply                         | enum(다자녀가구, 신혼부부, 생애최초, 노부모부양) | 특별공급 유형            | null     |
-| residentialArea                       | String                                           | 주택형(주거전용면적)        | null     |
+| residentialArea                       | String                                           | 주택형(주거전용면적)     | null     |
 | ranking                               | enum(일순위, 이순위)                             | 순위                     | null     |
 | result                                | enum(당첨, 미당첨, 예비당첨)                     | 결과                     | not null |
 | preliminaryNumber                     | Integer                                          | 예비번호                 | null     |
@@ -804,19 +815,19 @@ http://3.37.99.145:8080/user/house/member/chungyak/{houseMemberId}
 
 http://3.37.99.145:8080/user/house/member/chungyak
 
-| Name              | Type                                             | Description   | Null     |
-| ----------------- | ------------------------------------------------ | ------------- | -------- |
-| houseMemberId     | Long                                             | 세대구성원id  | not null |
-| houseName         | String                                           | 주택명        | not null |
-| supply            | enum(일반공급, 특별공급, 특별공급가점)           | 공급 유형     | not null |
-| specialSupply     | enum(다자녀가구, 신혼부부, 생애최초, 노부모부양) | 특별공급 유형 | null     |
-| residentialArea   | String                                           | 주택형(주거전용면적)| null     |
-| ranking           | enum(일순위, 이순위)                             | 순위          | null     |
-| result            | enum(당첨, 미당첨, 예비당첨)                     | 결과          | not null |
-| preliminaryNumber | Integer                                          | 예비번호      | null     |
-| winningDate       | Date                                             | 당첨일        | null     |
-| raffle            | enum(가점제, 추첨제)                             | 추첨방식      | null     |
-| cancelWinYn       | enum('y', 'n')                                   | 당첨취소여부  | null     |
+| Name              | Type                                             | Description          | Null     |
+| ----------------- | ------------------------------------------------ | -------------------- | -------- |
+| houseMemberId     | Long                                             | 세대구성원id         | not null |
+| houseName         | String                                           | 주택명               | not null |
+| supply            | enum(일반공급, 특별공급, 특별공급가점)           | 공급 유형            | not null |
+| specialSupply     | enum(다자녀가구, 신혼부부, 생애최초, 노부모부양) | 특별공급 유형        | null     |
+| residentialArea   | String                                           | 주택형(주거전용면적) | null     |
+| ranking           | enum(일순위, 이순위)                             | 순위                 | null     |
+| result            | enum(당첨, 미당첨, 예비당첨)                     | 결과                 | not null |
+| preliminaryNumber | Integer                                          | 예비번호             | null     |
+| winningDate       | Date                                             | 당첨일               | null     |
+| raffle            | enum(가점제, 추첨제)                             | 추첨방식             | null     |
+| cancelWinYn       | enum('y', 'n')                                   | 당첨취소여부         | null     |
 
 ## _RESPONSE_
 
@@ -827,7 +838,7 @@ http://3.37.99.145:8080/user/house/member/chungyak
 | houseName         | String                                           | 주택명                   | not null |
 | supply            | enum(일반공급, 특별공급, 특별공급가점)           | 공급 유형                | not null |
 | specialSupply     | enum(다자녀가구, 신혼부부, 생애최초, 노부모부양) | 특별공급 유형            | null     |
-| residentialArea   | String                                           | 주택형(주거전용면적)        | null     |
+| residentialArea   | String                                           | 주택형(주거전용면적)     | null     |
 | ranking           | enum(일순위, 이순위)                             | 순위                     | null     |
 | result            | enum(당첨, 미당첨, 예비당첨)                     | 결과                     | not null |
 | preliminaryNumber | Integer                                          | 예비번호                 | null     |
@@ -848,19 +859,19 @@ http://3.37.99.145:8080/user/house/member/chungyak
 
 http://3.37.99.145:8080/user/house/member/chungyak/{houseMemberChungyakId}
 
-| Name              | Type                                             | Description   | Null     |
-| ----------------- | ------------------------------------------------ | ------------- | -------- |
-| houseMemberId     | Long                                             | 세대구성원id  | not null |
-| houseName         | String                                           | 주택명        | not null |
-| supply            | enum(일반공급, 특별공급, 특별공급가점)           | 공급 유형     | not null |
-| specialSupply     | enum(다자녀가구, 신혼부부, 생애최초, 노부모부양) | 특별공급 유형 | null     |
-| residentialArea   | String                                           | 주택형(주거전용면적)| null     |
-| ranking           | enum(일순위, 이순위)                             | 순위          | null     |
-| result            | enum(당첨, 미당첨, 예비당첨)                     | 결과          | null     |
-| preliminaryNumber | Integer                                          | 예비번호      | null     |
-| winningDate       | Date                                             | 당첨일        | null     |
-| raffle            | enum(가점제, 추첨제)                             | 추첨방식      | null     |
-| cancelWinYn       | enum('y', 'n')                                   | 당첨취소여부  | null     |
+| Name              | Type                                             | Description          | Null     |
+| ----------------- | ------------------------------------------------ | -------------------- | -------- |
+| houseMemberId     | Long                                             | 세대구성원id         | not null |
+| houseName         | String                                           | 주택명               | not null |
+| supply            | enum(일반공급, 특별공급, 특별공급가점)           | 공급 유형            | not null |
+| specialSupply     | enum(다자녀가구, 신혼부부, 생애최초, 노부모부양) | 특별공급 유형        | null     |
+| residentialArea   | String                                           | 주택형(주거전용면적) | null     |
+| ranking           | enum(일순위, 이순위)                             | 순위                 | null     |
+| result            | enum(당첨, 미당첨, 예비당첨)                     | 결과                 | null     |
+| preliminaryNumber | Integer                                          | 예비번호             | null     |
+| winningDate       | Date                                             | 당첨일               | null     |
+| raffle            | enum(가점제, 추첨제)                             | 추첨방식             | null     |
+| cancelWinYn       | enum('y', 'n')                                   | 당첨취소여부         | null     |
 
 ## _RESPONSE_
 
@@ -1285,10 +1296,10 @@ http://3.37.99.145:8080/verification/general/minyeong
 
 http://3.37.99.145:8080/verification/general/minyeong
 
-| Name               | Type   | Description    | Null      |
-| ------------------ | ------ | -------------- | --------- |
-| notificationNumber | Long   | 아파트공고번호 | not blank |
-| residentialArea    | String | 주택형(주거전용면적)| not blank |
+| Name               | Type   | Description          | Null      |
+| ------------------ | ------ | -------------------- | --------- |
+| notificationNumber | Long   | 아파트공고번호       | not blank |
+| residentialArea    | String | 주택형(주거전용면적) | not blank |
 
 ## _RESPONSE_
 
@@ -1394,10 +1405,10 @@ http://3.37.99.145:8080/verification/general/kookmin
 
 http://3.37.99.145:8080/verification/general/kookmin
 
-| Name               | Type   | Description    | Null      |
-| ------------------ | ------ | -------------- | --------- |
-| notificationNumber | Long   | 아파트공고번호 | not blank |
-| residentialArea    | String | 주택형(주거전용면적)| not blank |
+| Name               | Type   | Description          | Null      |
+| ------------------ | ------ | -------------------- | --------- |
+| notificationNumber | Long   | 아파트공고번호       | not blank |
+| residentialArea    | String | 주택형(주거전용면적) | not blank |
 
 ## _RESPONSE_
 
@@ -1505,10 +1516,10 @@ http://3.37.99.145:8080/verification/special/minyeong/multi-child
 
 http://3.37.99.145:8080/verification/special/minyeong/multi-child
 
-| Name               | Type   | Description    | Null      |
-| ------------------ | ------ | -------------- | --------- |
-| notificationNumber | Long   | 아파트공고번호 | not blank |
-| residentialArea    | String | 주택형(주거전용면적)| not blank |
+| Name               | Type   | Description          | Null      |
+| ------------------ | ------ | -------------------- | --------- |
+| notificationNumber | Long   | 아파트공고번호       | not blank |
+| residentialArea    | String | 주택형(주거전용면적) | not blank |
 
 ## _RESPONSE_
 
@@ -1618,10 +1629,10 @@ http://3.37.99.145:8080/verification/special/kookmin/public/multi-child
 
 http://3.37.99.145:8080/verification/special/kookmin/public/multi-child
 
-| Name               | Type   | Description    | Null      |
-| ------------------ | ------ | -------------- | --------- |
-| notificationNumber | Long   | 아파트공고번호 | not blank |
-| residentialArea    | String | 주택형(주거전용면적)| not blank |
+| Name               | Type   | Description          | Null      |
+| ------------------ | ------ | -------------------- | --------- |
+| notificationNumber | Long   | 아파트공고번호       | not blank |
+| residentialArea    | String | 주택형(주거전용면적) | not blank |
 
 ## _RESPONSE_
 
@@ -1731,10 +1742,10 @@ http://3.37.99.145:8080/verification/special/minyeong/old-parent
 
 http://3.37.99.145:8080/verification/special/minyeong/old-parent
 
-| Name               | Type   | Description     | Null      |
-| ------------------ | ------ | --------------  | --------- |
-| notificationNumber | Long   | 아파트공고번호     | not blank |
-| residentialArea    | String | 주택형(주거전용면적)| not blank |
+| Name               | Type   | Description          | Null      |
+| ------------------ | ------ | -------------------- | --------- |
+| notificationNumber | Long   | 아파트공고번호       | not blank |
+| residentialArea    | String | 주택형(주거전용면적) | not blank |
 
 ## _RESPONSE_
 
@@ -1843,10 +1854,10 @@ http://3.37.99.145:8080/verification/special/kookmin/public/old-parent
 
 http://3.37.99.145:8080/verification/special/kookmin/public/old-parent
 
-| Name               | Type   | Description    | Null      |
-| ------------------ | ------ | -------------- | --------- |
-| notificationNumber | Long   | 아파트공고번호 | not blank |
-| residentialArea    | String | 주택형(주거전용면적)| not blank |
+| Name               | Type   | Description          | Null      |
+| ------------------ | ------ | -------------------- | --------- |
+| notificationNumber | Long   | 아파트공고번호       | not blank |
+| residentialArea    | String | 주택형(주거전용면적) | not blank |
 
 ## _RESPONSE_
 
@@ -1962,10 +1973,10 @@ http://3.37.99.145:8080/verification/special/minyeong/newly-married
 
 http://3.37.99.145:8080/verification/special/minyeong/newly-married
 
-| Name               | Type   | Description    | Null      |
-| ------------------ | ------ | -------------- | --------- |
-| notificationNumber | Long   | 아파트공고번호 | not blank |
-| residentialArea    | String | 주택형(주거전용면적)| not blank |
+| Name               | Type   | Description          | Null      |
+| ------------------ | ------ | -------------------- | --------- |
+| notificationNumber | Long   | 아파트공고번호       | not blank |
+| residentialArea    | String | 주택형(주거전용면적) | not blank |
 
 ## _RESPONSE_
 
@@ -2083,10 +2094,10 @@ http://3.37.99.145:8080/verification/special/kookmin/newly-married
 
 http://3.37.99.145:8080/verification/special/kookmin/newly-married
 
-| Name               | Type   | Description    | Null      |
-| ------------------ | ------ | -------------- | --------- |
-| notificationNumber | Long   | 아파트공고번호 | not blank |
-| residentialArea    | String | 주택형(주거전용면적)| not blank |
+| Name               | Type   | Description          | Null      |
+| ------------------ | ------ | -------------------- | --------- |
+| notificationNumber | Long   | 아파트공고번호       | not blank |
+| residentialArea    | String | 주택형(주거전용면적) | not blank |
 
 ## _RESPONSE_
 
@@ -2172,10 +2183,10 @@ http://3.37.99.145:8080/verification/special/kookmin/newly-married/{verification
 
 http://3.37.99.145:8080/verification/special/kookmin/public/newly-married
 
-| Name               | Type   | Description    | Null      |
-| ------------------ | ------ | -------------- | --------- |
-| notificationNumber | Long   | 아파트공고번호 | not blank |
-| residentialArea    | String | 주택형(주거전용면적)| not blank |
+| Name               | Type   | Description          | Null      |
+| ------------------ | ------ | -------------------- | --------- |
+| notificationNumber | Long   | 아파트공고번호       | not blank |
+| residentialArea    | String | 주택형(주거전용면적) | not blank |
 
 ## _RESPONSE_
 
@@ -2299,10 +2310,10 @@ http://3.37.99.145:8080/verification/special/minyeong/first-life
 
 http://3.37.99.145:8080/verification/special/minyeong/first-life
 
-| Name               | Type   | Description    | Null      |
-| ------------------ | ------ | -------------- | --------- |
-| notificationNumber | Long   | 아파트공고번호 | not blank |
-| residentialArea    | String | 주택형(주거전용면적)| not blank |
+| Name               | Type   | Description          | Null      |
+| ------------------ | ------ | -------------------- | --------- |
+| notificationNumber | Long   | 아파트공고번호       | not blank |
+| residentialArea    | String | 주택형(주거전용면적) | not blank |
 
 ## _RESPONSE_
 
@@ -2424,10 +2435,10 @@ http://3.37.99.145:8080/verification/special/kookmin/public/first-life
 
 http://3.37.99.145:8080/verification/special/kookmin/public/first-life
 
-| Name               | Type   | Description    | Null      |
-| ------------------ | ------ | -------------- | --------- |
-| notificationNumber | Long   | 아파트공고번호 | not blank |
-| residentialArea    | String | 주택형(주거전용면적)| not blank |
+| Name               | Type   | Description          | Null      |
+| ------------------ | ------ | -------------------- | --------- |
+| notificationNumber | Long   | 아파트공고번호       | not blank |
+| residentialArea    | String | 주택형(주거전용면적) | not blank |
 
 ## _RESPONSE_
 
@@ -2648,6 +2659,23 @@ http://3.37.99.145:8080/point/general/minyeong
 | createdDate          | DateTime | 생성일           | null |
 | modifiedDate         | DateTime | 마지막 수정일    | null |
 
+**error**
+
+- NOT_FOUND_HOUSE_MEMBER(NOT_FOUND, "해당 세대구성원을 찾을 수 없습니다"),
+  세대 구성원이 없을 경우 발생
+
+- NOT_FOUND_MARRIAGES(NOT_FOUND, "혼인신고일을 찾을 수 없습니다"),
+  혼인 신고일을 찾을 수 없을 때 발생
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO(NOT_FOUND, "해당 세대구성원추가정보를 찾을 수 없습니다.")
+  세대구성원추가정보를 찾을 수 없을 때 발생
+
+- NOT_FOUND_HOUSE_HOLDER(NOT_FOUND, "해당 세대주를 찾을 수 없습니다"),
+  세대주가 없을 때 발생
+
+- NOT_FOUND_BANKBOOK(NOT_FOUND, "해당 청약통장을 찾을 수 없습니다")
+  청약 통장이 없을 때 발생
+
 <br>
 
 <br>
@@ -2689,27 +2717,47 @@ http://3.37.99.145:8080/point/special/multi-child
 
 http://3.37.99.145:8080/point/special/multi-child
 
-| Name                    | Type                             | Description    | Null      |
-| ----------------------- | -------------------------------- | -------------- | --------- |
-| notificationNumber      | Long                             | 아파트공고번호 | not blank |
-| multiChildHouseholdType | ENUM('삼세대이상', '한부모가족') | 다자녀유형     | not blank |
+| Name                    | Type                                        | Description    | Null      |
+| ----------------------- | ------------------------------------------- | -------------- | --------- |
+| notificationNumber      | Long                                        | 아파트공고번호 | not blank |
+| multiChildHouseholdType | ENUM('삼세대이상', '한부모가족','해당없음') | 다자녀유형     | not blank |
 
 ## _RESPONSE_
 
-| Name                            | Type                             | Description          | Null |
-| ------------------------------- | -------------------------------- | -------------------- | ---- |
-| id                              | Long                             | 가배점결과id         | null |
-| aptNotificationNumber           | Integer                          | 공고번호             | null |
-| multiChildHouseholdType         | ENUM('삼세대이상', '한부모가족') | 다자녀유형           | null |
-| numberOfChild                   | Integer                          | 만19세미만자녀수     | null |
-| numberOfChildUnder6Year         | Integer                          | 만6세미만자녀수      | null |
-| bankbookJoinPeriod              | Integer                          | 청약통장가입기간     | null |
-| periodOfApplicableAreaResidence | Integer                          | 해당지역연속거주기간 | null |
-| periodOfHomelessness            | Integer                          | 무주택기간           | null |
-| generationComposition           | Integer                          | 세대구성             | null |
-| total                           | Integer                          | 총점                 | null |
-| createdDate                     | DateTime                         | 생성일               | null |
-| modifiedDate                    | DateTime                         | 마지막 수정일        | null |
+| Name                            | Type                                        | Description          | Null |
+| ------------------------------- | ------------------------------------------- | -------------------- | ---- |
+| id                              | Long                                        | 가배점결과id         | null |
+| aptNotificationNumber           | Integer                                     | 공고번호             | null |
+| multiChildHouseholdType         | ENUM('삼세대이상', '한부모가족','해당없음') | 다자녀유형           | null |
+| numberOfChild                   | Integer                                     | 만19세미만자녀수     | null |
+| numberOfChildUnder6Year         | Integer                                     | 만6세미만자녀수      | null |
+| bankbookJoinPeriod              | Integer                                     | 청약통장가입기간     | null |
+| periodOfApplicableAreaResidence | Integer                                     | 해당지역연속거주기간 | null |
+| periodOfHomelessness            | Integer                                     | 무주택기간           | null |
+| generationComposition           | Integer                                     | 세대구성             | null |
+| total                           | Integer                                     | 총점                 | null |
+| createdDate                     | DateTime                                    | 생성일               | null |
+| modifiedDate                    | DateTime                                    | 마지막 수정일        | null |
+
+**error**
+
+- NOT_FOUND_APT(NOT_FOUND, "주택 정보를 찾을 수 없습니다"),
+  공고 번호가 db에 없을 때 발생
+
+- NOT_FOUND_BANKBOOK(NOT_FOUND, "해당 청약통장을 찾을 수 없습니다")
+  청약 통장이 없을 경우 발생
+
+- NOT_FOUND_HOUSE_MEMBER(NOT_FOUND, "해당 세대구성원을 찾을 수 없습니다"),
+  세대 구성원이 없을 경우 발생
+
+- NOT_FOUND_ADDRESS_LEVEL1(NOT_FOUND, "지역레벨1을 찾을 수 없습니다")
+  지역 레벨1이 없거나 일치하지 않을 때 발생
+
+- NOT_FOUND_ADDRESS_LEVEL2(NOT_FOUND, "지역레벨2를 찾을 수 없습니다")
+  지역 레벨2가 없거나 일치하지 않을 때 발생
+
+- NOT_FOUND_MARRIAGES(NOT_FOUND, "혼인신고일을 찾을 수 없습니다")
+  혼인신고일이 없을 때 발생
 
 <br>
 
@@ -2769,6 +2817,26 @@ http://3.37.99.145:8080/point/special/newly-married
 | createdDate                     | DateTime | 생성일               | null |
 | modifiedDate                    | DateTime | 마지막 수정일        | null |
 
+**error**
+
+- NOT_FOUND_APT(NOT_FOUND, "주택 정보를 찾을 수 없습니다"),
+  공고 번호가 db에 없을 때 발생
+
+- NOT_FOUND_MARRIAGES(NOT_FOUND, "혼인신고일을 찾을 수 없습니다")
+  혼인신고일이 없을 때 발생
+
+- NOT_FOUND_HOUSE_MEMBER(NOT_FOUND, "해당 세대구성원을 찾을 수 없습니다"),
+  세대 구성원이 없을 경우 발생
+
+- NOT_FOUND_BANKBOOK(NOT_FOUND, "해당 청약통장을 찾을 수 없습니다")
+  청약 통장이 없을 경우 발생
+
+- NOT_FOUND_ADDRESS_LEVEL1(NOT_FOUND, "지역레벨1을 찾을 수 없습니다")
+  지역 레벨1이 없거나 일치하지 않을 때 발생
+
+- NOT_FOUND_ADDRESS_LEVEL2(NOT_FOUND, "지역레벨2를 찾을 수 없습니다")
+  지역 레벨2가 없거나 일치하지 않을 때 발생
+
 <br>
 
 <br>
@@ -2827,6 +2895,14 @@ http://3.37.99.145:8080/point/special/single-parents
 | createdDate                     | DateTime | 생성일               | null |
 | modifiedDate                    | DateTime | 마지막 수정일        | null |
 
+**error**
+
+- NOT_FOUND_APT(NOT_FOUND, "주택 정보를 찾을 수 없습니다"),
+  공고 번호가 db에 없을 때 발생
+
+- NOT_FOUND_Child(NOT_FOUND, "자녀를 찾을 수 없습니다."),
+  자녀가 없을 때 발생
+
 <br>
 
 <br>
@@ -2876,6 +2952,23 @@ http://3.37.99.145:8080/point/special/old-parents-support
 | total                | Integer  | 총점             | null |
 | createdDate          | DateTime | 생성일           | null |
 | modifiedDate         | DateTime | 마지막 수정일    | null |
+
+**error**
+
+- NOT_FOUND_HOUSE_MEMBER(NOT_FOUND, "해당 세대구성원을 찾을 수 없습니다"),
+  세대 구성원이 없을 경우 발생
+
+- NOT_FOUND_MARRIAGES(NOT_FOUND, "혼인신고일을 찾을 수 없습니다"),
+  혼인 신고일을 찾을 수 없을 때 발생
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO(NOT_FOUND, "해당 세대구성원추가정보를 찾을 수 없습니다.")
+  세대구성원추가정보를 찾을 수 없을 때 발생
+
+- NOT_FOUND_HOUSE_HOLDER(NOT_FOUND, "해당 세대주를 찾을 수 없습니다"),
+  세대주가 없을 때 발생
+
+- NOT_FOUND_BANKBOOK(NOT_FOUND, "해당 청약통장을 찾을 수 없습니다")
+  청약 통장이 없을 때 발생
 
 <br>
 

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PointOfGeneralMinyeongResponseDto {
     private Long id; //일반민영 가점id
+    private Integer aptNotificationNumber; //아파트공고번호
     private Integer periodOfHomelessness;//무주택기간 가점
     private Integer bankbookJoinPeriod;//청약통장 가입기간 가점
     private Integer numberOfDependents;//부양가족수 가점
@@ -24,6 +25,7 @@ public class PointOfGeneralMinyeongResponseDto {
     @Builder
     public PointOfGeneralMinyeongResponseDto(PointOfGeneralMinyeong pointOfGeneralMinyeong){
         this.id = pointOfGeneralMinyeong.getId();
+        this.aptNotificationNumber = pointOfGeneralMinyeong.getAptInfo().getNotificationNumber();
         this.periodOfHomelessness = pointOfGeneralMinyeong.getPeriodOfHomelessness();
         this.bankbookJoinPeriod = pointOfGeneralMinyeong.getBankbookJoinPeriod();
         this.numberOfDependents = pointOfGeneralMinyeong.getNumberOfDependents();

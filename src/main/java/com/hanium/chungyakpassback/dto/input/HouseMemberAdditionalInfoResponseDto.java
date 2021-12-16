@@ -5,7 +5,9 @@ import com.hanium.chungyakpassback.entity.input.HouseMemberAdditionalInfo;
 import com.hanium.chungyakpassback.enumtype.Yn;
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -22,19 +24,23 @@ public class HouseMemberAdditionalInfoResponseDto {
 
     private Yn divorceYn; //이혼 여부
 
-    private Yn sameResidentRegistrationYn; //회원 세대 거주 여부
+    private LocalDate startDateOfSameResident; //회원 세대 거주 시작일
 
-    private Yn stayOverYn; //해외 및 요양시설 체류 이력 여부
+    private LocalDate startDateOfStayOver; //해외체류시작일
 
-    private Yn nowStayOverYn; //현재 해외 및 요양시설 체류 여부
+    private LocalDate endDateOfStayOver; //해외체류종료일
+
+    private Yn nowStayOverYn;
+
 
     public HouseMemberAdditionalInfoResponseDto(HouseMemberAdditionalInfo houseMemberAdditionalInfo) {
         this.houseMemberAdditionalInfoId = houseMemberAdditionalInfo.getId();
         this.houseMemberId = houseMemberAdditionalInfo.getHouseMember().getId();
         this.parentsDeathYn = houseMemberAdditionalInfo.getParentsDeathYn();
         this.divorceYn = houseMemberAdditionalInfo.getDivorceYn();
-        this.sameResidentRegistrationYn = houseMemberAdditionalInfo.getSameResidentRegistrationYn();
-        this.stayOverYn = houseMemberAdditionalInfo.getStayOverYn();
+        this.startDateOfSameResident = houseMemberAdditionalInfo.getStartDateOfSameResident();
+        this.startDateOfStayOver = houseMemberAdditionalInfo.getStartDateOfStayOver();
+        this.endDateOfStayOver = houseMemberAdditionalInfo.getEndDateOfStayOver();
         this.nowStayOverYn = houseMemberAdditionalInfo.getNowStayOverYn();
     }
 }

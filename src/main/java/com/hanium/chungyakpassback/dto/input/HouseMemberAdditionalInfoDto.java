@@ -5,7 +5,9 @@ import com.hanium.chungyakpassback.entity.input.HouseMemberAdditionalInfo;
 import com.hanium.chungyakpassback.enumtype.Yn;
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -17,28 +19,26 @@ public class HouseMemberAdditionalInfoDto {
     @NotBlank
     private Long houseMemberId;  //세대구성원 id
 
-    @NotBlank
     private Yn parentsDeathYn; //부모 사망 여부
 
-    @NotBlank
     private Yn divorceYn; //이혼 여부
 
-    @NotBlank
-    private Yn sameResidentRegistrationYn; //회원 세대 거주 여부
+    private LocalDate startDateOfSameResident; //회원 세대 거주 시작일
 
-    @NotBlank
-    private Yn stayOverYn; //해외 및 요양시설 체류 이력 여부
+    private LocalDate startDateOfStayOver;
 
-    @NotBlank
-    private Yn nowStayOverYn; //현재 해외 및 요양시설 체류 여부
+    private LocalDate endDateOfStayOver;
+
+    private Yn nowStayOverYn;
 
     public HouseMemberAdditionalInfo toEntity(HouseMember houseMember){
         return HouseMemberAdditionalInfo.builder()
                 .houseMember(houseMember)
                 .parentsDeathYn(parentsDeathYn)
                 .divorceYn(divorceYn)
-                .sameResidentRegistrationYn(sameResidentRegistrationYn)
-                .stayOverYn(stayOverYn)
+                .startDateOfSameResident(startDateOfSameResident)
+                .startDateOfStayOver(startDateOfStayOver)
+                .endDateOfStayOver(endDateOfStayOver)
                 .nowStayOverYn(nowStayOverYn)
                 .build();
     }

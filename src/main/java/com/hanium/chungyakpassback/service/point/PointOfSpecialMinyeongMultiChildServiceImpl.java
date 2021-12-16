@@ -130,15 +130,16 @@ public class PointOfSpecialMinyeongMultiChildServiceImpl implements PointOfSpeci
     public List periodOfApplicableAreaResidenceGetPoint(User user, Integer periodOfResidenceGetPoint, LocalDate lateDate, List lateDateList) {
 
         LocalDate birthDayAfter19Year = user.getHouseMember().getBirthDay().plusYears(19);
-        if (birthDayAfter19Year.isAfter(user.getHouseMember().getMarriageDate())) {
-            if (user.getHouseMember().getMarriageDate().isAfter(user.getHouseMember().getTransferDate())) {
-                lateDate = user.getHouseMember().getMarriageDate();
+        if (user.getHouseMember().getMarriageDate() == null || birthDayAfter19Year.isBefore(user.getHouseMember().getMarriageDate())) {//만 19세 이상 결혼 시 19세 생일 년도와 무주택 기간중 늦은 날
+            if (birthDayAfter19Year.isAfter(user.getHouseMember().getTransferDate())) {
+                lateDate = birthDayAfter19Year;
             } else {
                 lateDate = user.getHouseMember().getTransferDate();
             }
-        } else if (user.getHouseMember().getMarriageDate() == null || birthDayAfter19Year.isBefore(user.getHouseMember().getMarriageDate())) {//만 19세 이상 결혼 시 19세 생일 년도와 무주택 기간중 늦은 날
-            if (birthDayAfter19Year.isAfter(user.getHouseMember().getTransferDate())) {
-                lateDate = birthDayAfter19Year;
+        }
+        else if (birthDayAfter19Year.isAfter(user.getHouseMember().getMarriageDate())) {
+            if (user.getHouseMember().getMarriageDate().isAfter(user.getHouseMember().getTransferDate())) {
+                lateDate = user.getHouseMember().getMarriageDate();
             } else {
                 lateDate = user.getHouseMember().getTransferDate();
             }
@@ -156,6 +157,9 @@ public class PointOfSpecialMinyeongMultiChildServiceImpl implements PointOfSpeci
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer periodOfApplicableAreaResidence(User user, AptInfo aptInfo) {
+        if(user.getHouseMember()==null)
+            throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER);
+
         Integer periodOfResidenceGetPoint = 0;
         LocalDate lateDate = null;
         List<LocalDate> lateDateList = new ArrayList<>();//배우자와 본인중 무주택시점이 늦은날을 저장하는 리스트
@@ -188,7 +192,8 @@ public class PointOfSpecialMinyeongMultiChildServiceImpl implements PointOfSpeci
     @Transactional(rollbackFor = Exception.class)//세대구성 가점
     public Integer generationComposition(PointOfSpecialMinyeongMultiChildDto pointOfSpecialMinyeongMultiChildDto) {
         Integer generationCompositionGetPoint = 0;
-        if (pointOfSpecialMinyeongMultiChildDto.getMultiChildHouseholdType() == null) {
+
+        if (pointOfSpecialMinyeongMultiChildDto.getMultiChildHouseholdType().equals(MultiChildHouseholdType.해당없음)) {
             return generationCompositionGetPoint;
         } else if (pointOfSpecialMinyeongMultiChildDto.getMultiChildHouseholdType().equals(MultiChildHouseholdType.한부모가족) || pointOfSpecialMinyeongMultiChildDto.getMultiChildHouseholdType().equals(MultiChildHouseholdType.삼세대이상)) {
             generationCompositionGetPoint = 5;
