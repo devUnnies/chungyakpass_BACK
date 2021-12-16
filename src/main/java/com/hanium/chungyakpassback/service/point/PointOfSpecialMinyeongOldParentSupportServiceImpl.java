@@ -1,5 +1,6 @@
 package com.hanium.chungyakpassback.service.point;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.hanium.chungyakpassback.dto.point.PointOfSpecialMinyeongOldParentsSupportResponseDto;
 import com.hanium.chungyakpassback.entity.input.*;
 import com.hanium.chungyakpassback.entity.point.PointOfSpecialMinyeongOldParentsSupport;
@@ -14,12 +15,14 @@ import com.hanium.chungyakpassback.repository.point.PointOfSpecialMinyeongOldPar
 import com.hanium.chungyakpassback.repository.standard.BankbookRepository;
 import com.hanium.chungyakpassback.service.verification.VerificationOfGeneralMinyeongServiceImpl;
 import com.hanium.chungyakpassback.util.SecurityUtil;
+import jdk.swing.interop.SwingInterOpUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -290,7 +293,7 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
     }
 
     public Integer numberOfFamily(User user, HouseMemberRelation houseMemberRelation,HouseMemberAdditionalInfo houseMemberAdditionalInfo, int numberOfFamily, int parents, List bothParentsIsHomelessYnList) {
-        if (houseMemberAdditionalInfo.getStayOverYn().equals(Yn.n) && houseMemberAdditionalInfo.getSameResidentRegistrationYn().equals(Yn.y) && houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n)) {
+        if (periodOfStayOver(3,houseMemberAdditionalInfo.getStartDateOfStayOver(),houseMemberAdditionalInfo.getEndDateOfStayOver())<=90 && periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 3 && houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n)) {
             if ((houseMemberRelation.getRelation().getRelation().equals(Relation.부) || houseMemberRelation.getRelation().getRelation().equals(Relation.모)) && houseMemberRelation.getUser().equals(user)) {
                 numberOfFamily = numberOfFamily + countOfDependents(houseMemberRelation, parents, bothParentsIsHomelessYnList);
             }
@@ -346,12 +349,12 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
                             if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 자녀
                                 if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) {
                                     if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) {
-                                        if (!(houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.y) && houseMemberAdditionalInfo.getStayOverYn().equals(Yn.y))) {//현재 체류여부
+                                        if (houseMemberAdditionalInfo.getEndDateOfStayOver().equals(LocalDate.now()) && nowPeriodOfStayOver(houseMemberAdditionalInfo.getStartDateOfStayOver())<=90) {//현재 체류여부
                                             numberOfFamily++;
                                         }
                                     } else {
-                                        if (houseMemberAdditionalInfo.getStayOverYn().equals(Yn.n)) {// 체류여부
-                                            if (houseMemberAdditionalInfo.getSameResidentRegistrationYn().equals(Yn.y)) {
+                                        if (periodOfStayOver(1,houseMemberAdditionalInfo.getStartDateOfStayOver(),houseMemberAdditionalInfo.getEndDateOfStayOver())<=90) {// 체류여부
+                                            if (periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 1) {
                                                 numberOfFamily++;
                                             }
                                         }
@@ -375,12 +378,12 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
                         if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 자녀
                             if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) {
                                 if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) {
-                                    if (!(houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.y) && houseMemberAdditionalInfo.getStayOverYn().equals(Yn.y))) {//현재 체류여부
+                                    if (houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.n) && nowPeriodOfStayOver(houseMemberAdditionalInfo.getStartDateOfStayOver())<=90) {//현재 체류여부
                                         numberOfFamily++;
                                     }
                                 } else {
-                                    if (houseMemberAdditionalInfo.getStayOverYn().equals(Yn.n)) {// 체류여부
-                                        if (houseMemberAdditionalInfo.getSameResidentRegistrationYn().equals(Yn.y)) {
+                                    if (periodOfStayOver(1,houseMemberAdditionalInfo.getStartDateOfStayOver(),houseMemberAdditionalInfo.getEndDateOfStayOver())<=90) {// 체류여부
+                                        if (periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 1) {
                                             numberOfFamily++;
                                         }
                                     }
@@ -402,6 +405,27 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
             } else numberOfDependentsGetPoint = 35;
         }
         return numberOfDependentsGetPoint;
+    }
+
+    public long nowPeriodOfStayOver(LocalDate startDateOfStayOver ){
+        LocalDate now = LocalDate.now();
+
+        long periodOfStayOver = ChronoUnit.DAYS.between(startDateOfStayOver,now);
+        return periodOfStayOver;
+    }
+
+
+
+
+    public long periodOfStayOver(int standardYear,LocalDate startDateOfStayOver, LocalDate endDateOfStayOver ){
+        LocalDate now = LocalDate.now();
+        LocalDate standardStartDateOfStayOver = now.minusYears(standardYear);
+        if(standardYear !=0 && standardStartDateOfStayOver.isAfter(startDateOfStayOver)){
+            startDateOfStayOver = standardStartDateOfStayOver;
+        }
+
+        long periodOfStayOver = ChronoUnit.DAYS.between(startDateOfStayOver, endDateOfStayOver);
+        return periodOfStayOver;
     }
 
     public int periodOfMonth(LocalDate joinDate) { //만 개월 계산
