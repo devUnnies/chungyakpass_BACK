@@ -237,6 +237,9 @@ public class PointOfSpecialMinyeongMultiChildServiceImpl implements PointOfSpeci
         Integer periodOfHomelessnessGetPoint = 0;
         List<LocalDate> lateDateList = new ArrayList<>();//배우자와 본인중 무주택시점이 늦은날을 저장하는 리스트
 
+        if (user.getHouseMember().getForeignerYn() == null)
+            throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_FOREIGNERYN);
+
         if ((generalPrivateVerificationServiceImpl.calcAmericanAge(user.getHouseMember().getBirthDay()) < 30 && user.getSpouseHouseMember() == null) || user.getHouseMember().getForeignerYn().equals(Yn.y)) {//만30세미만 미혼이거나 무주택시작일이 없으면 0점
             return periodOfHomelessnessGetPoint = 0;
         }

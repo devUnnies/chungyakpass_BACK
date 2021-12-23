@@ -119,6 +119,8 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
         if (user.getSpouseHouseMember() != null && user.getSpouseHouseMember().getMarriageDate() == null) {//배우자가 있는데 혼인신고일이 없으면 에러발생
             throw new CustomException(ErrorCode.NOT_FOUND_MARRIAGES);
         } else {
+            if (user.getHouseMember().getForeignerYn() == null)
+                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_FOREIGNERYN);
             //신청자가 30세미만에 미혼이거나 외국인이면 0점
             if ((generalPrivateVerificationServiceImpl.calcAmericanAge(user.getHouseMember().getBirthDay()) < 30 && user.getSpouseHouseMember() == null) || user.getHouseMember().getForeignerYn().equals(Yn.y)) {
                 return periodOfHomelessnessGetPoint = 0;
@@ -306,6 +308,9 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
         if (houseMemberAdditionalInfo.getEndDateOfStayOver() == null)
             throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_ENDDATEOFSTAYOVER);
 
+        if (user.getHouseMember().getForeignerYn() == null)
+            throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_FOREIGNERYN);
+
         if (periodOfStayOver(3, houseMemberAdditionalInfo.getStartDateOfStayOver(), houseMemberAdditionalInfo.getEndDateOfStayOver(), aptInfo) <= 90 && periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 3 && houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n)) {
             if ((houseMemberRelation.getRelation().getRelation().equals(Relation.부) || houseMemberRelation.getRelation().getRelation().equals(Relation.모)) && houseMemberRelation.getUser().equals(user)) {
                 numberOfFamily = numberOfFamily + countOfDependents(houseMemberRelation, parents, bothParentsIsHomelessYnList);
@@ -358,6 +363,9 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
                             if (houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀)&&houseMemberAdditionalInfo.getParentsDeathYn() == null)
                                 throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_PARENTSDEATHYN);
 
+                            if (user.getHouseMember().getForeignerYn() == null)
+                                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_FOREIGNERYN);
+
                             if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
                                 if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 자녀
                                     if (houseMemberAdditionalInfo.getDivorceYn() == null)
@@ -407,6 +415,9 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
                         } else {
                             if (houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀)&&houseMemberAdditionalInfo.getParentsDeathYn() == null)
                                 throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_PARENTSDEATHYN);
+
+                            if (user.getHouseMember().getForeignerYn() == null)
+                                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_FOREIGNERYN);
 
                             if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
                                 if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 자녀

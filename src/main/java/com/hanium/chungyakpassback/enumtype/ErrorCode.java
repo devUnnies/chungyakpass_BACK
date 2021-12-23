@@ -29,6 +29,7 @@ public enum ErrorCode {
     NOT_FOUND_HOUSE(NOT_FOUND, "해당 세대를 찾을 수 없습니다"),
     NOT_FOUND_HOUSE_HOLDER(NOT_FOUND, "해당 세대주를 찾을 수 없습니다"),
     NOT_FOUND_HOUSE_MEMBER(NOT_FOUND, "해당 세대구성원을 찾을 수 없습니다"),
+    NOT_FOUND_HOUSE_MEMBER_FOREIGNERYN(NOT_FOUND, "해당 세대구성원의 외국인 여부를 찾을 수 없습니다."),
     NOT_FOUND_HOUSE_MEMBER_PROPERTY(NOT_FOUND, "해당 세대구성원자산을 찾을 수 없습니다"),
     NOT_FOUND_HOUSE_MEMBER_CHUNGYAK(NOT_FOUND, "해당 세대구성원청약이력을 찾을 수 없습니다"),
     NOT_FOUND_HOUSE_MEMBER_CHUNGYAK_RESTRICTION(NOT_FOUND, "해당 세대구성원청약제한사항을 찾을 수 없습니다"),
