@@ -440,6 +440,8 @@ public class PointOfGeneralMinyeongServiceImpl implements PointOfGeneralMinyeong
         Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user);
         if (optUserBankbook.isEmpty())//청약통장이 null이면 에러 발생
             throw new CustomException(ErrorCode.NOT_FOUND_BANKBOOK);
+        if (optUserBankbook.get().getJoinDate() == null)
+            throw new CustomException(ErrorCode.NOT_FOUND_BANKBOOK_JOINDATE);
         int joinPeriodOfMonth = periodOfMonth(optUserBankbook.get().getJoinDate());
         int joinPeriodOfYear = periodOfYear(optUserBankbook.get().getJoinDate());
         if (joinPeriodOfMonth < 12) {

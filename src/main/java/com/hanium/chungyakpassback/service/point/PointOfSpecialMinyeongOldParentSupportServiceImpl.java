@@ -514,6 +514,10 @@ public class PointOfSpecialMinyeongOldParentSupportServiceImpl implements PointO
         Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user);
         if (optUserBankbook.isEmpty())
             throw new CustomException(ErrorCode.NOT_FOUND_BANKBOOK);
+
+        if (optUserBankbook.get().getJoinDate() == null)
+            throw new CustomException(ErrorCode.NOT_FOUND_BANKBOOK_JOINDATE);
+
         int joinPeriodOfMonth = periodOfMonth(optUserBankbook.get().getJoinDate());
         int joinPeriodOfYear = periodOfYear(optUserBankbook.get().getJoinDate());
         if (joinPeriodOfMonth < 12) {

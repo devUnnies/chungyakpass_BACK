@@ -120,6 +120,10 @@ public class PointOfSpecialMinyeongMultiChildServiceImpl implements PointOfSpeci
         Optional<UserBankbook> optUserBankbook = userBankbookRepository.findByUser(user); //회원 청약통장
         if (optUserBankbook.isEmpty()) //회원 청약통장이 null이라면 에러발생
             throw new CustomException(ErrorCode.NOT_FOUND_BANKBOOK);
+
+        if (optUserBankbook.get().getJoinDate() == null)
+            throw new CustomException(ErrorCode.NOT_FOUND_BANKBOOK_JOINDATE);
+
         int joinPeriodOfYear = periodOfYear(optUserBankbook.get().getJoinDate());
         if (joinPeriodOfYear >= 10) {
             bankbookJoinPeriodGetPoint = 5;

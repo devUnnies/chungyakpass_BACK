@@ -32,6 +32,13 @@
   - NOT_FOUND_Child(NOT_FOUND, "자녀를 찾을 수 없습니다."),
   - NOT_FOUND_INCOME(NOT_FOUND, "월평균소득을 찾을 수 없습니다"),
   - NOT_FOUND_SPOUSE(NOT_FOUND, "배우자를 찾을 수 없습니다"),
+  - NOT_FOUND_BANKBOOK_JOINDATE(NOT_FOUND, "해당 청약통장 가입일 찾을 수 없습니다"),
+  - NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_DIVORCEYN(NOT_FOUND, "해당 세대구성원추가정보 중 이혼여부를 찾을 수 없습니다."),
+  - NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_NOWSTAYOVERYN(NOT_FOUND, "해당 세대구성원추가정보 중 현재 체류여부를 찾을 수 없습니다."),
+  - NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_PARENTSDEATHYN(NOT_FOUND, "해당 세대구성원추가정보 중 부모 사망여부를 찾을 수 없습니다."),
+  - NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSAMERESIDENT(NOT_FOUND, "해당 세대구성원추가정보 중 동거 시작일을 찾을 수 없습니다."),
+  - NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSTAYOVER(NOT_FOUND, "해당 세대구성원추가정보 중 체류 시작일을 찾을 수 없습니다."),
+  - NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_ENDDATEOFSTAYOVER(NOT_FOUND, "해당 세대구성원추가정보 중 체류 종료일을 찾을 수 없습니다.")
 
 - 409 CONFLICT
   - DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
@@ -2676,6 +2683,20 @@ http://3.37.99.145:8080/point/general/minyeong
 - NOT_FOUND_BANKBOOK(NOT_FOUND, "해당 청약통장을 찾을 수 없습니다")
   청약 통장이 없을 때 발생
 
+- NOT_FOUND_BANKBOOK_JOINDATE(NOT_FOUND, "해당 청약통장 가입일 찾을 수 없습니다")
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_DIVORCEYN(NOT_FOUND, "해당 세대구성원추가정보 중 이혼여부를 찾을 수 없습니다.")
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_NOWSTAYOVERYN(NOT_FOUND, "해당 세대구성원추가정보 중 현재 체류여부를 찾을 수 없습니다.")
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_PARENTSDEATHYN(NOT_FOUND, "해당 세대구성원추가정보 중 부모 사망여부를 찾을 수 없습니다.")
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSAMERESIDENT(NOT_FOUND, "해당 세대구성원추가정보 중 동거 시작일을 찾을 수 없습니다.")
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSTAYOVER(NOT_FOUND, "해당 세대구성원추가정보 중 체류 시작일을 찾을 수 없습니다.")
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_ENDDATEOFSTAYOVER(NOT_FOUND, "해당 세대구성원추가정보 중 체류 종료일을 찾을 수 없습니다.")
+
 <br>
 
 <br>
@@ -2746,6 +2767,8 @@ http://3.37.99.145:8080/point/special/multi-child
 
 - NOT_FOUND_BANKBOOK(NOT_FOUND, "해당 청약통장을 찾을 수 없습니다")
   청약 통장이 없을 경우 발생
+
+  - NOT_FOUND_BANKBOOK_JOINDATE(NOT_FOUND, "해당 청약통장 가입일 찾을 수 없습니다"
 
 - NOT_FOUND_HOUSE_MEMBER(NOT_FOUND, "해당 세대구성원을 찾을 수 없습니다"),
   세대 구성원이 없을 경우 발생
@@ -2970,6 +2993,19 @@ http://3.37.99.145:8080/point/special/old-parents-support
 - NOT_FOUND_BANKBOOK(NOT_FOUND, "해당 청약통장을 찾을 수 없습니다")
   청약 통장이 없을 때 발생
 
-<br>
+- NOT_FOUND_BANKBOOK_JOINDATE(NOT_FOUND, "해당 청약통장 가입일 찾을 수 없습니다"),
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_DIVORCEYN(NOT_FOUND, "해당 세대구성원추가정보 중 이혼여부를 찾을 수 없습니다.")
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_NOWSTAYOVERYN(NOT_FOUND, "해당 세대구성원추가정보 중 현재 체류여부를 찾을 수 없습니다.")
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_PARENTSDEATHYN(NOT_FOUND, "해당 세대구성원추가정보 중 부모 사망여부를 찾을 수 없습니다.")
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSAMERESIDENT(NOT_FOUND, "해당 세대구성원추가정보 중 동거 시작일을 찾을 수 없습니다.")
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSTAYOVER(NOT_FOUND, "해당 세대구성원추가정보 중 체류 시작일을 찾을 수 없습니다.")
+
+- NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_ENDDATEOFSTAYOVER(NOT_FOUND, "해당 세대구성원추가정보 중 체류 종료일을 찾을 수 없습니다.")
+  <br>
 
 <br>
