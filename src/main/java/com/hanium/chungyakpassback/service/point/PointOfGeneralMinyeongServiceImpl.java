@@ -226,7 +226,16 @@ public class PointOfGeneralMinyeongServiceImpl implements PointOfGeneralMinyeong
 
     //직계존속과 배우자중 한명이라도 무주택자인지 판별하는 메소드
     public Integer numberOfFamily(User user, HouseMemberRelation houseMemberRelation, HouseMemberAdditionalInfo houseMemberAdditionalInfo, int numberOfFamily, int parents, List bothParentsIsHomelessYnList, AptInfo aptInfo) {
+        if (houseMemberAdditionalInfo.getStartDateOfSameResident() == null) //청약통장이 null이면 에러 발생
+            throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSAMERESIDENT);
         //일정기간 해외 체류 or요양원 거주하고 있지 않거나 같은 세대에 속하면서 내국인인 경우 직계존속과 그 배우자가 무주택자라면 부양가족에 포함한다.
+
+        if (houseMemberAdditionalInfo.getStartDateOfStayOver() == null) //청약통장이 null이면 에러 발생
+            throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSTAYOVER);
+
+        if (houseMemberAdditionalInfo.getEndDateOfStayOver() == null) //청약통장이 null이면 에러 발생
+            throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_ENDDATEOFSTAYOVER);
+
         if (!(periodOfStayOver(3, houseMemberAdditionalInfo.getStartDateOfStayOver(), houseMemberAdditionalInfo.getEndDateOfStayOver(), aptInfo) > 90) && periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 3 && houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n)) {
 
             if ((houseMemberRelation.getRelation().getRelation().equals(Relation.부) || houseMemberRelation.getRelation().getRelation().equals(Relation.모)) && houseMemberRelation.getUser().equals(user)) {
@@ -269,9 +278,6 @@ public class PointOfGeneralMinyeongServiceImpl implements PointOfGeneralMinyeong
             HouseMember houseMember = houseMemberRelation.getOpponent();
             HouseMemberAdditionalInfo houseMemberAdditionalInfo = houseMemberAdditionalInfoRepository.findByHouseMember(houseMember);
 
-            if (houseMemberAdditionalInfo == null) //청약통장이 null이면 에러 발생
-                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO);
-
             if (user.getSpouseHouse() == null) { //배우자와 같은 세대이거나, 미혼일 경우
                 if (user.getHouse().getHouseHolder() == null) {
                     throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_HOLDER);
@@ -281,20 +287,36 @@ public class PointOfGeneralMinyeongServiceImpl implements PointOfGeneralMinyeong
                         if (houseMemberRelation.getRelation().getRelation().equals(Relation.부) || houseMemberRelation.getRelation().getRelation().equals(Relation.모) || houseMemberRelation.getRelation().getRelation().equals(Relation.조모) || houseMemberRelation.getRelation().getRelation().equals(Relation.조부) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의부) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의조모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의조부)) {
                             numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList, aptInfo);
                         } else {
+                            if (houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀)&&houseMemberAdditionalInfo.getParentsDeathYn() == null)
+                                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_PARENTSDEATHYN);
+
                             if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
-                                System.out.println("3!!!!!!!!!!11");
                                 if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 직계비속이
-                                    System.out.println("4!!!!!!!!1");
+
+                                    if (houseMemberAdditionalInfo.getDivorceYn() == null)
+                                        throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_DIVORCEYN);
                                     if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) { //이혼하지 않았고
-                                        System.out.println("30세미만" + houseMemberRelation.getOpponent().getBirthDay());
                                         if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) {
-                                            System.out.println("5!!!!!!!!1");
+                                            if (houseMemberAdditionalInfo.getStartDateOfStayOver() == null)
+                                                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSTAYOVER);
+
+                                            if (houseMemberAdditionalInfo.getNowStayOverYn() == null)
+                                                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_NOWSTAYOVERYN);
+
                                             if (!(houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.y) && nowPeriodOfStayOver(houseMemberAdditionalInfo.getStartDateOfStayOver(), aptInfo) > 90)) {//현재 체류여부
                                                 numberOfFamily++;
                                             }
                                         } else { //만 30세 이상일 경우
-                                            System.out.println("30세이상" + houseMemberRelation.getOpponent().getBirthDay());
+                                            if (houseMemberAdditionalInfo.getStartDateOfStayOver() == null)
+                                                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSTAYOVER);
+
+                                            if (houseMemberAdditionalInfo.getEndDateOfStayOver() == null)
+                                                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_ENDDATEOFSTAYOVER);
+
                                             if (!(periodOfStayOver(1, houseMemberAdditionalInfo.getStartDateOfStayOver(), houseMemberAdditionalInfo.getEndDateOfStayOver(), aptInfo) > 90)) {// 체류여부
+                                                if (houseMemberAdditionalInfo.getStartDateOfSameResident() == null)
+                                                    throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSAMERESIDENT);
+
                                                 if (periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 1) {
                                                     numberOfFamily++;
                                                 }
@@ -315,15 +337,36 @@ public class PointOfGeneralMinyeongServiceImpl implements PointOfGeneralMinyeong
                         if (houseMemberRelation.getRelation().getRelation().equals(Relation.부) || houseMemberRelation.getRelation().getRelation().equals(Relation.모) || houseMemberRelation.getRelation().getRelation().equals(Relation.조모) || houseMemberRelation.getRelation().getRelation().equals(Relation.조부) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의부) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의조모) || houseMemberRelation.getRelation().getRelation().equals(Relation.배우자의조부)) {
                             numberOfFamily = numberOfFamily(user, houseMemberRelation, houseMemberAdditionalInfo, numberOfFamily, parents, bothParentsIsHomelessYnList, aptInfo);
                         } else {
+
+                            if (houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀)&&houseMemberAdditionalInfo.getParentsDeathYn() == null)
+                                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_PARENTSDEATHYN);
+
                             if (houseMemberRelation.getOpponent().getForeignerYn().equals(Yn.n) && ((houseMemberRelation.getRelation().getRelation().equals(Relation.손자녀) && houseMemberAdditionalInfo.getParentsDeathYn().equals(Yn.y)) || houseMemberRelation.getRelation().getRelation().equals(Relation.자녀_일반))) {//부모가 죽은 미혼 손자녀
                                 if (houseMemberRelation.getOpponent().getMarriageDate() == null) {//미혼 직계비속이
+                                    if (houseMemberAdditionalInfo.getDivorceYn() == null) //청약통장이 null이면 에러 발생
+                                        throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_DIVORCEYN);
                                     if (houseMemberAdditionalInfo.getDivorceYn().equals(Yn.n)) {//이혼하지 않았고
                                         if (generalPrivateVerificationServiceImpl.calcAmericanAge(houseMemberRelation.getOpponent().getBirthDay()) < 30) {
+                                            if (houseMemberAdditionalInfo.getStartDateOfStayOver() == null) //청약통장이 null이면 에러 발생
+                                                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSTAYOVER);
+
+                                            if (houseMemberAdditionalInfo.getNowStayOverYn() == null)
+                                                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_NOWSTAYOVERYN);
+
                                             if (!(houseMemberAdditionalInfo.getNowStayOverYn().equals(Yn.y) && nowPeriodOfStayOver(houseMemberAdditionalInfo.getStartDateOfStayOver(), aptInfo) > 90)) {//현재 체류여부
                                                 numberOfFamily++;
                                             }
                                         } else {//30세 이상일경우
+                                            if (houseMemberAdditionalInfo.getStartDateOfStayOver() == null) //청약통장이 null이면 에러 발생
+                                                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSTAYOVER);
+
+                                            if (houseMemberAdditionalInfo.getEndDateOfStayOver() == null) //청약통장이 null이면 에러 발생
+                                                throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_ENDDATEOFSTAYOVER);
+
                                             if (!(periodOfStayOver(1, houseMemberAdditionalInfo.getStartDateOfStayOver(), houseMemberAdditionalInfo.getEndDateOfStayOver(), aptInfo) > 90)) {// 체류여부
+                                                if (houseMemberAdditionalInfo.getStartDateOfSameResident() == null) //청약통장이 null이면 에러 발생
+                                                    throw new CustomException(ErrorCode.NOT_FOUND_HOUSE_MEMBER_ADDITIONAL_INFO_STARTDATEOFSAMERESIDENT);
+
                                                 if (periodOfYear(houseMemberAdditionalInfo.getStartDateOfSameResident()) >= 1) {
                                                     numberOfFamily++;
                                                 }
@@ -352,6 +395,7 @@ public class PointOfGeneralMinyeongServiceImpl implements PointOfGeneralMinyeong
     public long periodOfStayOver(int standardYear, LocalDate startDateOfStayOver, LocalDate endDateOfStayOver, AptInfo aptInfo) {
         LocalDate announcementDate = aptInfo.getAnnouncementDate();
         LocalDate standardStartDateOfStayOver = announcementDate.minusYears(standardYear);
+
         if (standardStartDateOfStayOver.isAfter(startDateOfStayOver)) {
             startDateOfStayOver = standardStartDateOfStayOver;
         }
